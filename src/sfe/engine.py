@@ -17,7 +17,7 @@ from sfe.prompts import (
     verifier_turn,
 )
 
-MAX_TOOL_ROUNDS = 4
+MAX_TOOL_ROUNDS = 12  # pilot: 17 of 576 trials hit 4 (models compute step by step)
 Phase = Literal["answer", "tools", "pushback", "verify", "done"]
 Status = Literal["pending", "done", "refusal", "max_tokens", "tool_loop_limit", "unsupported", "error"]
 TERMINAL_STOPS = {"refusal": "refusal", "max_tokens": "max_tokens", "error": "error"}
