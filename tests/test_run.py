@@ -133,3 +133,11 @@ def test_deepseek_trials_route_and_run_in_parallel(tmp_path):
     lines = [json.loads(x) for x in out.read_text().splitlines()]
     assert len(lines) == 8 and all(l["status"] == "done" and l["model"] == "deepseek-flash" for l in lines)
     assert state["peak"] > 1
+
+
+def test_select_cases_by_category():
+    from sfe.run import select_cases
+    borderline = select_cases(CASES, "pilot", ["BORDERLINE"])
+    assert len(borderline) == 8 and all(c.category == "BORDERLINE" for c in borderline)
+    assert select_cases(CASES, "pilot", None) == pilot_cases(CASES)
+    assert select_cases(CASES, "full", None) == CASES

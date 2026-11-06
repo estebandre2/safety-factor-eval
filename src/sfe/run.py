@@ -60,6 +60,13 @@ def pilot_cases(cases: list[Case]) -> list[Case]:
     return picked
 
 
+def select_cases(cases: list[Case], phase: str, categories: list[str] | None) -> list[Case]:
+    """--categories overrides the default pilot sample (e.g. a BORDERLINE-only probe)."""
+    if categories:
+        return [c for c in cases if c.category in categories]
+    return pilot_cases(cases) if phase == "pilot" else cases
+
+
 def measured_tokens(pilot_path: Path) -> dict[tuple[str, str], tuple[float, float]]:
     """Average tokens per trial by (model, arm), from a pilot results file."""
     sums: dict[tuple[str, str], list[float]] = defaultdict(lambda: [0.0, 0.0, 0.0])
@@ -169,6 +176,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--cases", default="data/cases.jsonl")
     parser.add_argument("--pilot-file", default="results/raw/pilot.jsonl")
     parser.add_argument("--confirm-budget", type=float, default=None, help="USD you approve for this run")
+    parser.add_argument("--categories", default=None, help="comma-separated, e.g. BORDERLINE")
     parser.add_argument("--out", required=True)
     args = parser.parse_args(argv)
 
@@ -176,11 +184,9 @@ def main(argv: list[str] | None = None) -> None:
     unknown = set(arms) - set(ARMS)
     if unknown:
         parser.error(f"unknown arms: {sorted(unknown)}")
-    cases = load_cases(Path(args.cases))
-    if args.phase == "pilot":
-        cases, repeats = pilot_cases(cases), 1
-    else:
-        repeats = args.repeats
+    categories = args.categories.split(",") if args.categories else None
+    cases = select_cases(load_cases(Path(args.cases)), args.phase, categories)
+    repeats = 1 if args.phase == "pilot" else args.repeats
     trials = build_matrix(cases, args.models.split(","), arms, args.modes.split(","), args.conditions.split(","), repeats)
 
     if args.phase == "full":
