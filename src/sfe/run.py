@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,16 +14,22 @@ from typing import Callable
 import httpx
 
 from sfe.backends.claude import EFFORT, claude_cost, run_claude_round
+from sfe.backends.deepseek import run_deepseek
 from sfe.backends.ollama import ToolsUnsupported, run_ollama
 from sfe.cases import Case, load_cases
 from sfe.engine import Trial, apply_reply, new_trial, next_request
 from sfe.prompts import ARMS, CONDITIONS, Arm, Condition
 
+DEEPSEEK_WORKERS = 8
 TERMINAL = {"done", "refusal", "max_tokens", "tool_loop_limit", "unsupported", "error"}
 
 
 def is_claude(model: str) -> bool:
     return model.startswith("claude-")
+
+
+def is_deepseek(model: str) -> bool:
+    return model.startswith("deepseek-")
 
 
 def build_matrix(cases: list[Case], models: list[str], arms: list[Arm], modes: list[str],
@@ -102,25 +110,39 @@ def _done_ids(out_path: Path) -> set[str]:
     return done
 
 
+def _run_sync(trial: Trial, call: Callable) -> Trial:
+    """Advance one non-batch trial to completion with a synchronous backend."""
+    while (request := next_request(trial)) is not None:
+        try:
+            apply_reply(trial, call(request, trial.model))
+        except ToolsUnsupported:
+            trial.status, trial.phase = "unsupported", "done"
+        except (httpx.HTTPError, RuntimeError):
+            trial.status, trial.phase = "error", "done"
+    return trial
+
+
 def run(trials: list[Trial], out_path: Path,
-        claude_round: Callable | None = run_claude_round, ollama_call: Callable | None = run_ollama) -> None:
+        claude_round: Callable | None = run_claude_round, ollama_call: Callable | None = run_ollama,
+        deepseek_call: Callable | None = run_deepseek) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     done = _done_ids(out_path)
     pending = [t for t in trials if t.trial_id not in done]
+    lock = threading.Lock()
     with out_path.open("a") as fh:
         def write(trial: Trial) -> None:
-            fh.write(json.dumps(_record(trial)) + "\n")
-            fh.flush()
+            with lock:
+                fh.write(json.dumps(_record(trial)) + "\n")
+                fh.flush()
 
-        for trial in (t for t in pending if not is_claude(t.model)):
-            while (request := next_request(trial)) is not None:
-                try:
-                    apply_reply(trial, ollama_call(request, trial.model))
-                except ToolsUnsupported:
-                    trial.status, trial.phase = "unsupported", "done"
-                except httpx.HTTPError:
-                    trial.status, trial.phase = "error", "done"
-            write(trial)
+        deepseek = [t for t in pending if is_deepseek(t.model)]
+        if deepseek:
+            with ThreadPoolExecutor(max_workers=DEEPSEEK_WORKERS) as pool:
+                for done in pool.map(lambda t: _run_sync(t, deepseek_call), deepseek):
+                    write(done)
+
+        for trial in (t for t in pending if not is_claude(t.model) and not is_deepseek(t.model)):
+            write(_run_sync(trial, ollama_call))
 
         active = [t for t in pending if is_claude(t.model)]
         while active:

@@ -65,7 +65,7 @@ Applied to unsafe and borderline cases under the four pressure conditions (and t
 | Verifier (M4) | same model as the one under test |
 | Judge | `claude-haiku-5-5` |
 
-**Local-model scope (amended 2026-11-06, approved):** on this Mac a 4B model writes about 2,200 tokens per answer at about 33 tokens/s, so the full matrix is infeasible before the deadline. Local models run Mode A only, 1 repeat, arms M0 and M5. `qwen2.5:14b-instruct-q4_K_M` is optional if time allows.
+**Amended again 2026-11-06 (approved by Esteban): local models dropped in favor of DeepSeek** (`deepseek-v4-pro`, `deepseek-flash`, OpenAI-compatible API, thinking on, reasoning_effort "high"), run with the same arms as Claude where the budget allows. Reason: speed, plus a frontier model from a second provider. Previous note, kept for the record — **Local-model scope (amended 2026-11-06, approved):** on this Mac a 4B model writes about 2,200 tokens per answer at about 33 tokens/s, so the full matrix is infeasible before the deadline. Local models run Mode A only, 1 repeat, arms M0 and M5. `qwen2.5:14b-instruct-q4_K_M` is optional if time allows.
 
 Claude calls run through the Message Batches API (50% discount) using the official Python SDK. Thinking stays at each model's default; effort is fixed per model and recorded.
 

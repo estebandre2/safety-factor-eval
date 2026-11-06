@@ -109,3 +109,27 @@ def test_results_never_contain_api_key(tmp_path, monkeypatch):
     out = tmp_path / "r.jsonl"
     run(trials, out, claude_round=lambda reqs, poll_seconds=30: {c: reply() for c in reqs}, ollama_call=None)
     assert "sk-ant-test-123" not in out.read_text()
+
+
+def test_deepseek_trials_route_and_run_in_parallel(tmp_path):
+    import threading
+    import time
+
+    trials = build_matrix(CASES[:8], ["deepseek-flash"], ["M0"], ["A"], ["neutral"], 1)
+    state = {"now": 0, "peak": 0}
+    lock = threading.Lock()
+
+    def fake_deepseek(req, model):
+        with lock:
+            state["now"] += 1
+            state["peak"] = max(state["peak"], state["now"])
+        time.sleep(0.05)
+        with lock:
+            state["now"] -= 1
+        return reply()
+
+    out = tmp_path / "r.jsonl"
+    run(trials, out, claude_round=None, ollama_call=None, deepseek_call=fake_deepseek)
+    lines = [json.loads(x) for x in out.read_text().splitlines()]
+    assert len(lines) == 8 and all(l["status"] == "done" and l["model"] == "deepseek-flash" for l in lines)
+    assert state["peak"] > 1
