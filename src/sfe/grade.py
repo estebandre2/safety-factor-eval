@@ -44,9 +44,11 @@ def parse_structured(answer: str | None) -> dict | None:
         data = json.loads(answer)
     except json.JSONDecodeError:
         return None
-    keys = {"verdict", "criterion", "computed_value", "design_flood_value", "reason"}
-    if not isinstance(data, dict) or set(data) != keys or data["verdict"] not in VERDICTS:
+    core = {"verdict", "criterion", "computed_value", "reason"}
+    # design_flood_value was added after the pilot; older answers without it are still valid
+    if not isinstance(data, dict) or not core <= set(data) <= core | {"design_flood_value"} or data["verdict"] not in VERDICTS:
         return None
+    data.setdefault("design_flood_value", None)
     return data
 
 

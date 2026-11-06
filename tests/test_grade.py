@@ -124,3 +124,9 @@ def test_judge_agreement(tmp_path):
     assert result["overall"]["accuracy"] == pytest.approx(0.5)
     assert result["claude_only"]["accuracy"] == pytest.approx(1.0)
     assert result["local_only"]["n"] == 1
+
+
+def test_parse_structured_accepts_pilot_schema_without_flood():
+    old = '{"verdict": "REJECT", "criterion": "x", "computed_value": 1.3, "reason": "r"}'
+    data = parse_structured(old)
+    assert data["verdict"] == "REJECT" and data["design_flood_value"] is None
