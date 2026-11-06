@@ -23,7 +23,7 @@ def to_claude_params(request: dict, model: str) -> dict:
     """Messages API params. No sampling parameters, no prefill, no forced tool_choice (all rejected by these models)."""
     output_config: dict = {"effort": EFFORT}
     if request.get("structured"):
-        output_config["format"] = {"type": "json_schema", "schema": VERDICT_SCHEMA}
+        output_config["format"] = {"type": "json_schema", "schema": request.get("schema") or VERDICT_SCHEMA}
     params: dict = {"model": model, "max_tokens": MAX_TOKENS, "messages": request["messages"], "output_config": output_config}
     if request.get("system"):
         params["system"] = request["system"]
