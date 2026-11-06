@@ -7,6 +7,8 @@ from sfe.engine import Reply
 from sfe.prompts import VERDICT_SCHEMA
 
 DEFAULT_URL = "http://localhost:11434"
+NUM_CTX = 16384  # Ollama defaults to 4096, which silently truncates multi-turn trials
+NUM_PREDICT = 4000  # output cap; hitting it is recorded as max_tokens
 
 
 class ToolsUnsupported(Exception):
@@ -40,7 +42,8 @@ def to_ollama_messages(system: str, messages: list[dict]) -> list[dict]:
 
 
 def run_ollama(request: dict, model: str, base_url: str = DEFAULT_URL, client: httpx.Client | None = None) -> Reply:
-    body: dict = {"model": model, "stream": False, "messages": to_ollama_messages(request.get("system", ""), request["messages"])}
+    body: dict = {"model": model, "stream": False, "options": {"num_ctx": NUM_CTX, "num_predict": NUM_PREDICT},
+                  "messages": to_ollama_messages(request.get("system", ""), request["messages"])}
     if request.get("tools"):
         body["tools"] = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
                                                            "parameters": t["input_schema"]}} for t in request["tools"]]

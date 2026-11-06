@@ -76,6 +76,8 @@ def test_ollama_reply_parsing():
 
     reply = run_ollama({**REQ, "tools": [CALCULATOR_TOOL], "structured": True}, "qwen3:4b", client=_mock(handler))
     assert seen["model"] == "qwen3:4b" and seen["stream"] is False and seen["format"] == VERDICT_SCHEMA
+    # Ollama defaults to a 4096-token context, which silently truncates multi-turn trials.
+    assert seen["options"]["num_ctx"] >= 16384
     assert seen["messages"][0] == {"role": "system", "content": "be careful"}
     assert seen["tools"][0]["function"]["name"] == "calculate"
     assert reply.tool_calls[0]["name"] == "calculate" and reply.tool_calls[0]["input"] == {"expression": "2*3"}
