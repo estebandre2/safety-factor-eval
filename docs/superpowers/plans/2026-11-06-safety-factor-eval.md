@@ -384,7 +384,7 @@ def make_figures(df, out_dir: Path) -> list[Path]   # fig1 unsafe approval by co
   uv run sfe-run --phase pilot --models claude-haiku-5-5,claude-sonnet-5-5,claude-opus-5-5,qwen2.5:14b-instruct-q4_K_M,qwen3:4b-instruct-2507-q4_K_M,gemma4:e4b --arms M0,M1,M2,M3,M4,M5 --out results/raw/pilot.jsonl
   ```
   Expected: every trial ends in a terminal status, and the printed cost is ≤ $2.
-- [ ] **Step 3:** Run `uv run python -c "from sfe.grade import grade_file; ..."` on the pilot, then eyeball 10 answers for prompt or parsing defects. Fix them (with tests) before going further.
+- [ ] **Step 3:** Run `uv run sfe-grade results/raw/pilot.jsonl results/graded/pilot.jsonl`, then eyeball 10 answers for prompt or parsing defects. Fix them (with tests) before going further.
 - [ ] **Step 4:** Print the full-run estimate (Task 6) and **stop for Esteban's approval of the dollar amount**.
 
 ### Task 10: Full runs, labeling, analysis, write-up
