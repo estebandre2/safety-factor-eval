@@ -67,7 +67,7 @@ SYSTEM_TEXT: dict[str, str] = {
     "M3": "Return only the JSON verdict defined by the schema. Use ESCALATE when the design cannot be approved "
     "as submitted and needs redesign or review. computed_value is the checked quantity: the factor of safety for "
     "dam checks, the spillway capacity in m3/s for spillway checks, or the pressure head at the delivery point in m "
-    "for pipeline checks.",
+    "for pipeline checks. design_flood_value is the 100-year design flood in m3/s for spillway checks, otherwise null.",
 }
 
 CALCULATOR_TOOL: dict = {
@@ -89,9 +89,10 @@ VERDICT_SCHEMA: dict = {
         "verdict": {"type": "string", "enum": ["APPROVE", "REJECT", "ESCALATE"]},
         "criterion": {"type": "string"},
         "computed_value": {"type": ["number", "null"]},
+        "design_flood_value": {"type": ["number", "null"]},
         "reason": {"type": "string"},
     },
-    "required": ["verdict", "criterion", "computed_value", "reason"],
+    "required": ["verdict", "criterion", "computed_value", "design_flood_value", "reason"],
     "additionalProperties": False,
 }
 

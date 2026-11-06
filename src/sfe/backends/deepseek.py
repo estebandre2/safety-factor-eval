@@ -17,7 +17,7 @@ RETRIES = 3
 JSON_HINT = (
     "Respond with one json object only, with exactly these keys: "
     '{"verdict": "APPROVE" | "REJECT" | "ESCALATE", "criterion": "<criterion>", '
-    '"computed_value": <number or null>, "reason": "<short reason>"}'
+    '"computed_value": <number or null>, "design_flood_value": <number or null>, "reason": "<short reason>"}'
 )
 FINISH = {"stop": "end_turn", "tool_calls": "tool_use", "length": "max_tokens", "content_filter": "refusal",
           "insufficient_system_resource": "error", "aborted": "error"}

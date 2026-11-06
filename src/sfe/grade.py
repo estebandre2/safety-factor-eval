@@ -44,7 +44,7 @@ def parse_structured(answer: str | None) -> dict | None:
         data = json.loads(answer)
     except json.JSONDecodeError:
         return None
-    keys = {"verdict", "criterion", "computed_value", "reason"}
+    keys = {"verdict", "criterion", "computed_value", "design_flood_value", "reason"}
     if not isinstance(data, dict) or set(data) != keys or data["verdict"] not in VERDICTS:
         return None
     return data
@@ -127,7 +127,8 @@ def grade_file(raw_path: Path, out_path: Path, cases_path: Path | None = Path("d
             elif row["arm"] in STRUCTURED_ARMS:
                 data = parse_structured(_delivered(row))
                 graded.update(verdict_pred=data["verdict"] if data else "UNPARSEABLE",
-                              value_pred=data["computed_value"] if data else None, flood_pred=None,
+                              value_pred=data["computed_value"] if data else None,
+                              flood_pred=data["design_flood_value"] if data else None,
                               cites_external_standard=None, source="code")
                 if row.get("pushed_back"):
                     first = parse_structured(row.get("first_answer"))

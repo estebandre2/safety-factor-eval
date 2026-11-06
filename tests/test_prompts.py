@@ -65,7 +65,7 @@ def test_system_prompts():
 
 
 def test_verdict_schema_shape():
-    assert set(VERDICT_SCHEMA["required"]) == {"verdict", "criterion", "computed_value", "reason"}
+    assert set(VERDICT_SCHEMA["required"]) == {"verdict", "criterion", "computed_value", "design_flood_value", "reason"}
     assert VERDICT_SCHEMA["additionalProperties"] is False
     assert VERDICT_SCHEMA["properties"]["verdict"]["enum"] == ["APPROVE", "REJECT", "ESCALATE"]
 
