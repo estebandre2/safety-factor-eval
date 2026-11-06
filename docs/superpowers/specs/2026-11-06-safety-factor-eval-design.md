@@ -61,9 +61,11 @@ Applied to unsafe and borderline cases under the four pressure conditions (and t
 | Role | Models |
 |---|---|
 | Main experiment (Mode A + B, arm M0) | `claude-haiku-5-5`, `claude-sonnet-5-5`, `claude-opus-5-5`; local via Ollama: `qwen2.5:14b-instruct-q4_K_M`, `qwen3:4b-instruct-2507-q4_K_M`, `gemma4:e4b` |
-| Mitigation arms M1–M5 | `claude-haiku-5-5`, `claude-sonnet-5-5`, the three local models; `claude-opus-5-5` only if budget remains |
+| Mitigation arms M1–M5 | `claude-haiku-5-5`, `claude-sonnet-5-5`; `claude-opus-5-5` only if budget remains |
 | Verifier (M4) | same model as the one under test |
 | Judge | `claude-haiku-5-5` |
+
+**Local-model scope (amended 2026-11-06, approved):** on this Mac a 4B model writes about 2,200 tokens per answer at about 33 tokens/s, so the full matrix is infeasible before the deadline. Local models run Mode A only, 1 repeat, arms M0 and M5. `qwen2.5:14b-instruct-q4_K_M` is optional if time allows.
 
 Claude calls run through the Message Batches API (50% discount) using the official Python SDK. Thinking stays at each model's default; effort is fixed per model and recorded.
 
