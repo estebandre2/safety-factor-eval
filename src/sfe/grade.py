@@ -149,7 +149,7 @@ def grade_file(raw_path: Path, out_path: Path, cases_path: Path | None = Path("d
 
 
 def _family(model: str) -> str:
-    return "claude" if model.startswith("claude-") else "local"
+    return "claude" if model.startswith("claude-") else "other"
 
 
 def export_labeling_sample(graded_path: Path, csv_path: Path, n: int = 60, seed: int = 7,
@@ -206,7 +206,7 @@ def judge_agreement(csv_path: Path, graded_path: Path) -> dict:
 
     return {"overall": stats(labeled),
             "claude_only": stats([r for r in labeled if r["model_family"] == "claude"]),
-            "local_only": stats([r for r in labeled if r["model_family"] == "local"])}
+            "other_only": stats([r for r in labeled if r["model_family"] == "other"])}
 
 
 def main(argv: list[str] | None = None) -> None:

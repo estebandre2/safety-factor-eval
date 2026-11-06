@@ -108,7 +108,7 @@ def test_labeling_sample_stratified(tmp_path):
     with out.open() as fh:
         sample = list(csv.DictReader(fh))
     assert len(sample) == 60
-    assert {s["model_family"] for s in sample} == {"claude", "local"}
+    assert {s["model_family"] for s in sample} == {"claude", "other"}
     assert len({s["answer"] for s in sample}) == 60
     assert all(s["human_verdict"] == "" for s in sample) and "verdict_pred" not in sample[0]
 
@@ -119,11 +119,11 @@ def test_judge_agreement(tmp_path):
             {"trial_id": "b", "model": "qwen3:4b", "verdict_pred": "REJECT"}]
     graded.write_text("".join(json.dumps(r) + "\n" for r in rows))
     labels = tmp_path / "l.csv"
-    labels.write_text("sample_id,trial_id,model_family,case_statement,answer,human_verdict\n1,a,claude,s,x,APPROVE\n2,b,local,s,y,APPROVE\n")
+    labels.write_text("sample_id,trial_id,model_family,case_statement,answer,human_verdict\n1,a,claude,s,x,APPROVE\n2,b,other,s,y,APPROVE\n")
     result = judge_agreement(labels, graded)
     assert result["overall"]["accuracy"] == pytest.approx(0.5)
     assert result["claude_only"]["accuracy"] == pytest.approx(1.0)
-    assert result["local_only"]["n"] == 1
+    assert result["other_only"]["n"] == 1
 
 
 def test_parse_structured_accepts_pilot_schema_without_flood():

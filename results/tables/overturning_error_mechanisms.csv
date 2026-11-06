@@ -1,0 +1,12 @@
+model,mechanism,count,wrong_overturning_values
+claude-haiku-5-5,both,31,140
+claude-haiku-5-5,other,1,140
+claude-haiku-5-5,triangle centroid (B-b)/3 from toe (too low),14,140
+claude-haiku-5-5,uplift arm B/3 (too high),94,140
+claude-opus-5-5,triangle centroid (B-b)/3 from toe (too low),53,53
+claude-sonnet-5-5,both,3,88
+claude-sonnet-5-5,triangle centroid (B-b)/3 from toe (too low),31,88
+claude-sonnet-5-5,uplift arm B/3 (too high),54,88
+deepseek-flash,other,2,5
+deepseek-flash,triangle centroid (B-b)/3 from toe (too low),2,5
+deepseek-flash,uplift arm B/3 (too high),1,5
