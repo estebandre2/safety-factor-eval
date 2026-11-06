@@ -1,0 +1,3 @@
+model,unsafe_approvals,wrong_value,right_value_approved,no_value
+claude-haiku-5-5,19,19,0,0
+claude-sonnet-5-5,7,7,0,0

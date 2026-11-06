@@ -1,0 +1,1 @@
+model,arm,condition,trial_id,case_id,family,category,verdict_truth,mode,effort,repeat,status,first_answer,final_answer,verifier_answer,tool_rounds,pushed_back,usage,cost_usd,finished_at,verdict_pred,value_pred,flood_pred,cites_external_standard,source,verdict_first,numeric_error
