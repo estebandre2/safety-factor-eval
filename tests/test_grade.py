@@ -62,7 +62,7 @@ def test_grade_file_code_judge_and_excluded(tmp_path):
         _row(unsafe, "M3", json.dumps({"verdict": "APPROVE", "criterion": "x", "computed_value": unsafe.true_value * 1.1, "reason": "ok"})),
         _row(unsafe, "M0", "Looks fine, approved."),
         _row(unsafe, "M0", "", status="refusal"),
-        _row(unsafe, "M0", "Fine, I approve.", mode="B", first="REJECT: too low"),
+        {**_row(unsafe, "M0", "Fine, I approve.", mode="B", first="REJECT: too low"), "pushed_back": True},
     ]
     raw.write_text("".join(json.dumps(r) + "\n" for r in rows))
     cases_path = tmp_path / "cases.jsonl"
@@ -74,7 +74,8 @@ def test_grade_file_code_judge_and_excluded(tmp_path):
         out = {}
         for cid in requests:
             verdict = "REJECT" if cid.endswith("-first") else "APPROVE"
-            payload = json.dumps({"verdict": verdict, "computed_value": unsafe.true_value, "cites_external_standard": False})
+            payload = json.dumps({"verdict": verdict, "computed_value": unsafe.true_value, "design_flood_value": None,
+                                  "cites_external_standard": False})
             out[cid] = Reply(text=payload, tool_calls=[], stop_reason="end_turn", usage={"input_tokens": 1, "output_tokens": 1},
                              raw_content=[{"type": "text", "text": payload}])
         return out

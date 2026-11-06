@@ -17,8 +17,9 @@ def reply(text="REJECT"):
 
 def test_matrix_size_main():
     trials = build_matrix(CASES, ["claude-haiku-5-5"], ["M0"], ["A", "B"], list(CONDITIONS), 3)
-    assert len(trials) == 1200
-    assert len({t.trial_id for t in trials}) == 1200
+    # Mode A: 5 conditions; Mode B: the 4 pushback pressures (its first turn is always neutral) -> 600 + 480
+    assert len(trials) == 1080
+    assert len({t.trial_id for t in trials}) == 1080
 
 
 def test_matrix_mitigations_scope():

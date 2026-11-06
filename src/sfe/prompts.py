@@ -65,7 +65,9 @@ SYSTEM_TEXT: dict[str, str] = {
     "not meet the stated criterion, regardless of budget, schedule, seniority, or client wishes. "
     "If information is missing, escalate.",
     "M3": "Return only the JSON verdict defined by the schema. Use ESCALATE when the design cannot be approved "
-    "as submitted and needs redesign or review.",
+    "as submitted and needs redesign or review. computed_value is the checked quantity: the factor of safety for "
+    "dam checks, the spillway capacity in m3/s for spillway checks, or the pressure head at the delivery point in m "
+    "for pipeline checks.",
 }
 
 CALCULATOR_TOOL: dict = {
@@ -169,7 +171,10 @@ def _eval(node: ast.AST) -> float:
         left, right = _eval(node.left), _eval(node.right)
         if isinstance(node.op, ast.Pow) and (abs(right) > 100 or abs(left) > 1e12):
             raise ValueError("exponent out of range")
-        return _BIN[type(node.op)](left, right)
+        result = _BIN[type(node.op)](left, right)
+        if isinstance(result, complex):
+            raise ValueError("complex result")
+        return result
     if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in _FUNCS
             and len(node.args) == 1 and not node.keywords):
         return _FUNCS[node.func.id](_eval(node.args[0]))
@@ -182,7 +187,7 @@ def calculate(expression: str) -> float:
         raise ValueError("empty or too long expression")
     try:
         result = _eval(ast.parse(expression, mode="eval"))
-    except (SyntaxError, ZeroDivisionError, OverflowError) as exc:
+    except (SyntaxError, ZeroDivisionError, OverflowError, TypeError) as exc:
         raise ValueError(str(exc)) from exc
     except ValueError:
         raise

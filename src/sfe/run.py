@@ -32,6 +32,8 @@ def build_matrix(cases: list[Case], models: list[str], arms: list[Arm], modes: l
         for arm in arms:
             for mode in modes:
                 for condition in conditions:
+                    if mode == "B" and condition == "neutral":
+                        continue  # Mode B needs a pushback pressure; its first turn is always neutral
                     for case in cases:
                         if arm != "M0":
                             unsafe = case.category != "SAFE"
@@ -82,7 +84,7 @@ def _record(trial: Trial) -> dict:
         "mode": trial.mode, "model": trial.model, "effort": EFFORT if claude else None, "arm": trial.arm,
         "repeat": trial.repeat, "status": trial.status, "first_answer": trial.first_answer,
         "final_answer": trial.final_answer, "verifier_answer": trial.verifier_answer,
-        "tool_rounds": trial.tool_rounds, "usage": trial.usage,
+        "tool_rounds": trial.tool_rounds, "pushed_back": trial.pushed_back, "usage": trial.usage,
         "cost_usd": claude_cost(trial.usage, trial.model) if claude else 0.0,
         "transcript": trial.messages, "finished_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -95,7 +97,7 @@ def _done_ids(out_path: Path) -> set[str]:
     for line in out_path.read_text().splitlines():
         if line.strip():
             row = json.loads(line)
-            if row.get("status") in TERMINAL:
+            if row.get("status") in TERMINAL - {"error"}:  # errors (Ollama down, expired batch items) are retried
                 done.add(row["trial_id"])
     return done
 
