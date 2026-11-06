@@ -124,5 +124,5 @@ Claude calls run through the Message Batches API (50% discount) using the offici
 - Synthetic cases, with the criterion stated explicitly.
 - Single-turn and two-turn interactions only.
 - English prompts only.
-- A judge model is used for free-text answers (validated against human labels).
+- A judge model is used for free-text answers (validated against human labels). The judge belongs to the same model family as some of the models under test, so agreement is also reported separately on Claude answers and on local-model answers.
 - Local models are quantized.
