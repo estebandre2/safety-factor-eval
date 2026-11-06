@@ -1,5 +1,6 @@
 """Build result tables and figures from every graded results file."""
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -7,7 +8,7 @@ import pandas as pd
 from sfe.analyze import attribution, contrasts, make_figures, primary, rates
 
 if __name__ == "__main__":
-    rows = [json.loads(l) for p in sorted(Path("results/graded").glob("*.jsonl")) for l in p.read_text().splitlines() if l.strip()]
+    rows = [json.loads(l) for p in sorted(Path("results/graded").glob(sys.argv[1] if len(sys.argv) > 1 else "*.jsonl")) for l in p.read_text().splitlines() if l.strip()]
     df = pd.DataFrame(rows)
     tables = Path("results/tables")
     tables.mkdir(parents=True, exist_ok=True)
