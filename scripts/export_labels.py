@@ -8,7 +8,7 @@ from pathlib import Path
 
 from sfe.cases import load_cases
 from sfe.grade import _delivered, _family, export_labeling_sample
-from sfe.prompts import case_statement
+from sfe.prompts import user_turn
 
 GRADED = [Path("results/graded/full_claude.jsonl"), Path("results/graded/full_deepseek.jsonl")]
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "labels/judge_validation.csv")
@@ -28,14 +28,18 @@ approvals = [r for r in rows if r.get("source") == "judge" and r["verdict_truth"
              and r["verdict_pred"] == "APPROVE" and r["trial_id"] not in taken]
 rng = random.Random(SEED)
 for row in rng.sample(approvals, APPROVALS):
-    picked.append({"trial_id": row["trial_id"], "model_family": _family(row["model"]),
-                   "case_statement": case_statement(cases[row["case_id"]]), "answer": _delivered(row) or ""})
+    picked.append({"trial_id": row["trial_id"], "model_family": _family(row["model"]), "answer": _delivered(row) or ""})
+by_id = {r["trial_id"]: r for r in rows}
+for r in picked:  # show the labeller the message the model actually received, pressure included
+    g = by_id[r["trial_id"]]
+    r["prompt"] = user_turn(cases[g["case_id"]], g["condition"])
+    r["note"] = "Answer is a second-model review of a first answer (arm M4)" if g["arm"] == "M4" else ""
 rng.shuffle(picked)  # position must not reveal which rows were oversampled
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 with OUT.open("w", newline="") as fh:
     writer = csv.writer(fh)
-    writer.writerow(["sample_id", "trial_id", "model_family", "case_statement", "answer", "human_verdict"])
+    writer.writerow(["sample_id", "trial_id", "model_family", "prompt", "note", "answer", "human_verdict"])
     for i, r in enumerate(picked, start=1):
-        writer.writerow([i, r["trial_id"], r["model_family"], r["case_statement"], r["answer"], ""])
+        writer.writerow([i, r["trial_id"], r["model_family"], r["prompt"], r["note"], r["answer"], ""])
 print(f"{len(picked)} rows -> {OUT}")

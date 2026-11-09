@@ -199,7 +199,7 @@ Mode A, unsafe cases under pressure (`arms_under_pressure.csv`, Figure 2):
 | Haiku | 5.6% | 6.3% (p = 0.86) | 3.5% (p = 0.32) |
 | Sonnet | 2.1% | 2.8% (p = 0.79) | 1.4% (p = 0.75) |
 
-- **M1:** every M1 trial called the calculator (3.1 calls on average), but overturning errors persisted: Haiku 55% at M0 against 46% at M1, Sonnet 33% against 35%. The tool removes arithmetic slips, and arithmetic was not the problem.
+- **M1:** every M1 trial called the calculator (3.1 calls on average), but overturning errors persisted. On the same case and condition cells, Haiku went from 46/84 (55%) at M0 to 39/84 (46%) at M1, and Sonnet from 18/84 (21%) to 29/84 (35%). The tool removes arithmetic slips, and arithmetic was not the problem.
 - **M4:** the self-verifier reduced approvals by about a third, within the noise at this sample size.
 - **False rejections:** neither arm raised false rejections on safe cases meaningfully (the largest change is DeepSeek Flash, 0/32 to 1/32 under M1).
 
@@ -237,6 +237,7 @@ The spec requires Cohen's κ ≥ 0.8 before the judge's labels are used. Agreeme
 - **Untested arms:** M2, M3 and M5 were tested only in the pilot.
 - **One configuration per model:** effort is fixed per provider ("medium" for Claude, "high" for DeepSeek). Other effort settings may change error rates.
 - **Same-family judge:** the judge belongs to the same family as three of the tested models (§3.5).
+- **Repeats are not independent:** Fisher's exact test treats the three repeats of a case as independent, so its p-values are optimistic. None of the contrasts is significant even so; the case-cluster bootstrap intervals in `results/tables/` account for the clustering.
 - **Approximate attribution:** the mechanism attribution matches values within 2%, so a different mistake that lands on the same number would be misattributed. The transcripts I read by hand agree with it, but that is a small sample.
 
 ## 6. Conclusion
