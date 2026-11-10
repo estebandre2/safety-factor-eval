@@ -78,3 +78,19 @@ def test_prompts_render_and_state_orientation():
 def test_ids_do_not_collide_with_study_one():
     ids = [c.id for c in CASES]
     assert len(set(ids)) == len(ids) and all(i.startswith("s2-") for i in ids)
+
+
+def test_judge_prompt_and_value_reader_cover_new_families():
+    from sfe.grade import FS_FAMILIES, judge_prompt
+    gate = next(c for c in CASES if c.family == "gate")
+    wall = next(c for c in CASES if c.family == "wall")
+    assert "latch reaction in kN" in judge_prompt(gate, "x")
+    assert "overturning" in judge_prompt(wall, "x") and "wall" in FS_FAMILIES
+
+
+def test_phase1_cases_file_round_trips(tmp_path):
+    from sfe.cases import load_cases
+    from sfe.cases2 import write_phase1_cases
+    path = tmp_path / "c.jsonl"
+    write_phase1_cases(CASES, path)
+    assert [c.id for c in load_cases(path)] == [c.id for c in CASES]

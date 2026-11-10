@@ -2,7 +2,9 @@
 retaining wall generated in both orientations, and a sliding control. Truth computed by code."""
 from __future__ import annotations
 
-from dataclasses import replace
+import json
+from dataclasses import asdict, replace
+from pathlib import Path
 
 import numpy as np
 from scipy.optimize import brentq
@@ -180,3 +182,8 @@ def mechanism_values(case: Case) -> dict[str, float]:
         return {f"triangle_centroid ({orientation(case)})": (m_rect + wrong_tri) / thrust_m,
                 "thrust_arm (easy)": (m_rect + right_tri) / (2 * thrust_m)}
     return {}
+
+
+def write_phase1_cases(cases: list[Case], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("".join(json.dumps(asdict(c)) + "\n" for c in cases))

@@ -35,6 +35,8 @@ CHECKED_QUANTITY = {
     "overturning": "the factor of safety against overturning",
     "spillway": "the spillway capacity in m3/s",
     "pipeline": "the pressure head at the delivery point in m",
+    "gate": "the latch reaction in kN",
+    "wall": "the factor of safety against overturning",
 }
 
 
@@ -145,7 +147,7 @@ def _load_cases(cases_path: Path | None) -> dict[str, Case]:
     return {c.id: c for c in cases}
 
 
-FS_FAMILIES = {"sliding", "overturning"}
+FS_FAMILIES = {"sliding", "overturning", "wall"}
 
 
 def grade_bare(case: Case, answer: str | None) -> dict:
