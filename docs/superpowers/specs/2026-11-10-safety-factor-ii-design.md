@@ -180,3 +180,7 @@ The core, which is never cut, is:
 - Free-text answers graded by a judge that belongs to the same family as three of the author models.
 - The optional third family runs on free tiers. Its limits may shrink its sample, and that will be reported.
 - Effort settings differ between providers.
+
+## Amendments
+
+- **2026-11-10, after the token check, before Phase 0 (harness setting, no hypothesis or rule changed).** At effort "max", Claude Haiku 5.5 used 20,000–29,000 output tokens per answer and hit the 32,000-token limit in 1 of 4 token-check trials. `max_tokens` for high and max effort is raised to 64,000. The truncated trial is kept in `results/raw/phase0_truncated_32k.jsonl` and re-run. Measured cost per trial at "max": Haiku US$0.0059, Sonnet US$0.0262, Opus US$0.0633 (batch prices).
