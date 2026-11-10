@@ -88,3 +88,19 @@ def build_pool(graded_rows: list[dict], size: int = 300, seed: int = 7) -> list[
                 per_case[row["case_id"]] += 1
                 taken += 1
     return pool
+
+
+def build_matched_pool(graded_rows: list[dict], families: tuple[str, ...] = ("overturning",), seed: int = 7) -> list[dict]:
+    """Amendment 2026-11-10 (after Phase 1): one wrong and one correct high-arm Claude answer per case, so that
+    neither the family nor the case tells a reviewer which answer is wrong."""
+    eligible = [r for r in graded_rows if r.get("status") == "done" and r.get("effort") == "high"
+                and r.get("family") in families and r.get("numeric_error") is not None
+                and str(r.get("model", "")).startswith("claude-")]
+    rng = random.Random(seed)
+    rng.shuffle(eligible)
+    by_case: dict[str, dict[bool, dict]] = {}
+    for row in eligible:
+        by_case.setdefault(row["case_id"], {}).setdefault(bool(row["numeric_error"]), row)
+    pool = [r for pair in by_case.values() if len(pair) == 2 for r in (pair[True], pair[False])]
+    rng.shuffle(pool)
+    return pool

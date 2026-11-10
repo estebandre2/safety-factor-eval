@@ -220,3 +220,23 @@ The core, which is never cut, is:
     - **H5 confound:** DeepSeek at "high" writes 3,000–11,000 output tokens, which is closer to Claude at max than to Claude at high. H5 is therefore reported with tokens per review alongside detection, and is not read as a family effect alone.
 
     **Consequence for Study I (spec §9).** Study I ran Claude at "medium" and DeepSeek at "high". Its overturning errors, the calculator result and the cross-family contrast hold at that effort only. The Study I write-up is corrected in the same commit as this amendment.
+- **2026-11-10, after Phase 1, before any Phase 2 review (results and one pool change).**
+
+    **Phase 1 results** (`results/tables/phase1_summary.json`). Error rates at effort "high":
+
+    | Model | Overturning | Gate | Wall | Sliding |
+    |---|---|---|---|---|
+    | Haiku | 50% | 0% | 3% | 2% |
+    | Sonnet | 18% | 0% | 0% | 0% |
+    | Opus | 35% | 0% | 0% | 0% |
+    | DeepSeek Flash | 1% | 0% | 0% | 0% |
+    | DeepSeek V4-Pro | 0% | — | 0% | — |
+
+    - **At "max"** every family is at or below 3% for every Claude model.
+    - **H3: not supported.** In overturning, hard-load mechanisms account for nearly all errors (hard minus easy: Haiku +49 points, Opus +34, Sonnet +18, each CI excluding zero). The gate and wall families show no errors in either orientation, so the pre-registered condition (the effect also in at least one new family) fails. The wall's front-batter case has the same triangle orientation as the dam and still shows no errors: the mistake is tied to the dam overturning check, not to triangular loads in general.
+    - **H3b: supported.** The uplift mechanism dominates for Haiku (79 + 27 combined of 119) and Sonnet (26 of 29); the triangle centroid accounts for 55 of Opus's 56 errors. This reproduces Study I on 80 new geometries.
+    - **H7: supported overall for Haiku (+22 points) and Opus (+16); not supported overall for Sonnet (+7).** The new families have no errors at either effort, which pulls the overall difference down. In overturning alone, the difference is +47, +35 and +17 points, each CI excluding zero.
+    - **Value reader:** agrees with the judge on 99.9% of 1,628 factor-of-safety values.
+    - **Spend:** Claude US$21.04; DeepSeek US$3.58.
+
+    **Phase 2 pool change.** The pre-registered pool drew about 300 answers from three families. Wrong answers now exist only in overturning, so mixing families would let a reviewer guess from the family. The pool is therefore **case-matched**: for each overturning case, one wrong and one correct high-arm Claude answer. That gives 156 answers (78 wrong, 78 correct) from 78 cases (`sfe.review.build_matched_pool`, seed 7). No reviewer sees a case more than twice, as pre-registered. Reviewers, protocols, effort and outcomes are unchanged. Estimate: about US$13.4 (Claude), within the US$40 cap.

@@ -20,7 +20,8 @@ for model, g in done.groupby("model"):
     m: dict = {}
     for label, (variant, effort) in arms.items():
         part = _arm(g, variant, effort)
-        if part.empty or ("exploratory" in label) != model.startswith("claude-") and "exploratory" in label:
+        is_claude = model.startswith("claude-")
+        if part.empty or ("exploratory" in label and not is_claude) or (label.startswith("0E") and is_claude):
             continue
         rate, n = error_rate(part)
         lo, hi = error_ci(part)

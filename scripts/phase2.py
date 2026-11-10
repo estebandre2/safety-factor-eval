@@ -21,7 +21,7 @@ from sfe.backends.deepseek import run_deepseek
 from sfe.backends.gemini import GEMINI_MODEL, run_gemini
 from sfe.cases import load_cases
 from sfe.grade import _delivered
-from sfe.review import PROTOCOLS, build_pool, review_id, review_request, score_review
+from sfe.review import PROTOCOLS, build_matched_pool, review_id, review_request, score_review
 
 CASES = {c.id: c for c in load_cases(Path("data/cases_phase1.jsonl"))}
 GRADED = Path("results/graded/phase1.jsonl")
@@ -36,7 +36,7 @@ def load_pool() -> list[dict]:
     if POOL.exists():
         return [json.loads(l) for l in POOL.read_text().splitlines()]
     rows = [json.loads(l) for l in GRADED.read_text().splitlines()]
-    pool = build_pool(rows)
+    pool = build_matched_pool(rows)  # amendment 2026-11-10: case-matched, overturning only
     POOL.parent.mkdir(parents=True, exist_ok=True)
     POOL.write_text("".join(json.dumps(r) + "\n" for r in pool))
     return pool

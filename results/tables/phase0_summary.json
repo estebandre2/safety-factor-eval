@@ -44,6 +44,30 @@
         ],
         "unparseable": 0
       },
+      "0B-high (exploratory)": {
+        "n": 30,
+        "error_rate": 0.6,
+        "ci": [
+          0.43333333333333335,
+          0.7666666666666667
+        ],
+        "unparseable": 0
+      },
+      "0C-high (exploratory)": {
+        "n": 30,
+        "error_rate": 0.1,
+        "ci": [
+          0.03333333333333333,
+          0.2
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.06666666666666667,
+          "uplift_arm_m": 0.03333333333333333,
+          "thrust_arm_m": 0.0
+        }
+      },
       "H1": "reduced",
       "H2_coords_minus_base": [
         -0.06666666666666667,
@@ -94,6 +118,30 @@
           0.43333333333333335
         ],
         "unparseable": 0
+      },
+      "0B-high (exploratory)": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0C-high (exploratory)": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.0,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
       },
       "H1": "effort-eliminated",
       "H2_coords_minus_base": [
@@ -146,6 +194,30 @@
         ],
         "unparseable": 0
       },
+      "0B-high (exploratory)": {
+        "n": 30,
+        "error_rate": 0.3333333333333333,
+        "ci": [
+          0.13333333333333333,
+          0.5666666666666667
+        ],
+        "unparseable": 0
+      },
+      "0C-high (exploratory)": {
+        "n": 30,
+        "error_rate": 0.03333333333333333,
+        "ci": [
+          0.0,
+          0.1
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.03333333333333333,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
+      },
       "H1": "effort-eliminated",
       "H2_coords_minus_base": [
         0.0,
@@ -165,30 +237,6 @@
         "unparseable": 0
       },
       "0E-bare": {
-        "n": 10,
-        "error_rate": 0.0,
-        "ci": [
-          0.0,
-          0.0
-        ],
-        "unparseable": 0,
-        "arm_error_rate": {
-          "rectangle_arm_m": 0.0,
-          "triangle_arm_m": 0.0,
-          "uplift_arm_m": 0.0,
-          "thrust_arm_m": 0.0
-        }
-      },
-      "0B-high (exploratory)": {
-        "n": 10,
-        "error_rate": 0.0,
-        "ci": [
-          0.0,
-          0.0
-        ],
-        "unparseable": 0
-      },
-      "0C-high (exploratory)": {
         "n": 10,
         "error_rate": 0.0,
         "ci": [

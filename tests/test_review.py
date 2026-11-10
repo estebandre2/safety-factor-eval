@@ -56,3 +56,15 @@ def test_pool_is_balanced_capped_per_case_and_deterministic():
 def test_review_id_unique_per_reviewer_and_protocol():
     ids = {review_id("t1", m, p) for m in ("a", "b") for p in PROTOCOLS}
     assert len(ids) == 2 * len(PROTOCOLS)
+
+
+def test_case_matched_pool_takes_one_wrong_and_one_correct_per_case():
+    from sfe.review import build_matched_pool
+    rows = _graded_rows()
+    pool = build_matched_pool(rows, families=("overturning",), seed=7)
+    by_case = {}
+    for r in pool:
+        by_case.setdefault(r["case_id"], []).append(r["numeric_error"])
+    assert all(sorted(v) == [False, True] for v in by_case.values())
+    assert {r["family"] for r in pool} == {"overturning"}
+    assert len(pool) == 2 * len(by_case)

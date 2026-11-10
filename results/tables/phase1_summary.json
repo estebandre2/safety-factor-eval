@@ -1,0 +1,655 @@
+{
+  "excluded": 0,
+  "error_rates": {
+    "claude-haiku-5-5 | high | gate": {
+      "n": 120,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-haiku-5-5 | high | overturning": {
+      "n": 240,
+      "rate": 0.49583333333333335,
+      "ci": [
+        0.43333333333333335,
+        0.5583333333333333
+      ]
+    },
+    "claude-haiku-5-5 | high | sliding": {
+      "n": 60,
+      "rate": 0.016666666666666666,
+      "ci": [
+        0.0,
+        0.05
+      ]
+    },
+    "claude-haiku-5-5 | high | wall": {
+      "n": 120,
+      "rate": 0.03333333333333333,
+      "ci": [
+        0.0,
+        0.075
+      ]
+    },
+    "claude-haiku-5-5 | max | gate": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-haiku-5-5 | max | overturning": {
+      "n": 80,
+      "rate": 0.025,
+      "ci": [
+        0.0,
+        0.0625
+      ]
+    },
+    "claude-haiku-5-5 | max | sliding": {
+      "n": 20,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-haiku-5-5 | max | wall": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | high | gate": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | high | overturning": {
+      "n": 160,
+      "rate": 0.35,
+      "ci": [
+        0.26875,
+        0.43125
+      ]
+    },
+    "claude-opus-5-5 | high | sliding": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | high | wall": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | max | gate": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | max | overturning": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | max | sliding": {
+      "n": 20,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-opus-5-5 | max | wall": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5 | high | gate": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5 | high | overturning": {
+      "n": 160,
+      "rate": 0.18125,
+      "ci": [
+        0.11875,
+        0.24375
+      ]
+    },
+    "claude-sonnet-5-5 | high | sliding": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5 | high | wall": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5 | max | gate": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5 | max | overturning": {
+      "n": 80,
+      "rate": 0.0125,
+      "ci": [
+        0.0,
+        0.0375
+      ]
+    },
+    "claude-sonnet-5-5 | max | sliding": {
+      "n": 20,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5 | max | wall": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-flash | high | gate": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-flash | high | overturning": {
+      "n": 160,
+      "rate": 0.00625,
+      "ci": [
+        0.0,
+        0.01875
+      ]
+    },
+    "deepseek-flash | high | sliding": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-flash | high | wall": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-v4-pro | high | overturning": {
+      "n": 80,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-v4-pro | high | wall": {
+      "n": 40,
+      "rate": 0.0,
+      "ci": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "H3": {
+    "claude-haiku-5-5": {
+      "overturning (hard minus easy load)": [
+        0.4875,
+        0.425,
+        0.55
+      ],
+      "gate (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall (hard minus easy)": [
+        -0.06666666666666667,
+        -0.15,
+        0.0
+      ]
+    },
+    "claude-opus-5-5": {
+      "overturning (hard minus easy load)": [
+        0.34375,
+        0.26875,
+        0.425
+      ],
+      "gate (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "claude-sonnet-5-5": {
+      "overturning (hard minus easy load)": [
+        0.18125,
+        0.11875,
+        0.24375
+      ],
+      "gate (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-flash": {
+      "overturning (hard minus easy load)": [
+        0.00625,
+        0.0,
+        0.01875
+      ],
+      "gate (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "deepseek-v4-pro": {
+      "overturning (hard minus easy load)": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gate (hard minus easy)": [
+        NaN,
+        NaN,
+        NaN
+      ],
+      "wall (hard minus easy)": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "H3b": {
+    "claude-haiku-5-5": {
+      "uplift_arm (hard)": 79,
+      "uplift+triangle (hard)": 27,
+      "triangle_centroid (hard)": 11,
+      "other": 2
+    },
+    "claude-opus-5-5": {
+      "triangle_centroid (hard)": 55,
+      "ambiguous": 1
+    },
+    "claude-sonnet-5-5": {
+      "uplift_arm (hard)": 26,
+      "triangle_centroid (hard)": 2,
+      "uplift+triangle (hard)": 1
+    },
+    "deepseek-flash": {
+      "uplift_arm (hard)": 1
+    },
+    "deepseek-v4-pro": {}
+  },
+  "H7": {
+    "claude-haiku-5-5": {
+      "all": [
+        0.21851851851851853,
+        0.1722222222222222,
+        0.2648611111111109
+      ],
+      "gate-easy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gate-hard": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "overturning": [
+        0.4708333333333333,
+        0.3958333333333333,
+        0.5416666666666666
+      ],
+      "sliding": [
+        0.016666666666666666,
+        0.0,
+        0.05
+      ],
+      "wall-easy": [
+        0.06666666666666667,
+        0.0,
+        0.15
+      ],
+      "wall-hard": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "supported": true
+    },
+    "claude-opus-5-5": {
+      "all": [
+        0.15555555555555556,
+        0.11388888888888889,
+        0.20277777777777778
+      ],
+      "gate-easy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gate-hard": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "overturning": [
+        0.35,
+        0.26875,
+        0.43125
+      ],
+      "sliding": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall-easy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall-hard": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "supported": true
+    },
+    "claude-sonnet-5-5": {
+      "all": [
+        0.075,
+        0.041666666666666664,
+        0.10833333333333334
+      ],
+      "gate-easy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gate-hard": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "overturning": [
+        0.16875,
+        0.09375,
+        0.2375
+      ],
+      "sliding": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall-easy": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "wall-hard": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "supported": false
+    }
+  },
+  "verdicts": {
+    "claude-haiku-5-5 | high | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 72,
+      "false_rejections": 0,
+      "safe_n": 48
+    },
+    "claude-haiku-5-5 | high | overturning": {
+      "unsafe_approvals": 14,
+      "unsafe_n": 144,
+      "false_rejections": 4,
+      "safe_n": 96
+    },
+    "claude-haiku-5-5 | high | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 36,
+      "false_rejections": 0,
+      "safe_n": 24
+    },
+    "claude-haiku-5-5 | high | wall": {
+      "unsafe_approvals": 3,
+      "unsafe_n": 72,
+      "false_rejections": 2,
+      "safe_n": 48
+    },
+    "claude-haiku-5-5 | max | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "claude-haiku-5-5 | max | overturning": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-haiku-5-5 | max | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 12,
+      "false_rejections": 0,
+      "safe_n": 8
+    },
+    "claude-haiku-5-5 | max | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 6,
+      "safe_n": 16
+    },
+    "claude-opus-5-5 | high | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-opus-5-5 | high | overturning": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 96,
+      "false_rejections": 9,
+      "safe_n": 64
+    },
+    "claude-opus-5-5 | high | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "claude-opus-5-5 | high | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-opus-5-5 | max | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "claude-opus-5-5 | max | overturning": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-opus-5-5 | max | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 12,
+      "false_rejections": 0,
+      "safe_n": 8
+    },
+    "claude-opus-5-5 | max | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "claude-sonnet-5-5 | high | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-sonnet-5-5 | high | overturning": {
+      "unsafe_approvals": 10,
+      "unsafe_n": 96,
+      "false_rejections": 1,
+      "safe_n": 64
+    },
+    "claude-sonnet-5-5 | high | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "claude-sonnet-5-5 | high | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-sonnet-5-5 | max | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "claude-sonnet-5-5 | max | overturning": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "claude-sonnet-5-5 | max | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 12,
+      "false_rejections": 0,
+      "safe_n": 8
+    },
+    "claude-sonnet-5-5 | max | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "deepseek-flash | high | gate": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "deepseek-flash | high | overturning": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 96,
+      "false_rejections": 0,
+      "safe_n": 64
+    },
+    "deepseek-flash | high | sliding": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    },
+    "deepseek-flash | high | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "deepseek-v4-pro | high | overturning": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 48,
+      "false_rejections": 0,
+      "safe_n": 32
+    },
+    "deepseek-v4-pro | high | wall": {
+      "unsafe_approvals": 0,
+      "unsafe_n": 24,
+      "false_rejections": 0,
+      "safe_n": 16
+    }
+  },
+  "value_agreement_fs": {
+    "n": 1628,
+    "share": 0.9993857493857494
+  }
+}
