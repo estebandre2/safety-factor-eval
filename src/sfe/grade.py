@@ -12,7 +12,7 @@ from typing import Callable
 
 from sfe.backends.claude import run_claude_round
 from sfe.cases import Case, generate_cases, load_cases
-from sfe.prompts import case_statement
+from sfe.prompts import bare_truth, case_statement
 
 JUDGE_MODEL = "claude-haiku-5-5"
 STRUCTURED_ARMS = {"M3", "M5"}
@@ -145,13 +145,28 @@ def _load_cases(cases_path: Path | None) -> dict[str, Case]:
     return {c.id: c for c in cases}
 
 
+FS_FAMILIES = {"sliding", "overturning"}
+
+
+def grade_bare(case: Case, answer: str | None) -> dict:
+    """Study II arm 0C: lever arms scored by code, each within NUMERIC_TOLERANCE of the truth."""
+    truth = bare_truth(case)
+    try:
+        data = json.loads(answer or "")
+        values = {k: float(data[k]) for k in truth}
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return {"arms_pred": None, "arms_wrong": None, "numeric_error": None, "source": "code", "verdict_pred": None}
+    wrong = [k for k, t in truth.items() if abs(values[k] - t) > NUMERIC_TOLERANCE * abs(t)]
+    return {"arms_pred": values, "arms_wrong": wrong, "numeric_error": bool(wrong), "source": "code", "verdict_pred": None}
+
+
 def grade_file(raw_path: Path, out_path: Path, cases_path: Path | None = Path("data/cases.jsonl"),
                judge_round: Callable = run_claude_round) -> None:
     cases = _load_cases(cases_path)
     rows = [json.loads(l) for l in raw_path.read_text().splitlines() if l.strip()]
     requests: dict[str, tuple[dict, str]] = {}
     for row in rows:
-        if row["status"] != "done" or row["arm"] in STRUCTURED_ARMS:
+        if row["status"] != "done" or row["arm"] in STRUCTURED_ARMS or row.get("variant") == "bare":
             continue
         case = cases[row["case_id"]]
         answers = {"final": _delivered(row)}
@@ -177,6 +192,11 @@ def grade_file(raw_path: Path, out_path: Path, cases_path: Path | None = Path("d
             graded = dict(row)
             if row["status"] != "done":
                 graded.update(verdict_pred="EXCLUDED", value_pred=None, source="status")
+            elif row.get("variant") == "bare":
+                graded.update(grade_bare(case, _delivered(row)))
+                graded.pop("transcript", None)
+                fh.write(json.dumps(graded) + "\n")
+                continue
             elif row["arm"] in STRUCTURED_ARMS:
                 data = parse_structured(_delivered(row))
                 graded.update(verdict_pred=data["verdict"] if data else "UNPARSEABLE",
@@ -195,6 +215,8 @@ def grade_file(raw_path: Path, out_path: Path, cases_path: Path | None = Path("d
                     graded["verdict_first"] = judgement(f"{row['trial_id']}-first").get("verdict", "UNCLEAR")
             graded.setdefault("verdict_first", graded["verdict_pred"] if row["mode"] == "B" else None)
             graded["numeric_error"] = _case_numeric_error(case, graded.get("value_pred"), graded.get("flood_pred"))
+            if case.family in FS_FAMILIES and row["status"] == "done":
+                graded["value_rule"] = rule_value(_delivered(row), case.inputs, case.required)
             graded.pop("transcript", None)
             fh.write(json.dumps(graded) + "\n")
 

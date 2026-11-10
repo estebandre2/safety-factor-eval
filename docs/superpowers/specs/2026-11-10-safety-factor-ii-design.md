@@ -24,15 +24,17 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 All rates below are per model, with a case-cluster bootstrap 95% CI. "Error rate" means the share of answers whose value is wrong by more than 2% on the overturning or equivalent check. Study I's medium-effort overturning error rates are the reference: Haiku 82/150 (55%), Sonnet 49/150 (33%), Opus 53/150 (35%).
 
 **Q1. Is the error real, or an artifact of effort or wording?** (Phase 0)
-- **H1 (effort):** At effort "max" (arm 0A), the error rate on the 10 Study I overturning cases stays material. Classified per model:
-    - **effort-robust** if the CI's lower bound is ≥ 5%;
-    - **effort-eliminated** if the CI's upper bound is < 5%;
-    - **inconclusive** otherwise.
+- **H1 (effort):** At effort "max" (arm 0A), the error rate on the 10 Study I overturning cases stays material. Each model has 30 answers in arm 0A and is classified as:
+    - **effort-robust:** at least 3 of 30 answers wrong (≥ 10%), and the case-cluster bootstrap CI's lower bound is above zero;
+    - **effort-eliminated:** 0 of 30 answers wrong. With 30 answers, zero errors still leaves a Wilson upper bound of about 11%, so this means "no errors observed", not "proven absent";
+    - **reduced:** otherwise (1 or 2 of 30).
 - **H2 (geometry):** Giving explicit coordinates of the heel, crest edge and toe, plus the uplift pressure at the heel and toe (arm 0B), lowers the error rate relative to arm 0A by at least 10 points, with a paired-by-case CI of the difference that excludes zero. That would mean geometry is being misread rather than a rule being misapplied.
 - **H2b (rule knowledge, descriptive):** The bare question "where does the resultant of this triangular load act, measured from the toe?" (arm 0C) shows whether the models know the rule in isolation.
 
 **Q2. Does the error generalize, and does orientation predict it?** (Phase 1)
-- **H3 (orientation):** In every family, the error rate on loads whose moment centre is at the triangle's zero end (correct arm 2/3; "hard") exceeds the rate on loads whose moment centre is at the maximum end (correct arm 1/3; "easy"). Tested by family with a paired-by-case CI of the difference.
+- **H3 (orientation):** In every family, the error rate on loads whose moment centre is at the triangle's zero end (correct arm 2/3; "hard") exceeds the rate on loads whose moment centre is at the maximum end (correct arm 1/3; "easy").
+    - **How a per-load error is measured.** In overturning, both orientations sit in the same answer, so the per-load error comes from mechanism attribution on the factor of safety: an uplift or triangle-centroid mechanism is a hard-load error; a thrust-arm mechanism is an easy-load error. In the gate and wall families, each geometry is generated in both orientations, so the per-load error is the error on the whole answer, compared between the two versions of the same geometry.
+    - **Test.** Paired by geometry, with a bootstrap CI of the difference that resamples geometries.
     - **Supported** if the difference is ≥ 10 points and its CI excludes zero in the overturning family and in at least one new family.
 - **H3b:** On new overturning geometries (n = 80), each model's dominant mechanism matches Study I: uplift for Haiku and Sonnet, triangle centroid for Opus.
 - **Control:** Sliding has no lever arms. Its error rate is expected to stay below 2% (Study I: 0/600).
@@ -47,8 +49,8 @@ All rates below are per model, with a case-cluster bootstrap 95% CI. "Error rate
 | Family | Cases | Orientation manipulation | Mistake mechanisms checked |
 |---|---|---|---|
 | Overturning (Study I geometry, new seeds) | 80 | Uplift and concrete triangle are hard; water thrust is easy (within each case) | uplift arm, triangle centroid, thrust arm, combinations |
-| Gravity retaining wall (Rankine active pressure; rectangle plus a battered triangle) | 40 | Half the walls battered on the front face (triangle apex at the toe: hard), half on the back face (easy); earth pressure about the toe is easy | wall-triangle centroid, earth-pressure arm |
-| Vertical gate, hydrostatic pressure from the water surface down to the gate's bottom edge | 40 | Half hinged at the bottom edge (arm d/3: easy), half hinged at the top edge, at the water surface (arm 2d/3: hard) | pressure resultant arm |
+| Gravity retaining wall (Rankine active pressure; rectangle plus a battered triangle) | 40 (20 geometries × 2 orientations) | Each geometry is generated with the batter on the front face (triangle apex at the toe: hard) and on the back face (easy); earth pressure about the toe is easy | wall-triangle centroid, earth-pressure arm |
+| Vertical gate, hydrostatic pressure from the water surface down to the gate's bottom edge | 40 (20 geometries × 2 orientations) | Each geometry is generated hinged at the bottom edge (arm d/3: easy) and hinged at the top edge, at the water surface (arm 2d/3: hard) | pressure resultant arm |
 | Sliding (negative control) | 20 | No lever arms | none expected |
 
 **Sample sizes are budget-driven.** In Study I the between-case standard deviation of a model's error rate was 0.10–0.17. With 80 overturning cases the case-level standard error per model is about 2 points; with 40 cases per new family, about 2.5 points. A 10-point paired difference is therefore detectable, and a 5-point difference only roughly.
@@ -74,7 +76,8 @@ All rates below are per model, with a case-cluster bootstrap 95% CI. "Error rate
 
 - **Phase 1 effort.** Phase 1 runs at "max" if, for any Claude model, the error rate at "max" (0A) is at least 10 points below the rate at "high" (0D). Otherwise it runs at "high", to save budget.
 - **Effort eliminates the error.** If H1 is effort-eliminated for all three Claude models, the study's main question becomes effort dependence. Phase 1 then sweeps effort (low, medium, high, max) on the new overturning cases instead of adding new families. This is recorded as an amendment.
-- **Token check.** Before Phase 0, 10 trials at "max" measure tokens per trial and check for truncation. The cost estimates for every later phase use those measured values, not the Study I medium-effort ones.
+- **Token check.** Before Phase 0, 10 trials of arm 0A (repeat 0) measure tokens per trial and check for truncation. They are part of Phase 0, written to the same results file and not paid for twice. The cost estimates for every later phase use measured values, not the Study I medium-effort ones.
+- **Phase 0 cut rule.** If the estimate from the token check exceeds the US$12 cap, the cuts are applied in order until it fits: first 2 repeats instead of 3 for arms 0C and 0D; then 2 repeats for every arm.
 
 ### Phase 1: breadth
 
@@ -119,9 +122,11 @@ A verdict on the design alone cannot score detection. For a wrong value on a saf
 - **H2:** paired by case; bootstrap CI of the difference in error rate, 0B minus 0A.
 - **H4–H6:** difference in detection rate with a case-cluster bootstrap CI. H4 and H5 also report the difference in false alarms. Holm correction across the H4–H6 contrasts.
 - **Mechanism attribution:** the reported value matches a mechanism variant within 2%. A value that matches more than one variant is reported as ambiguous, not assigned to the first match. Study I's attribution assigned the first match; it is re-run under this rule and any change is reported.
-- **Value validation:** a regex reader takes the factor-of-safety or resultant value from each answer. Judge-extracted values are used only where the two agree within 2%, and the agreement rate is reported. Answers where they disagree are read by hand when there are fewer than 50 of them; otherwise a random 50 are read.
+- **Value validation:** a regex reader (`sfe.grade.rule_value`, frozen at the pre-registration commit and not tuned on Study II answers) takes the factor-of-safety value from each answer. It was developed on Study I answers, where it agrees with the judge on 94.7% of the factor-of-safety values it reads; that figure is agreement after tuning, not independent validation. Judge-extracted values are used only where the two agree within 2%, and the agreement rate is reported. Answers where they disagree are read by hand when there are fewer than 50 of them; otherwise a random 50 are read.
 - **Verdict validation:** the Study I rule reader (`sfe.grade.rule_verdict`) is checked against the judge; κ ≥ 0.8 is required.
 - **Reporting:** negative and null results are reported. Hypotheses not tested because of budget or time are listed as not tested, not dropped silently.
+
+- **Grading of arm 0C:** the lever-arm JSON is scored by code; each arm is correct within 2% of the value from `sfe.prompts.bare_truth`.
 
 ## 6. Models
 

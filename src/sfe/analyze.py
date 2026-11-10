@@ -175,3 +175,70 @@ def make_figures(df: pd.DataFrame, out_dir: Path) -> list[Path]:
     fig.savefig(p3, dpi=160)
     plt.close(fig)
     return [p1, p2, p3]
+
+
+# --- Study II, Phase 0 (spec 2026-11-10 §2 H1/H2 and §4 decision rules) -------------------------------
+
+ROBUST_MIN_ERRORS_SHARE = 0.10
+EFFORT_GAIN_POINTS = 0.10
+
+
+def _graded(df: pd.DataFrame) -> pd.DataFrame:
+    return df[df["numeric_error"].notna()]
+
+
+def error_rate(df: pd.DataFrame) -> tuple[float, int]:
+    g = _graded(df)
+    return (float(g["numeric_error"].astype(bool).mean()) if len(g) else float("nan"), len(g))
+
+
+def _per_case(df: pd.DataFrame) -> pd.DataFrame:
+    g = _graded(df).assign(e=lambda x: x["numeric_error"].astype(bool))
+    return g.groupby("case_id")["e"].agg(["sum", "count"])
+
+
+def error_ci(df: pd.DataFrame, seed: int = 0) -> tuple[float, float]:
+    per = _per_case(df)
+    if per.empty:
+        return (float("nan"), float("nan"))
+    sums, counts = per["sum"].to_numpy(), per["count"].to_numpy()
+    idx = np.random.default_rng(seed).integers(0, len(per), size=(BOOTSTRAP_DRAWS, len(per)))
+    draws = sums[idx].sum(axis=1) / counts[idx].sum(axis=1)
+    return (float(np.quantile(draws, 0.025)), float(np.quantile(draws, 0.975)))
+
+
+def h1_class(arm_0a: pd.DataFrame) -> str:
+    rate, n = error_rate(arm_0a)
+    errors = round(rate * n) if n else 0
+    if errors == 0:
+        return "effort-eliminated"
+    if rate >= ROBUST_MIN_ERRORS_SHARE and error_ci(arm_0a)[0] > 0:
+        return "effort-robust"
+    return "reduced"
+
+
+def _arm(df: pd.DataFrame, variant: str, effort: str) -> pd.DataFrame:
+    return df[(df["variant"] == variant) & (df["effort"] == effort)]
+
+
+def paired_case_diff(df: pd.DataFrame, arm: tuple[str, str], baseline: tuple[str, str],
+                     seed: int = 0) -> tuple[float, float, float]:
+    """Error rate of `arm` minus `baseline`, paired by case; bootstrap over cases."""
+    a, b = _per_case(_arm(df, *arm)), _per_case(_arm(df, *baseline))
+    cases = a.index.intersection(b.index)
+    ra = (a.loc[cases, "sum"] / a.loc[cases, "count"]).to_numpy()
+    rb = (b.loc[cases, "sum"] / b.loc[cases, "count"]).to_numpy()
+    diffs = ra - rb
+    idx = np.random.default_rng(seed).integers(0, len(cases), size=(BOOTSTRAP_DRAWS, len(cases)))
+    draws = diffs[idx].mean(axis=1)
+    return (float(diffs.mean()), float(np.quantile(draws, 0.025)), float(np.quantile(draws, 0.975)))
+
+
+def effort_decision(df: pd.DataFrame) -> str:
+    """Phase 1 effort: "max" if, for any model, 0A is at least 10 points below 0D; otherwise "high"."""
+    for _, g in df.groupby("model"):
+        a, _ = error_rate(_arm(g, "base", "max"))
+        d, _ = error_rate(_arm(g, "base", "high"))
+        if not (np.isnan(a) or np.isnan(d)) and a <= d - EFFORT_GAIN_POINTS:
+            return "max"
+    return "high"

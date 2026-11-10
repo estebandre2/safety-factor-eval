@@ -88,3 +88,88 @@ def test_rule_value_skips_inputs_and_the_required_value():
     from sfe.grade import rule_value
     assert rule_value("FS_sliding = mu*(W-U)/H, with mu = 0.781", {"mu": 0.781}) is None
     assert rule_value("Criterion: FS = 1.5\nFS = 2.08 >= 1.5", required=1.5) == 2.08
+
+
+def _raw_row(trial, final, status="done"):
+    return {"trial_id": trial.trial_id, "case_id": trial.case.id, "family": trial.case.family,
+            "category": trial.case.category, "verdict_truth": trial.case.verdict, "condition": "neutral",
+            "mode": "A", "model": trial.model, "effort": trial.effort, "variant": trial.variant, "arm": "M0",
+            "repeat": trial.repeat, "status": status, "first_answer": final, "final_answer": final,
+            "verifier_answer": None, "pushed_back": False}
+
+
+def test_grade_file_scores_bare_rows_by_code_and_adds_rule_value(tmp_path):
+    from sfe.engine import Reply
+    from sfe.grade import grade_file
+    truth = bare_truth(OVT)
+    wrong = dict(truth, uplift_arm_m=OVT.inputs["base_width"] / 3)
+    bare_ok = new_trial(OVT, "neutral", "A", "claude-haiku-5-5", "M0", 0, effort="max", variant="bare")
+    bare_bad = new_trial(OVT, "neutral", "A", "claude-haiku-5-5", "M0", 1, effort="max", variant="bare")
+    text = new_trial(OVT, "neutral", "A", "claude-haiku-5-5", "M0", 0, effort="max", variant="base")
+    raw = tmp_path / "raw.jsonl"
+    raw.write_text("\n".join(json.dumps(r) for r in [
+        _raw_row(bare_ok, json.dumps(truth)), _raw_row(bare_bad, json.dumps(wrong)),
+        _raw_row(text, f"REJECT. FS = {OVT.true_value:.2f} < 1.5")]) + "\n")
+    seen = {}
+
+    def judge(requests):
+        seen.update(requests)
+        return {k: Reply(text=json.dumps({"verdict": "REJECT", "computed_value": round(OVT.true_value, 2),
+                                          "design_flood_value": None, "cites_external_standard": False}),
+                         tool_calls=[], stop_reason="end_turn", usage={}, raw_content=[]) for k in requests}
+
+    out = tmp_path / "g.jsonl"
+    grade_file(raw, out, judge_round=judge)
+    rows = {r["trial_id"]: r for r in map(json.loads, out.read_text().splitlines())}
+    assert all(bare_ok.trial_id not in k and bare_bad.trial_id not in k for k in seen)  # no judge for 0C
+    assert rows[bare_ok.trial_id]["source"] == "code" and rows[bare_ok.trial_id]["numeric_error"] is False
+    assert rows[bare_bad.trial_id]["arms_wrong"] == ["uplift_arm_m"] and rows[bare_bad.trial_id]["numeric_error"] is True
+    assert abs(rows[text.trial_id]["value_rule"] - round(OVT.true_value, 2)) < 1e-9
+
+
+def test_grade_bare_unparseable_is_flagged():
+    from sfe.grade import grade_bare
+    assert grade_bare(OVT, "not json")["arms_wrong"] is None
+
+
+def _df(spec):
+    """spec: list of (model, variant, effort, case_id, error) -> DataFrame like graded Phase 0 rows."""
+    import pandas as pd
+    return pd.DataFrame([{"model": m, "variant": v, "effort": e, "case_id": c, "numeric_error": err}
+                         for m, v, e, c, err in spec])
+
+
+def _block(model, variant, effort, errors_per_case):
+    return [(model, variant, effort, f"c{i}", e) for i, errs in enumerate(errors_per_case) for e in errs]
+
+
+def test_h1_classes():
+    from sfe.analyze import h1_class
+    robust = _df(_block("m", "base", "max", [[True, False, False]] * 4 + [[False] * 3] * 6))
+    clustered = _df(_block("m", "base", "max", [[True, True, False]] * 2 + [[False] * 3] * 8))
+    assert h1_class(clustered) == "reduced"  # 4/30 but in only 2 of 10 cases: the case bootstrap reaches zero
+    none = _df(_block("m", "base", "max", [[False] * 3] * 10))
+    some = _df(_block("m", "base", "max", [[True, False, False]] + [[False] * 3] * 9))
+    assert h1_class(robust) == "effort-robust"
+    assert h1_class(none) == "effort-eliminated"
+    assert h1_class(some) == "reduced"
+
+
+def test_paired_difference_and_effort_decision():
+    from sfe.analyze import effort_decision, paired_case_diff
+    a = _block("m", "base", "max", [[True] * 3] * 5 + [[False] * 3] * 5)
+    b = _block("m", "coords", "max", [[False] * 3] * 10)
+    d = _block("m", "base", "high", [[True] * 3] * 5 + [[False] * 3] * 5)
+    df = _df(a + b + d)
+    diff, lo, hi = paired_case_diff(df, ("coords", "max"), ("base", "max"))
+    assert abs(diff + 0.5) < 1e-9 and hi < 0
+    assert effort_decision(df) == "high"  # max is not 10 points better than high
+    better = _df(_block("m", "base", "max", [[False] * 3] * 10) + d)
+    assert effort_decision(better) == "max"
+
+
+def test_phase0_ignores_unparseable_rows():
+    from sfe.analyze import error_rate
+    df = _df([("m", "bare", "max", "c0", None), ("m", "bare", "max", "c0", True), ("m", "bare", "max", "c1", False)])
+    rate, n = error_rate(df)
+    assert n == 2 and rate == 0.5
