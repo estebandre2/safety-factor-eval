@@ -10,15 +10,17 @@ GRADED = Path("results/graded/phase0.jsonl")
 OUT = Path("results/tables/phase0_summary.json")
 
 df = pd.DataFrame([json.loads(l) for l in GRADED.read_text().splitlines() if l.strip()])
+df.loc[df["model"].str.startswith("deepseek-") & df["effort"].isna(), "effort"] = "high"  # DeepSeek runs at "high"
 done = df[df["status"] == "done"]
 summary: dict = {"excluded": int((df["status"] != "done").sum()), "by_model": {}}
 arms = {"0A": ("base", "max"), "0B": ("coords", "max"), "0C": ("bare", "max"), "0D": ("base", "high"),
-        "0E-coords": ("coords", "high"), "0E-bare": ("bare", "high")}
+        "0E-coords": ("coords", "high"), "0E-bare": ("bare", "high"),
+        "0B-high (exploratory)": ("coords", "high"), "0C-high (exploratory)": ("bare", "high")}
 for model, g in done.groupby("model"):
     m: dict = {}
     for label, (variant, effort) in arms.items():
         part = _arm(g, variant, effort)
-        if part.empty:
+        if part.empty or ("exploratory" in label) != model.startswith("claude-") and "exploratory" in label:
             continue
         rate, n = error_rate(part)
         lo, hi = error_ci(part)

@@ -52,10 +52,21 @@ def measured_cost(path: Path) -> dict[str, float]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--token-check", action="store_true")
+    parser.add_argument("--explore-high", action="store_true",
+                        help="Amendment 2026-11-10: exploratory arms 0B and 0C at effort high (Claude, 3 repeats)")
     parser.add_argument("--confirm-budget", type=float)
     args = parser.parse_args()
     cases = [c for c in load_cases(Path("data/cases.jsonl")) if c.family == "overturning"]
     assert len(cases) == 10
+
+    if args.explore_high:
+        extra = [new_trial(c, "neutral", "A", m, "M0", rep, effort="high", variant=v)
+                 for m in CLAUDE for v in ("coords", "bare") for c in cases for rep in range(REPEATS)]
+        run(extra, OUT)
+        ids = {t.trial_id for t in extra}
+        spent = sum(r["cost_usd"] for r in map(json.loads, OUT.read_text().splitlines()) if r["trial_id"] in ids)
+        print(f"Exploratory 0B/0C at high: {len(extra)} trials, Claude spent ${spent:.2f}")
+        return
 
     if args.token_check:
         picks = [new_trial(cases[i], "neutral", "A", CLAUDE[i % 3], "M0", 0, effort="max", variant="base") for i in range(10)]

@@ -184,3 +184,39 @@ The core, which is never cut, is:
 ## Amendments
 
 - **2026-11-10, after the token check, before Phase 0 (harness setting, no hypothesis or rule changed).** At effort "max", Claude Haiku 5.5 used 20,000–29,000 output tokens per answer and hit the 32,000-token limit in 1 of 4 token-check trials. `max_tokens` for high and max effort is raised to 64,000. The truncated trial is kept in `results/raw/phase0_truncated_32k.jsonl` and re-run. Measured cost per trial at "max": Haiku US$0.0059, Sonnet US$0.0262, Opus US$0.0633 (batch prices).
+- **2026-11-10, after Phase 0, before any Phase 1 trial (deviation from the §4 rule, with the reason).**
+
+    **Phase 0 results** (`results/tables/phase0_summary.json`). Error rates on the 10 Study I overturning cases:
+
+    | Model | 0A: base prompt, max | 0D: base prompt, high | Study I: medium |
+    |---|---|---|---|
+    | Haiku | 2/30 | 16/30 | 82/150 |
+    | Sonnet | 0/30 | 11/30 | 49/150 |
+    | Opus | 0/30 | 7/30 | 53/150 |
+
+    - At max, 0B (coordinates) and 0C (bare lever-arm question) had 0/30 errors for all three Claude models. DeepSeek V4-Pro at "high" had 0/10 errors in both arms.
+    - Both of Haiku's errors at max are the uplift-arm mistake.
+    - Within one effort setting, wrong and correct answers to the same case use about the same number of output tokens. The setting, not how long a given answer reasons, separates correct from wrong.
+    - At max, answers are 4–10 times longer than at high (median output tokens: Haiku 28,181 against 2,857; Sonnet 5,790 against 1,475; Opus 5,538 against 1,334).
+
+    **What the pre-registered rules give.**
+    - H1: Sonnet and Opus are effort-eliminated; Haiku is "reduced" (2/30).
+    - Because Haiku is not eliminated, the "eliminated for all three" switch does not trigger.
+    - The effort rule selects "max" for Phase 1.
+    - H2 is **not testable**, not unsupported: the 0A baseline is already at the floor.
+
+    **Deviation, decided before any Phase 1 data.**
+    - **Why.** At max the error rate is at the floor, so H3 (orientation) and the Phase 2 answer pool would have nothing to measure. At high only, the claim that max removes the error would rest on 10 cases.
+    - **Phase 1 runs two arms:**
+        - **High arm:** the full pre-registered matrix at effort "high" (same repeats as §4; DeepSeek as before). H3 and H3b are tested on this arm.
+        - **Max arm:** every one of the 180 cases at effort "max", 1 repeat per Claude model.
+    - **New hypothesis H7 (effort generalization), fixed now.** For each Claude model, the max-arm error rate is at least 15 points below the high-arm error rate, paired by case. Tested with a case-bootstrap CI of the difference that excludes zero. It is reported for each family and for hard and easy orientation separately.
+    - **Exploratory, labelled as such:** arms 0B and 0C at effort "high" on the 10 Study I cases, 3 repeats per Claude model. They probe H2 where the errors occur.
+    - **Estimate:** about US$25 (Claude) for Phase 1 plus about US$1 for the exploratory arms, within the US$40 Phase 1 cap.
+
+    **Phase 2 (pinned now, before it is built).**
+    - Every reviewer runs at effort "high". Pool answers come from the high arm.
+    - **Cost-matched comparison (new):** for each author model, compare the author at "max" alone (max arm) with the author at "high" plus one reviewer at "high", on the final value's correctness and on output tokens per case.
+    - **H5 confound:** DeepSeek at "high" writes 3,000–11,000 output tokens, which is closer to Claude at max than to Claude at high. H5 is therefore reported with tokens per review alongside detection, and is not read as a family effect alone.
+
+    **Consequence for Study I (spec §9).** Study I ran Claude at "medium" and DeepSeek at "high". Its overturning errors, the calculator result and the cross-family contrast hold at that effort only. The Study I write-up is corrected in the same commit as this amendment.

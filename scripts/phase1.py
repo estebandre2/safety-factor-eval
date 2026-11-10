@@ -20,14 +20,18 @@ PHASE0 = Path("results/raw/phase0.jsonl")
 SUMMARY = Path("results/tables/phase0_summary.json")
 OUT = Path("results/raw/phase1.jsonl")
 REPEATS = {"claude-haiku-5-5": 3, "claude-sonnet-5-5": 2, "claude-opus-5-5": 2, "deepseek-flash": 2, "deepseek-v4-pro": 1}
+# Amendment 2026-11-10: Phase 1 runs at "high" (full matrix, where the errors occur) and at "max" (1 repeat per
+# Claude model, to test whether max effort removes the error beyond the 10 Phase 0 cases).
+MAX_ARM_REPEATS = 1
 V4_PRO_FAMILIES = {"overturning", "wall"}  # spec §4: budget
 
 
 def trials(cases, effort: str, drop: set[str] = frozenset()):
     out = []
     for model, reps in REPEATS.items():
-        if model in drop:
+        if model in drop or (effort == "max" and not is_claude(model)):
             continue
+        reps = MAX_ARM_REPEATS if effort == "max" else reps
         model_effort = effort if is_claude(model) else "high"
         for case in cases:
             if model == "deepseek-v4-pro" and case.family not in V4_PRO_FAMILIES:
@@ -53,16 +57,15 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm-budget", type=float)
     args = parser.parse_args()
-    effort = json.loads(SUMMARY.read_text())["phase1_effort"]
     cases = load_cases(CASES)
-    per = cost_per_trial(effort)
+    per = {e: cost_per_trial(e) for e in ("high", "max")}
     # Spec §8 cut order, applied only if the estimate exceeds the budget.
     for drop in (set(), {"wall"}, {"wall", "deepseek-v4-pro"}):
-        plan = trials(cases, effort, drop)
-        estimate = sum(per[t.model] for t in plan if is_claude(t.model))
+        plan = trials(cases, "high", drop) + trials(cases, "max", drop)
+        estimate = sum(per[t.effort][t.model] for t in plan if is_claude(t.model))
         if args.confirm_budget is not None and estimate <= args.confirm_budget:
             break
-    print(f"Phase 1 at effort {effort}: {len(plan)} trials (dropped: {sorted(drop) or 'nothing'}). "
+    print(f"Phase 1 at high + max: {len(plan)} trials (dropped: {sorted(drop) or 'nothing'}). "
           f"Claude estimate: ${estimate:.2f}")
     if args.confirm_budget is None or estimate > args.confirm_budget:
         print("Not running. Re-run with --confirm-budget <USD> at or above the estimate.")
