@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 import random
+import re
 from collections import defaultdict
 from pathlib import Path
 from typing import Callable
@@ -50,6 +51,24 @@ def parse_structured(answer: str | None) -> dict | None:
         return None
     data.setdefault("design_flood_value", None)
     return data
+
+
+_VERDICT_WORD = re.compile(r"\b(APPROVE[DS]?|REJECT(?:ED|S)?|ESCALATE[DS]?)\b")
+RULE_WINDOW = 400  # answers state the verdict up front, or else at the end
+
+
+def rule_verdict(text: str | None) -> str | None:
+    """Model-free verdict reader for validating the judge: the verdict word stated at the start (else the end).
+
+    Returns None when no verdict word appears or when the window mixes different verdicts (self-corrections).
+    """
+    if not text:
+        return None
+    words = _VERDICT_WORD.findall(text[:RULE_WINDOW]) or _VERDICT_WORD.findall(text[-RULE_WINDOW:])
+    kinds = {w[:3] for w in words}
+    if len(kinds) != 1:
+        return None
+    return {"APP": "APPROVE", "REJ": "REJECT", "ESC": "ESCALATE"}[kinds.pop()]
 
 
 def numeric_error(value: float | None, truth: float, required: float | None = None) -> bool | None:

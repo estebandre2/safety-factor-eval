@@ -2,7 +2,7 @@
 
 Esteban Garzon · November 2026 · Code and data: this repository
 
-> **Draft.** The judge-validation figures in §3.5 are pending human labels. Every other number comes from `results/tables/` and the scripts named in the text.
+> **Draft.** Every number comes from `results/tables/` and the scripts named in the text.
 
 ## Summary
 
@@ -221,19 +221,26 @@ Mode A, unsafe cases under pressure (`arms_under_pressure.csv`, Figure 2):
 | Sonnet | 2.1% | 2.8% (p = 0.79) | 1.4% (p = 0.75) |
 
 - **M1:** every M1 trial called the calculator (3.1 calls on average), but overturning errors persisted. On the same case and condition cells, Haiku went from 46/84 (55%) at M0 to 39/84 (46%) at M1, and Sonnet from 18/84 (21%) to 29/84 (35%). The tool removes arithmetic slips, and arithmetic was not the problem.
-- **M4:** the self-verifier reduced approvals by about a third, within the noise at this sample size.
+- **M4:** the self-verifier reduced approvals by about a third, within the noise at this sample size. It cuts both ways. Of the 32 unsafe cases where the first answer approved (as read by the rule reader), the verifier caught 23 and passed 9. Of the 487 cases where the first answer correctly rejected, it overturned 5 into approvals, each time by introducing the uplift lever-arm mistake. The reviewer that should catch the error sometimes creates it.
 - **False rejections:** neither arm raised false rejections on safe cases meaningfully (the largest change is DeepSeek Flash, 0/32 to 1/32 under M1).
 
 ![Figure 2](../results/figures/fig2_mitigations.png)
 
 ### 3.5 Judge validation
 
-*Pending.* Esteban is hand-labelling 60 blind answers (`labels/judge_validation.csv`, built by `scripts/export_labels.py`):
+The spec required Cohen's κ ≥ 0.8 between the judge and a reference before the judge's labels are used. The reference was planned as human labels; it was replaced by two independent checks (spec §7, amended), and **no human labels were used** (`scripts/validate_judge.py`, `results/tables/judge_validation.csv`).
 
-- 50 stratified by model family, truth and condition;
-- 10 oversampled from the judge's unsafe approvals, the rare cell the headline result depends on.
+| Reference | Answers | Agreement | Cohen's κ |
+|---|---|---|---|
+| Model-free rule reader, all answers | 3,818 | 98.3% | 0.96 |
+| Rule reader, Claude answers | 2,996 | 98.2% | 0.96 |
+| Rule reader, DeepSeek answers | 822 | 98.8% | 0.97 |
+| Second model, blind, stratified sample | 60 | 59/60 | 0.97 |
 
-The spec requires Cohen's κ ≥ 0.8 before the judge's labels are used. Agreement will be reported overall, on Claude answers alone and on DeepSeek answers alone, because the judge belongs to the Claude family.
+- **Rule reader:** it takes the verdict word the answer states at its start (or, failing that, at its end). It uses no model, so it is free of the judge's family bias. It abstains on 149 of 3,967 answers, where no verdict word appears or the answer corrects itself.
+- **Where it disagrees with the judge:** 61 of the 65 disagreements are REJECT against ESCALATE. They do not change any reported result, because both count as not approving. The other 4 involve an APPROVE, and I read each one. In 3, the judge was right: the answer opens with "REJECT" and then corrects itself to approval of a safe design. The fourth is ambiguous. A Haiku verifier opens with "APPROVE, for the overturning criterion as specified" and closes by saying the design must be revisited before it is filed (judge: ESCALATE). Counting it as an approval would raise the unsafe approvals from 67 to 68.
+- **The headline cell:** the rule reader confirms 65 of the 67 unsafe approvals. I read the other 2 by hand, and both are approvals.
+- **Second-model sample:** 50 answers stratified by model family, truth and condition, plus 10 oversampled from the judge's unsafe approvals (`scripts/export_labels.py`). The labeller was a Claude model that did not see the judge's labels; its single disagreement is REJECT against ESCALATE.
 
 ## 4. Discussion
 
@@ -258,7 +265,8 @@ The spec requires Cohen's κ ≥ 0.8 before the judge's labels are used. Agreeme
 - **Narrower coverage for some models:** Opus ran only arm M0, DeepSeek Flash only M0 and M1, DeepSeek V4-Pro only M0 with one repeat.
 - **Untested arms:** M2, M3 and M5 were tested only in the pilot.
 - **One configuration per model:** effort is fixed per provider ("medium" for Claude, "high" for DeepSeek). Other effort settings may change error rates.
-- **Same-family judge:** the judge belongs to the same family as three of the tested models (§3.5).
+- **No human labels:** the judge was validated by a model-free rule reader and a second model, not by people (§3.5). The rule reader only reads stated verdicts, so it cannot check the judge on the answers where it abstains (149 of 3,967).
+- **Same-family judge:** the judge belongs to the same family as three of the tested models. The model-free check addresses this for the verdicts, but not for the extracted numeric values.
 - **Repeats are not independent:** Fisher's exact test treats the three repeats of a case as independent, so its p-values are optimistic. None of the contrasts is significant even so; the case-cluster bootstrap intervals in `results/tables/` account for the clustering.
 - **Approximate attribution:** the mechanism attribution matches values within 2%, so a different mistake that lands on the same number would be misattributed. The transcripts I read by hand agree with it, but that is a small sample.
 

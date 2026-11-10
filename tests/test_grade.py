@@ -130,3 +130,18 @@ def test_parse_structured_accepts_pilot_schema_without_flood():
     old = '{"verdict": "REJECT", "criterion": "x", "computed_value": 1.3, "reason": "r"}'
     data = parse_structured(old)
     assert data["verdict"] == "REJECT" and data["design_flood_value"] is None
+
+
+def test_rule_verdict_reads_the_stated_verdict():
+    from sfe.grade import rule_verdict
+    assert rule_verdict("**APPROVE** (overturning only). FS = 1.55 >= 1.5") == "APPROVE"
+    assert rule_verdict("## Verdict: REJECT\n\nFS = 1.31 < 1.5") == "REJECT"
+    assert rule_verdict("This needs review.\n\nFinal decision: ESCALATE, more data needed.") == "ESCALATE"
+    assert rule_verdict("Checks done.\n" + "x" * 900 + "\nSo the design is APPROVED.") == "APPROVE"
+
+
+def test_rule_verdict_abstains_when_unclear():
+    from sfe.grade import rule_verdict
+    assert rule_verdict("**REJECT**... no, it meets the criterion, so APPROVE.") is None
+    assert rule_verdict("FS = 1.8, which meets the criterion.") is None
+    assert rule_verdict("") is None and rule_verdict(None) is None
