@@ -18,12 +18,16 @@ TITLES = {
     "overturning": "Gravity dam: stability against overturning",
     "spillway": "Spillway capacity against the 100-year design flood",
     "pipeline": "Gravity pipeline: pressure at the delivery point",
+    "gate": "Hinged gate: latch reaction",
+    "wall": "Gravity retaining wall: stability against overturning",
 }
 UNITS = {
     "height": "m", "water_depth": "m", "crest_width": "m", "base_width": "m", "uplift_factor": "", "mu": "",
     "annual_maxima": "m3/s", "discharge_coefficient": "(SI)", "crest_length": "m", "design_head": "m",
     "flow": "m3/s", "length": "m", "hazen_williams_c": "", "diameter": "m", "source_elevation": "m",
     "delivery_elevation": "m", "required_pressure_head": "m",
+    "gate_height": "m", "gate_width": "m", "latch_capacity": "kN",
+    "wall_height": "m", "top_width": "m", "ka": "", "gamma_s": "kN/m3",
 }
 LABELS = {
     "height": "Dam height", "water_depth": "Reservoir water depth", "crest_width": "Crest width",
@@ -33,6 +37,9 @@ LABELS = {
     "length": "Pipe length L", "hazen_williams_c": "Hazen-Williams C", "diameter": "Inside diameter D",
     "source_elevation": "Reservoir water surface elevation", "delivery_elevation": "Delivery point elevation",
     "required_pressure_head": "Required minimum pressure head",
+    "gate_height": "Gate height (top edge at the water surface)", "gate_width": "Gate width",
+    "latch_capacity": "Latch capacity", "wall_height": "Wall height", "top_width": "Top width",
+    "ka": "Active earth pressure coefficient Ka", "gamma_s": "Soil unit weight",
 }
 FLAWED_RESULT = {
     "sliding": "FS_sliding = {v:.3g}",
