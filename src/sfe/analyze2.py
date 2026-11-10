@@ -77,3 +77,62 @@ def h7_effort(df: pd.DataFrame, model: str, cases: dict[str, Case] | None = None
 def mechanism_shares(df: pd.DataFrame, model: str) -> dict[str, int]:
     labels = df[df["model"] == model]["mechanism"].dropna()
     return {k: int(v) for k, v in labels.value_counts().items()}
+
+
+# --- Phase 2 (spec §2 H4–H6, §5; amendment: case-matched pool, cost-matched comparison) ----------------
+
+H4_MIN_POINTS = 0.10
+H4_MAX_FA_RISE = 0.05
+H6_MARGIN = -0.05
+
+
+def _per_case_mean(df: pd.DataFrame, col: str) -> pd.Series:
+    g = df[df[col].notna()]
+    return g.assign(v=g[col].astype(bool).astype(float)).groupby("case_id")["v"].mean()
+
+
+def review_rates(df: pd.DataFrame) -> dict:
+    return {"detection": _boot_mean(_per_case_mean(df, "detected").to_numpy()),
+            "false_alarm": _boot_mean(_per_case_mean(df, "false_alarm").to_numpy())}
+
+
+def _paired(a: pd.Series, b: pd.Series) -> tuple[float, float, float, float]:
+    common = a.index.intersection(b.index)
+    diffs = (a[common] - b[common]).to_numpy()
+    mean, lo, hi = _boot_mean(diffs)
+    if len(diffs) == 0:
+        return (mean, lo, hi, float("nan"))
+    idx = np.random.default_rng(1).integers(0, len(diffs), size=(BOOTSTRAP_DRAWS, len(diffs)))
+    draws = diffs[idx].mean(axis=1)
+    p = min(1.0, 2 * min((draws <= 0).mean(), (draws >= 0).mean()))  # two-sided bootstrap p
+    return (mean, lo, hi, float(p))
+
+
+def protocol_diff(df: pd.DataFrame, reviewer: str, protocol: str, baseline: str = "P1") -> dict:
+    r = df[df["reviewer"] == reviewer]
+    a, b = r[r["protocol"] == protocol], r[r["protocol"] == baseline]
+    det = _paired(_per_case_mean(a, "detected"), _per_case_mean(b, "detected"))
+    fa = _paired(_per_case_mean(a, "false_alarm"), _per_case_mean(b, "false_alarm"))
+    supported = bool(det[0] >= H4_MIN_POINTS and det[1] > 0 and fa[0] <= H4_MAX_FA_RISE)
+    return {"detection": det, "false_alarm": fa, "supported": supported}
+
+
+def reviewer_diff(df: pd.DataFrame, reviewer: str, baseline_reviewer: str, protocol: str,
+                  authors: tuple[str, ...] | None = None, baseline_authors: tuple[str, ...] | None = None) -> tuple:
+    """Detection of `reviewer` minus `baseline_reviewer` under one protocol, paired by case (optionally by author)."""
+    a = df[(df["reviewer"] == reviewer) & (df["protocol"] == protocol)]
+    b = df[(df["reviewer"] == baseline_reviewer) & (df["protocol"] == protocol)]
+    if authors:
+        a = a[a["author"].isin(authors)]
+    if baseline_authors or authors:
+        b = b[b["author"].isin(baseline_authors or authors)]
+    return _paired(_per_case_mean(a, "detected"), _per_case_mean(b, "detected"))
+
+
+def holm(pvalues: dict[str, float]) -> dict[str, float]:
+    order = sorted(pvalues, key=pvalues.get)
+    m, running, out = len(order), 0.0, {}
+    for i, k in enumerate(order):
+        running = max(running, min(1.0, (m - i) * pvalues[k]))
+        out[k] = round(running, 10)
+    return out
