@@ -13,7 +13,7 @@ from typing import Callable
 
 import httpx
 
-from sfe.backends.claude import EFFORT, claude_cost, run_claude_round
+from sfe.backends.claude import claude_cost, run_claude_round
 from sfe.backends.deepseek import run_deepseek
 from sfe.backends.ollama import ToolsUnsupported, run_ollama
 from sfe.cases import Case, load_cases
@@ -96,7 +96,8 @@ def _record(trial: Trial) -> dict:
     return {
         "trial_id": trial.trial_id, "case_id": trial.case.id, "family": trial.case.family,
         "category": trial.case.category, "verdict_truth": trial.case.verdict, "condition": trial.condition,
-        "mode": trial.mode, "model": trial.model, "effort": EFFORT if claude else None, "arm": trial.arm,
+        "mode": trial.mode, "model": trial.model, "effort": trial.effort if claude else None,
+        "variant": trial.variant, "arm": trial.arm,
         "repeat": trial.repeat, "status": trial.status, "first_answer": trial.first_answer,
         "final_answer": trial.final_answer, "verifier_answer": trial.verifier_answer,
         "tool_rounds": trial.tool_rounds, "pushed_back": trial.pushed_back, "usage": trial.usage,

@@ -13,10 +13,13 @@ from typing import Literal
 
 from sfe.cases import Case
 from sfe.prompts import (
-    CALCULATOR_TOOL, Arm, Condition, calculate, case_statement, pushback_turn, system_prompt, user_turn,
-    verifier_turn,
+    BARE_SCHEMA, CALCULATOR_TOOL, Arm, Condition, bare_question, calculate, case_statement, coords_statement,
+    pushback_turn, system_prompt, user_turn, verifier_turn,
 )
 
+DEFAULT_EFFORT = "medium"  # Study I
+DEFAULT_VARIANT = "base"
+HIGH_EFFORT_MAX_TOKENS = 32000  # Study II: room for long reasoning at high/max effort
 MAX_TOOL_ROUNDS = 12  # pilot: 17 of 576 trials hit 4 (models compute step by step)
 Phase = Literal["answer", "tools", "pushback", "verify", "done"]
 Status = Literal["pending", "done", "refusal", "max_tokens", "tool_loop_limit", "unsupported", "error"]
@@ -51,16 +54,29 @@ class Trial:
     first_answer: str | None = None
     final_answer: str | None = None
     verifier_answer: str | None = None
+    effort: str = DEFAULT_EFFORT
+    variant: str = DEFAULT_VARIANT
 
 
-def trial_key(case_id: str, condition: str, mode: str, model: str, arm: str, repeat: int) -> str:
-    return hashlib.sha1(json.dumps([case_id, condition, mode, model, arm, repeat]).encode()).hexdigest()
+def trial_key(case_id: str, condition: str, mode: str, model: str, arm: str, repeat: int,
+              effort: str = DEFAULT_EFFORT, variant: str = DEFAULT_VARIANT) -> str:
+    parts: list = [case_id, condition, mode, model, arm, repeat]
+    if (effort, variant) != (DEFAULT_EFFORT, DEFAULT_VARIANT):  # Study I ids stay unchanged
+        parts += [effort, variant]
+    return hashlib.sha1(json.dumps(parts).encode()).hexdigest()
 
 
-def new_trial(case: Case, condition: Condition, mode: str, model: str, arm: Arm, repeat: int) -> Trial:
-    trial = Trial(trial_key(case.id, condition, mode, model, arm, repeat), case, condition, mode, model, arm, repeat)
+def new_trial(case: Case, condition: Condition, mode: str, model: str, arm: Arm, repeat: int,
+              effort: str = DEFAULT_EFFORT, variant: str = DEFAULT_VARIANT) -> Trial:
+    key = trial_key(case.id, condition, mode, model, arm, repeat, effort, variant)
+    trial = Trial(key, case, condition, mode, model, arm, repeat, effort=effort, variant=variant)
     # Mode B starts neutral; its pressure arrives only in the pushback turn (spec §4).
-    first = case_statement(case) if mode == "B" else user_turn(case, condition)
+    if variant == "coords":
+        first = coords_statement(case)
+    elif variant == "bare":
+        first = bare_question(case)
+    else:
+        first = case_statement(case) if mode == "B" else user_turn(case, condition)
     trial.messages.append({"role": "user", "content": first})
     return trial
 
@@ -92,12 +108,18 @@ def next_request(trial: Trial) -> dict | None:
     if trial.phase == "verify":
         prompt = verifier_turn(case_statement(trial.case), trial.final_answer or "")
         return {"system": "", "messages": [{"role": "user", "content": prompt}], "tools": [], "structured": False}
-    return {
+    request = {
         "system": system_prompt(trial.arm),
         "messages": trial.messages,
         "tools": [CALCULATOR_TOOL] if trial.arm in ("M1", "M5") else [],
         "structured": trial.arm in ("M3", "M5"),
+        "effort": trial.effort,
     }
+    if trial.effort != DEFAULT_EFFORT:
+        request["max_tokens"] = HIGH_EFFORT_MAX_TOKENS
+    if trial.variant == "bare":
+        request.update(structured=True, schema=BARE_SCHEMA)
+    return request
 
 
 def _finish(trial: Trial, status: Status) -> None:

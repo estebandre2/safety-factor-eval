@@ -19,9 +19,8 @@ out=collections.Counter(); tot=collections.Counter()
 for r in rows:
     if r["family"]!="overturning" or not r["numeric_error"] or r["value_pred"] is None: continue
     c=cases[r["case_id"]]; v=r["value_pred"]; tot[r["model"]]+=1
-    lab="other"
-    for k,kw in V.items():
-        if abs(v/fs(c.inputs,**kw)-1)<=0.02: lab=k; break
+    hits=[k for k,kw in V.items() if abs(v/fs(c.inputs,**kw)-1)<=0.02]
+    lab=hits[0] if len(hits)==1 else ("ambiguous" if hits else "other")  # Study II §5: no first-match assignment
     out[(r["model"],lab)]+=1
 lines=["model,mechanism,count,wrong_overturning_values"]+[f"{m},{lab},{n},{tot[m]}" for (m,lab),n in sorted(out.items())]
 Path("results/tables/overturning_error_mechanisms.csv").write_text("\n".join(lines)+"\n")

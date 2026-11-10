@@ -195,3 +195,57 @@ def calculate(expression: str) -> float:
     if not math.isfinite(result):
         raise ValueError("non-finite result")
     return result
+
+
+# --- Study II, Phase 0 prompt variants (spec 2026-11-10 §4) -------------------------------------------
+
+def coords_statement(case: Case) -> str:
+    """Arm 0B: the Study I prompt plus explicit geometry and uplift ordinates. No lever arms are given."""
+    i = case.inputs
+    heel_pressure = i["uplift_factor"] * 9.81 * i["water_depth"]
+    geometry = (
+        "Geometry (x measured horizontally from the heel, positive downstream):\n"
+        f"- Heel (upstream face): x = 0 m\n"
+        f"- Downstream edge of the crest, where the downstream triangle starts: x = {i['crest_width']:g} m\n"
+        f"- Toe: x = {i['base_width']:g} m\n"
+        f"- Uplift pressure on the base: {heel_pressure:.1f} kPa at the heel (x = 0), 0 kPa at the toe "
+        f"(x = {i['base_width']:g} m), varying linearly."
+    )
+    statement = case_statement(case)
+    head, tail = statement.split("\nAcceptance criterion:", 1)
+    return f"{head}\n{geometry}\n\nAcceptance criterion:{tail}"
+
+
+BARE_SCHEMA: dict = {
+    "type": "object",
+    "properties": {
+        "rectangle_arm_m": {"type": "number"},
+        "triangle_arm_m": {"type": "number"},
+        "uplift_arm_m": {"type": "number"},
+        "thrust_arm_m": {"type": "number"},
+    },
+    "required": ["rectangle_arm_m", "triangle_arm_m", "uplift_arm_m", "thrust_arm_m"],
+    "additionalProperties": False,
+}
+
+
+def bare_question(case: Case) -> str:
+    """Arm 0C: only the lever arms, no factor of safety and no verdict."""
+    lines = [f"Design check: {TITLES[case.family]}", "", case.assumptions, "", "Inputs:"]
+    for key, value in case.inputs.items():
+        unit = UNITS[key]
+        lines.append(f"- {LABELS[key]}: {_fmt(value)}{' ' + unit if unit else ''}")
+    lines += ["", "Taking moments about the toe, give these lever arms in metres:",
+              "- rectangle_arm_m: horizontal distance from the toe to the line of action of the weight of the rectangular part;",
+              "- triangle_arm_m: horizontal distance from the toe to the line of action of the weight of the downstream triangle;",
+              "- uplift_arm_m: horizontal distance from the toe to the line of action of the uplift resultant;",
+              "- thrust_arm_m: height above the base of the line of action of the horizontal water thrust.",
+              "Return only the JSON object."]
+    return "\n".join(lines)
+
+
+def bare_truth(case: Case) -> dict[str, float]:
+    i = case.inputs
+    B, b, d = i["base_width"], i["crest_width"], i["water_depth"]
+    return {"rectangle_arm_m": B - b / 2, "triangle_arm_m": 2 * (B - b) / 3,
+            "uplift_arm_m": 2 * B / 3, "thrust_arm_m": d / 3}

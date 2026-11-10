@@ -71,6 +71,38 @@ def rule_verdict(text: str | None) -> str | None:
     return {"APP": "APPROVE", "REJ": "REJECT", "ESC": "ESCALATE"}[kinds.pop()]
 
 
+_FS_LINE = re.compile(r"\bFS\b|FS_|factor of safety", re.I)
+_CUT = re.compile(r"[≥≤<>]|>=|<=|\bmeets\b|\bwhich\b|\bexceeds\b|\bbelow\b|\babove\b|\bvs\.?|\bversus\b|\bagainst the\b|"
+                  r"\bcompared\b|\bthan\b|\bfails\b|\bpasses\b|\brequired\b|\bminimum\b", re.I)
+_DECIMAL = re.compile(r"(?<![\d,.])(\d+\.\d+)(?!\d|,\d)")
+
+
+def rule_value(text: str | None, inputs: dict | None = None, required: float | None = None) -> float | None:
+    """Model-free reader for the stated factor of safety, used to validate the judge's extracted values.
+
+    Takes the first line that names the factor of safety and gives a number: the line is cut at the first
+    comparison word; in what remains, the number after the last "=" or "≈" is the value (else the last number).
+    Numbers equal to a case input (e.g. the friction coefficient) or to the required value are skipped.
+    """
+    given = {round(float(v), 6) for v in (inputs or {}).values() if isinstance(v, (int, float))}
+    if required is not None:
+        given.add(round(float(required), 6))
+    if not text:
+        return None
+    for line in text.splitlines():
+        if not _FS_LINE.search(line):
+            continue
+        cut = _CUT.search(line)
+        head = (line[:cut.start()] if cut else line).replace("*", "")
+        last_eq = max(head.rfind("="), head.rfind("≈"))
+        tail = head[last_eq + 1:] if last_eq >= 0 else head
+        numbers = [float(n) for n in _DECIMAL.findall(tail)]
+        numbers = [n for n in numbers if 0.2 <= n <= 10 and round(n, 6) not in given]
+        if numbers:
+            return numbers[-1]
+    return None
+
+
 def numeric_error(value: float | None, truth: float, required: float | None = None) -> bool | None:
     """Wrong if more than 2% off, or (when the criterion is known) on the other side of it from the truth."""
     if value is None:

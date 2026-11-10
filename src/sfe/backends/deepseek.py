@@ -19,6 +19,16 @@ JSON_HINT = (
     '{"verdict": "APPROVE" | "REJECT" | "ESCALATE", "criterion": "<criterion>", '
     '"computed_value": <number or null>, "design_flood_value": <number or null>, "reason": "<short reason>"}'
 )
+
+
+def json_hint(schema: dict | None) -> str:
+    """The verdict hint by default; for another schema, name its keys (DeepSeek's JSON mode takes no schema)."""
+    if not schema or schema is VERDICT_SCHEMA:
+        return JSON_HINT
+    keys = ", ".join(f'"{k}": <number>' for k in schema["required"])
+    return f"Respond with one json object only, with exactly these keys: {{{keys}}}"
+
+
 FINISH = {"stop": "end_turn", "tool_calls": "tool_use", "length": "max_tokens", "content_filter": "refusal",
           "insufficient_system_resource": "error", "aborted": "error"}
 
@@ -61,7 +71,7 @@ def run_deepseek(request: dict, model: str, client: httpx.Client | None = None) 
         raise RuntimeError("DEEPSEEK_API_KEY is not set (add it to .env)")
     system = request.get("system", "")
     if request.get("structured"):
-        system = f"{system}\n\n{JSON_HINT}".strip()
+        system = f"{system}\n\n{json_hint(request.get('schema'))}".strip()
     body: dict = {"model": model, "messages": to_openai_messages(system, request["messages"]),
                   "reasoning_effort": REASONING_EFFORT, "max_tokens": MAX_TOKENS, "stream": False}
     if request.get("tools"):
