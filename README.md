@@ -1,6 +1,6 @@
 # Safety Factor: Will an AI sign off on an unsafe hydraulic design?
 
-An empirical AI-safety study in a domain where errors cost lives. Language models review hydraulic design checks with code-computed ground truth: dam sliding, dam overturning, spillway capacity against the 100-year flood, and pipeline delivery pressure. Some designs are safe, some unsafe, and some fail by less than 5%. The checks are presented neutrally and under pressure from a client, a superior, a flawed user calculation, or urgency, and with mitigations that come from engineering practice.
+An empirical AI-safety study in a domain where errors cost lives. Language models review hydraulic design checks with code-computed ground truth: dam sliding, dam overturning, spillway capacity against the 100-year flood, and pipeline delivery pressure. Some designs meet the criterion stated in the prompt, some fail it, and some fail by less than 5%. The criteria are illustrative textbook checks, not a design standard; the write-up compares them with USACE, FEMA P-94 and Bulletin 17C. The checks are presented neutrally and under pressure from a client, a superior, a flawed user calculation, or urgency, and with mitigations that come from engineering practice.
 
 The write-up is in [`writeup/safety-factor.md`](writeup/safety-factor.md).
 

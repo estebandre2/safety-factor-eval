@@ -2,7 +2,7 @@
 
 Esteban Garzon · November 2026 · Code and data: this repository
 
-> **Draft.** The judge-validation figures in §3.4 are pending human labels. Every other number comes from `results/tables/` and the scripts named in the text.
+> **Draft.** The judge-validation figures in §3.5 are pending human labels. Every other number comes from `results/tables/` and the scripts named in the text.
 
 ## Summary
 
@@ -11,6 +11,8 @@ I asked five language models to approve or reject 40 hydraulic design checks wit
 - **Models:** Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5; DeepSeek Flash and V4-Pro.
 - **Checks:** gravity-dam sliding, gravity-dam overturning, spillway capacity against the 100-year flood, and pipeline delivery pressure.
 - **Pressure:** the checks came with no pressure, or with pressure from a client, a senior engineer, a flawed user calculation, or a deadline.
+
+Throughout, **"safe" and "unsafe" mean "meets" or "fails" the acceptance criterion stated in the prompt**, not compliance with a design standard. The checks are idealized textbook checks; §2.6 compares them with the governing standards (USACE for dam stability, FEMA P-94 and Bulletin 17C for design floods).
 
 Over 5,408 trials, the models **never approved an unsafe design after computing the correct value**. Pressure produced no measurable change in approvals, and no model reversed a correct rejection after pushback (0 of 537).
 
@@ -52,7 +54,7 @@ Every prompt states:
 - the governing formula;
 - the acceptance criterion.
 
-The study therefore tests whether a model applies a fully specified check, not whether it remembers a design code. Inputs are rounded before the truth is computed, and every formula is unit-tested against hand calculations (`tests/test_physics.py`).
+The study therefore tests whether a model applies a fully specified check and respects the criterion it was given, not whether it remembers a design code or whether the design would pass one. Real design standards were out of scope by design (spec §11). Inputs are rounded before the truth is computed, and every formula is unit-tested against hand calculations (`tests/test_physics.py`).
 
 ### 2.2 Conditions
 
@@ -109,6 +111,25 @@ A judge model (Claude Haiku 5.5, with a fixed rubric) labels each free-text answ
 - **Numeric errors:** a value counts as a numeric error when it deviates more than 2% from the truth, or when it falls on the wrong side of the criterion.
 - **Unsafe approvals:** each is attributed to "wrong value" or "right value, approved anyway".
 - **Intervals and tests:** rates carry Wilson 95% intervals and a case-cluster bootstrap; contrasts use Fisher's exact test.
+
+### 2.6 Relation to design standards
+
+The checks are not taken from a design code, and they would not all be accepted under one. I compared each family with the documents that govern it in U.S. practice (`scripts/usace_reclass.py`).
+
+ACI does not set these criteria. Its guide on mass concrete (ACI PRC-207.1) covers the concrete itself (proportioning, placing, curing, temperature control), and USACE cites it only for that.
+
+| Family | Governing document | What it requires | Effect on this study |
+|---|---|---|---|
+| Overturning | USACE EM 1110-2-2100 (2005), §1-7 and Table 3-5 | No factor of safety against overturning; the manual replaces it with the resultant location. Usual loads: 100% of the base in compression. | **Labels unchanged.** All 4 safe cases keep the full base in compression; all 6 unsafe or borderline cases fail it (overturning-09 has 83% in compression, which passes only for unusual loads). |
+| Sliding | EM 1110-2-2100, Tables 3-2 and 3-3 | A dam whose failure would cost lives is a critical structure: FS ≥ 2.0 with ordinary site information, 1.7 when well defined (usual loads). | **Depends on the site category.** At 1.7 all labels hold. At 2.0, three of the four safe cases (FS 1.80–1.96) would fail. No model erred or rejected on sliding, so no reported finding depends on this. |
+| Uplift | EM 1110-2-2200 (1995), §3-3d | Without drains, linear from full head at the heel to tailwater at the toe. With drains at the heel, a single line with 25–50% drain effectiveness. | 9 of the 20 dam cases (factor 0.50–0.75) match a permitted case; the other 11 (0.75–1.0) have no equivalent. |
+| Spillway | FEMA P-94; USGS Bulletin 17C | The inflow design flood is chosen by hazard class, up to the probable maximum flood; federal flood frequency uses log-Pearson Type III. | A 100-year Gumbel flood would not be accepted for a high-hazard dam. The family tests the stated arithmetic only. |
+| Pipeline | No ACI or USACE acceptance criterion | Hazen-Williams in its SI form; the required pressure head is an input of the case. | None. |
+
+**The main finding does not depend on the convention.** Recomputing the resultant location with the two observed lever-arm mistakes moves designs the same way as the factor of safety does:
+
+- **Uplift arm at B/3:** unsafe sections gain compressed base. Overturning-09 reaches 100% in compression and would pass the USACE usual-load criterion; overturning-06, -07 and -10 reach 84–92%.
+- **Triangle centroid at one third from the toe:** safe sections lose it. Overturning-01, -03 and -04 drop below 75% and would fail.
 
 ## 3. Results
 
@@ -229,6 +250,7 @@ The spec requires Cohen's κ ≥ 0.8 before the judge's labels are used. Agreeme
 ## 5. Limitations
 
 - **Synthetic cases:** 40 cases, 4 families, with the criterion and assumptions stated explicitly. Real design reviews involve drawings, codes and incomplete information.
+- **Not code-compliant checks:** the criteria are illustrative, and several differ from the governing standards (§2.6). The results say whether models respect a stated criterion; they say nothing about whether models apply USACE, FEMA or ACI requirements correctly.
 - **Concentration in one family:** the effect lives in one family. Other checks with triangular or trapezoidal loads (retaining walls, earth pressure) may show it too; they were not tested.
 - **Interaction format:** English prompts only, with single-turn and two-turn interactions.
   - Mode B ran only in the pilot and the borderline probe (537 pushbacks).
@@ -244,7 +266,7 @@ The spec requires Cohen's κ ≥ 0.8 before the judge's labels are used. Agreeme
 
 When a hydraulic check is fully specified, the models I tested did not trade safety for a client's budget, a senior engineer's approval or a deadline. They did, however, approve unsafe dams by misplacing a triangle's resultant: a stable, plausible-looking error that a calculator does not catch and that, with the opposite sign, makes another model look safer than it is.
 
-For deploying models in engineering review, the open problem this points to is independent verification of the problem set-up, not resistance to pressure.
+These checks are idealized, and the overturning check is one USACE no longer uses (§2.6), but the two mistakes move the resultant-location criterion in the same direction. For deploying models in engineering review, the open problem this points to is independent verification of the problem set-up, not resistance to pressure.
 
 ## Reproducibility
 
@@ -252,4 +274,6 @@ See `README.md`:
 
 - `scripts/analyze.py 'full_*.jsonl'` rebuilds every table and figure from the graded files.
 - `scripts/error_mechanisms.py` rebuilds §3.3.
-- Raw API transcripts are retained locally; the graded files include full transcripts.
+- `scripts/usace_reclass.py` rebuilds the comparison with the standards in §2.6.
+- `scripts/verify_math.py` re-derives every case from the prompt text.
+- Raw API transcripts are kept locally in `results/raw/` (not committed); the graded files hold verdicts and extracted values.
