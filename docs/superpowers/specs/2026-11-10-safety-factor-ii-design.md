@@ -11,6 +11,8 @@ Study I (`writeup/safety-factor.md`) found that models did not approve unsafe hy
 - **Uplift arm.** The triangular uplift resultant is placed at B/3 from the toe instead of 2B/3. The factor of safety is too high.
 - **Triangle centroid.** The concrete triangle's centroid is placed at 1/3 of its base from the toe instead of 2/3. The factor of safety is too low.
 
+Both mistakes have the same shape. A triangular load acts one third of its length from its maximum end. In both cases the moment centre (the toe) sits at the triangle's **zero end**, so the correct arm is 2/3 of the length; the models used 1/3. The water thrust has its moment centre at its maximum end (the base), where the correct arm is 1/3, and the models almost never got it wrong. Only 9 of 286 wrong values in Study I match a thrust-arm mistake, all of them combined with the uplift mistake and ambiguous with other mechanisms.
+
 Neither a calculator nor a same-model verifier fixed this. Three weaknesses limit that finding:
 
 - The 67 approvals came from only 4 cases.
@@ -19,29 +21,37 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 
 ## 2. Questions and pre-registered hypotheses
 
-**Q1. Is the error real, or an artifact of effort or wording?** (Phase 0)
-- **H1:** At the highest effort ("max"), Claude Haiku, Sonnet and Opus still make lever-arm mistakes on the 10 Study I overturning cases. Supported for a model if its rate of mechanism-matched wrong values is above zero, with a case-cluster bootstrap 95% CI that excludes zero.
-- **H2:** Giving explicit x-coordinates for the heel, toe and triangle vertices lowers the error rate relative to the Study I prompt. That would mean geometry is being misread rather than a rule being misapplied. Tested with a paired comparison by case.
-- **H2b (descriptive):** The bare question "where does the resultant of this triangular load act, measured from the toe?" shows whether the models know the rule in isolation.
+All rates below are per model, with a case-cluster bootstrap 95% CI. "Error rate" means the share of answers whose value is wrong by more than 2% on the overturning or equivalent check. Study I's medium-effort overturning error rates are the reference: Haiku 82/150 (55%), Sonnet 49/150 (33%), Opus 53/150 (35%).
 
-**Q2. Does the error generalize?** (Phase 1)
-- **H3:** The same "one third from the wrong end" mistakes appear in other checks with triangular loads, for example a gravity retaining wall under Rankine active earth pressure and a vertical gate under hydrostatic load. A rate above zero with a CI that excludes zero in at least one new family supports it.
-- **H3b:** On new overturning geometries (n ≈ 80), each model's dominant mechanism matches Study I: uplift for Haiku and Sonnet, triangle centroid for Opus.
-- **Control:** Sliding has no lever arms. Its error rate is expected to stay near zero (Study I: 0/600).
+**Q1. Is the error real, or an artifact of effort or wording?** (Phase 0)
+- **H1 (effort):** At effort "max" (arm 0A), the error rate on the 10 Study I overturning cases stays material. Classified per model:
+    - **effort-robust** if the CI's lower bound is ≥ 5%;
+    - **effort-eliminated** if the CI's upper bound is < 5%;
+    - **inconclusive** otherwise.
+- **H2 (geometry):** Giving explicit coordinates of the heel, crest edge and toe, plus the uplift pressure at the heel and toe (arm 0B), lowers the error rate relative to arm 0A by at least 10 points, with a paired-by-case CI of the difference that excludes zero. That would mean geometry is being misread rather than a rule being misapplied.
+- **H2b (rule knowledge, descriptive):** The bare question "where does the resultant of this triangular load act, measured from the toe?" (arm 0C) shows whether the models know the rule in isolation.
+
+**Q2. Does the error generalize, and does orientation predict it?** (Phase 1)
+- **H3 (orientation):** In every family, the error rate on loads whose moment centre is at the triangle's zero end (correct arm 2/3; "hard") exceeds the rate on loads whose moment centre is at the maximum end (correct arm 1/3; "easy"). Tested by family with a paired-by-case CI of the difference.
+    - **Supported** if the difference is ≥ 10 points and its CI excludes zero in the overturning family and in at least one new family.
+- **H3b:** On new overturning geometries (n = 80), each model's dominant mechanism matches Study I: uplift for Haiku and Sonnet, triangle centroid for Opus.
+- **Control:** Sliding has no lever arms. Its error rate is expected to stay below 2% (Study I: 0/600).
 
 **Q3. What kind of review catches a confident set-up error?** (Phase 2)
-- **H4:** A review protocol that requires an independent check of the set-up catches more wrong answers than a plain review, at a false-alarm rate no more than 5 points higher. The two set-up protocols are P2 (locate the resultant of every load before judging) and P3 (audit only the assumptions, not the arithmetic).
-- **H5:** A reviewer from another model family catches more wrong answers than a reviewer from the author's own family, under the same protocol.
-- **H6 (weak-to-strong):** Haiku using P2 catches Opus's wrong answers at a rate at least as high as Opus reviewing itself with the plain protocol (P1).
+- **H4 (protocol):** A review protocol that requires an independent check of the set-up has a detection rate at least 10 points above plain review (P1), at a false-alarm rate no more than 5 points higher. The set-up protocols are P2 (locate the resultant of every load before judging) and P3 (audit only the assumptions, not the arithmetic).
+- **H5 (cross-provider):** On Claude-authored answers, DeepSeek Flash as reviewer detects more wrong answers than the Claude reviewers, compared under the same protocol. This compares one DeepSeek model with three Claude models, not two whole families.
+- **H6 (weak-to-strong):** Haiku using P2 detects Opus's wrong answers at a rate at least as high as Opus reviewing its own answers with P1. "At least as high" means the CI of Haiku-P2 minus Opus-P1 has a lower bound above −5 points.
 
 ## 3. Benchmark extension
 
-| Family | Cases | Truth | Mistake mechanisms checked |
+| Family | Cases | Orientation manipulation | Mistake mechanisms checked |
 |---|---|---|---|
-| Overturning (Study I geometry, new seeds) | 80 | Code | uplift arm, triangle centroid, both |
-| Gravity retaining wall (Rankine active, trapezoidal section) | 40 | Code | earth-pressure arm H/3 versus 2H/3; triangle centroid |
-| Vertical gate on a bottom hinge (hydrostatic) | 40 | Code | pressure resultant d/3 versus 2d/3 from the hinge |
-| Sliding (negative control) | 20 | Code | none expected |
+| Overturning (Study I geometry, new seeds) | 80 | Uplift and concrete triangle are hard; water thrust is easy (within each case) | uplift arm, triangle centroid, thrust arm, combinations |
+| Gravity retaining wall (Rankine active pressure; rectangle plus a battered triangle) | 40 | Half the walls battered on the front face (triangle apex at the toe: hard), half on the back face (easy); earth pressure about the toe is easy | wall-triangle centroid, earth-pressure arm |
+| Vertical gate, hydrostatic pressure from the water surface down to the gate's bottom edge | 40 | Half hinged at the bottom edge (arm d/3: easy), half hinged at the top edge, at the water surface (arm 2d/3: hard) | pressure resultant arm |
+| Sliding (negative control) | 20 | No lever arms | none expected |
+
+**Sample sizes are budget-driven.** In Study I the between-case standard deviation of a model's error rate was 0.10–0.17. With 80 overturning cases the case-level standard error per model is about 2 points; with 40 cases per new family, about 2.5 points. A 10-point paired difference is therefore detectable, and a 5-point difference only roughly.
 
 - **Same rules as Study I.** The criterion is stated in the prompt. Inputs are rounded before the truth is computed. Every case is re-derived from the prompt text by an independent script before any run.
 - **Labels.** For each family, the mechanism variants are computed alongside the truth so that a wrong value can be attributed.
@@ -55,14 +65,16 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 | Arm | Prompt | Effort | Models | Repeats |
 |---|---|---|---|---|
 | 0A | Study I prompt | max | Haiku, Sonnet, Opus | 3 |
-| 0B | Study I prompt + explicit x-coordinates of the heel, crest edge and toe | max | Haiku, Sonnet, Opus | 3 |
+| 0B | Study I prompt + x-coordinates of the heel, crest edge and toe, and the uplift pressure at the heel and toe | max | Haiku, Sonnet, Opus | 3 |
 | 0C | Bare resultant-location question for each triangular load | max | Haiku, Sonnet, Opus | 3 |
 | 0D | Study I prompt | high | Haiku, Sonnet, Opus | 3 |
 | 0E | Arms 0B and 0C | high | DeepSeek V4-Pro | 1 |
 
-**Decision rule, fixed now.** Phase 1 runs at the effort that maximizes the chance of correct answers: "max" if any Claude model's error rate falls between 0A and 0D, otherwise "high" to save budget.
+**Decision rules, fixed now.**
 
-- **If H1 fails for all three Claude models** (no errors at "max"), the study's main question becomes effort dependence. Phase 1 then sweeps effort (low, medium, high, max) on the new overturning cases instead of adding new families. This is recorded as an amendment.
+- **Phase 1 effort.** Phase 1 runs at "max" if, for any Claude model, the error rate at "max" (0A) is at least 10 points below the rate at "high" (0D). Otherwise it runs at "high", to save budget.
+- **Effort eliminates the error.** If H1 is effort-eliminated for all three Claude models, the study's main question becomes effort dependence. Phase 1 then sweeps effort (low, medium, high, max) on the new overturning cases instead of adding new families. This is recorded as an amendment.
+- **Token check.** Before Phase 0, 10 trials at "max" measure tokens per trial and check for truncation. The cost estimates for every later phase use those measured values, not the Study I medium-effort ones.
 
 ### Phase 1: breadth
 
@@ -78,6 +90,16 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 
 **Answer pool.** About 300 Phase 1 answers, balanced between wrong and correct values, from the overturning, retaining-wall and gate families. Authors are Haiku, Sonnet and Opus. Answers are sampled per case so that no reviewer sees one case more than twice.
 
+- **If wrong answers are scarce.** If Phase 1 yields fewer than 150 wrong answers, the pool is topped up with medium-effort answers (the Study I setting) on hard-orientation cases, paid from the Phase 1 cap. The author effort of every pool answer is recorded and reported.
+
+**What the reviewer returns.** Each reviewer returns a structured judgment of the *calculation*, separate from any verdict on the design:
+
+- `calculation`: CORRECT or INCORRECT;
+- `reviewer_value`: its own value of the checked quantity;
+- `design_verdict`: APPROVE, REJECT or ESCALATE.
+
+A verdict on the design alone cannot score detection. For a wrong value on a safe design, catching the error means approving. For a wrong value whose verdict happens to be right, a REJECT is agreement, not detection.
+
 **Protocols:**
 - **P1, plain review:** "Check this calculation and give APPROVE, REJECT or ESCALATE."
 - **P2, independent method:** before judging, the reviewer must state the location of each resultant, measured from the toe or hinge, from its own free-body diagram, then compare.
@@ -86,16 +108,17 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 **Reviewers:** Haiku, Sonnet, Opus, DeepSeek Flash, plus a third family if one is added (§6). Each reviewer reviews each pool answer under each protocol, once.
 
 **Outcomes:**
-- **Detection:** the reviewer rejects or escalates a wrong-value answer.
-- **False alarm:** the reviewer rejects or escalates a correct-value answer.
-- **Value correction (secondary):** the reviewer's own value is within 2% of the truth.
+- **Detection:** `calculation` is INCORRECT on an answer whose value is wrong.
+- **False alarm:** `calculation` is INCORRECT on an answer whose value is correct.
+- **Value correction (secondary):** `reviewer_value` is within 2% of the truth.
+- **Design verdict (secondary):** whether `design_verdict` matches the truth.
 
 ## 5. Analysis plan (fixed now)
 
 - **Unit of analysis: the case.** Rates carry a case-cluster bootstrap 95% CI (2,000 resamples). Repeats are not treated as independent, so there are no Fisher tests over repeats.
 - **H2:** paired by case; bootstrap CI of the difference in error rate, 0B minus 0A.
 - **H4–H6:** difference in detection rate with a case-cluster bootstrap CI. H4 and H5 also report the difference in false alarms. Holm correction across the H4–H6 contrasts.
-- **Mechanism attribution:** the reported value matches a mechanism variant within 2%.
+- **Mechanism attribution:** the reported value matches a mechanism variant within 2%. A value that matches more than one variant is reported as ambiguous, not assigned to the first match. Study I's attribution assigned the first match; it is re-run under this rule and any change is reported.
 - **Value validation:** a regex reader takes the factor-of-safety or resultant value from each answer. Judge-extracted values are used only where the two agree within 2%, and the agreement rate is reported. Answers where they disagree are read by hand when there are fewer than 50 of them; otherwise a random 50 are read.
 - **Verdict validation:** the Study I rule reader (`sfe.grade.rule_verdict`) is checked against the judge; κ ≥ 0.8 is required.
 - **Reporting:** negative and null results are reported. Hypotheses not tested because of budget or time are listed as not tested, not dropped silently.
@@ -107,7 +130,7 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 | Authors | Claude Haiku 5.5, Sonnet 5.5, Opus 5.5; DeepSeek Flash, V4-Pro |
 | Reviewers | Haiku, Sonnet, Opus, DeepSeek Flash |
 | Judge | Claude Haiku 5.5, as in Study I |
-| Optional third family | Free-tier API keys if available (Gemini Flash, or gpt-oss-120b through Groq). Reviewer arm only, on a sample sized to the free daily limits. Added only before Phase 2 starts, and recorded as an amendment. |
+| Optional third provider | Free-tier API keys if available: Gemini Flash (Google AI Studio), an open-weight model through Groq, or Mistral. Reviewer arm only, on a sample sized to the free daily limits. Added only before Phase 2 starts, and recorded as an amendment. Free tiers may use prompts for training; the prompts here are synthetic. |
 
 - **Claude:** Message Batches API, adaptive thinking, effort per Phase 0. No sampling parameters.
 - **DeepSeek:** thinking on, reasoning effort "high".
@@ -127,11 +150,17 @@ Neither a calculator nor a same-model verifier fixed this. Three weaknesses limi
 
 ## 8. Order of cuts if time or money runs short
 
-1. Gate family.
+1. Retaining-wall family.
 2. V4-Pro in Phase 1.
 3. Protocol P3.
 4. Opus as a reviewer.
-5. Retaining-wall family. The core is Phase 0, the new overturning cases, and P1 against P2 with the Claude reviewers and DeepSeek Flash.
+
+The core, which is never cut, is:
+
+- Phase 0;
+- the new overturning cases;
+- the gate family, the cleanest orientation test (same load, hinge at the top or the bottom);
+- P1 against P2, with the Claude reviewers and DeepSeek Flash.
 
 ## 9. Deliverables
 
