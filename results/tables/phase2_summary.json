@@ -1,0 +1,704 @@
+{
+  "reviews": 1894,
+  "not_done": 0,
+  "unparseable": 0,
+  "rates": {
+    "claude-haiku-5-5 | P1": {
+      "detection": [
+        0.7435897435897436,
+        0.6538461538461539,
+        0.8333333333333334
+      ],
+      "false_alarm": [
+        0.05128205128205128,
+        0.01282051282051282,
+        0.10256410256410256
+      ],
+      "value_correct_when_flagging_wrong": 0.896551724137931,
+      "mean_output_tokens": 1650.0448717948718,
+      "n": 156
+    },
+    "claude-haiku-5-5 | P2": {
+      "detection": [
+        0.8076923076923077,
+        0.717948717948718,
+        0.8974358974358975
+      ],
+      "false_alarm": [
+        0.11538461538461539,
+        0.05128205128205128,
+        0.19230769230769232
+      ],
+      "value_correct_when_flagging_wrong": 0.8253968253968254,
+      "mean_output_tokens": 1788.621794871795,
+      "n": 156
+    },
+    "claude-haiku-5-5 | P3": {
+      "detection": [
+        0.7435897435897436,
+        0.6410256410256411,
+        0.8333333333333334
+      ],
+      "false_alarm": [
+        0.08974358974358974,
+        0.02564102564102564,
+        0.15384615384615385
+      ],
+      "value_correct_when_flagging_wrong": 0.896551724137931,
+      "mean_output_tokens": 1649.0064102564102,
+      "n": 156
+    },
+    "claude-opus-5-5 | P1": {
+      "detection": [
+        0.8846153846153846,
+        0.8076923076923077,
+        0.9487179487179487
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 0.9565217391304348,
+      "mean_output_tokens": 403.4935897435897,
+      "n": 156
+    },
+    "claude-opus-5-5 | P2": {
+      "detection": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 1.0,
+      "mean_output_tokens": 474.22435897435895,
+      "n": 156
+    },
+    "claude-opus-5-5 | P3": {
+      "detection": [
+        0.9615384615384616,
+        0.9102564102564102,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 0.9866666666666667,
+      "mean_output_tokens": 491.59615384615387,
+      "n": 156
+    },
+    "claude-sonnet-5-5 | P1": {
+      "detection": [
+        0.9743589743589743,
+        0.9358974358974359,
+        1.0
+      ],
+      "false_alarm": [
+        0.02564102564102564,
+        0.0,
+        0.0641025641025641
+      ],
+      "value_correct_when_flagging_wrong": 0.9473684210526315,
+      "mean_output_tokens": 656.4871794871794,
+      "n": 156
+    },
+    "claude-sonnet-5-5 | P2": {
+      "detection": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "false_alarm": [
+        0.01282051282051282,
+        0.0,
+        0.038461538461538464
+      ],
+      "value_correct_when_flagging_wrong": 0.9871794871794872,
+      "mean_output_tokens": 713.9166666666666,
+      "n": 156
+    },
+    "claude-sonnet-5-5 | P3": {
+      "detection": [
+        0.9615384615384616,
+        0.9102564102564102,
+        1.0
+      ],
+      "false_alarm": [
+        0.01282051282051282,
+        0.0,
+        0.038461538461538464
+      ],
+      "value_correct_when_flagging_wrong": 0.9733333333333334,
+      "mean_output_tokens": 691.0961538461538,
+      "n": 156
+    },
+    "deepseek-flash | P1": {
+      "detection": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 0.9871794871794872,
+      "mean_output_tokens": 3469.25,
+      "n": 156
+    },
+    "deepseek-flash | P2": {
+      "detection": [
+        0.9871794871794872,
+        0.9615384615384616,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 1.0,
+      "mean_output_tokens": 3954.525641025641,
+      "n": 156
+    },
+    "deepseek-flash | P3": {
+      "detection": [
+        0.9871794871794872,
+        0.9615384615384616,
+        1.0
+      ],
+      "false_alarm": [
+        0.01282051282051282,
+        0.0,
+        0.038461538461538464
+      ],
+      "value_correct_when_flagging_wrong": 0.974025974025974,
+      "mean_output_tokens": 4136.9807692307695,
+      "n": 156
+    },
+    "gemini-3-flash-preview | P1": {
+      "detection": [
+        0.75,
+        0.25,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 1.0,
+      "mean_output_tokens": 6650.727272727273,
+      "n": 11
+    },
+    "gemini-3-flash-preview | P2": {
+      "detection": [
+        0.75,
+        0.25,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 1.0,
+      "mean_output_tokens": 7479.090909090909,
+      "n": 11
+    }
+  },
+  "contrasts": {
+    "H4 claude-haiku-5-5 P2-P1": {
+      "detection": [
+        0.0641025641025641,
+        -0.05128205128205128,
+        0.1794871794871795,
+        0.306
+      ],
+      "false_alarm": [
+        0.0641025641025641,
+        -0.02564102564102564,
+        0.15384615384615385,
+        0.209
+      ],
+      "supported": false,
+      "holm_p": 1.0
+    },
+    "H4 claude-haiku-5-5 P3-P1": {
+      "detection": [
+        0.0,
+        -0.10256410256410256,
+        0.10256410256410256,
+        1.0
+      ],
+      "false_alarm": [
+        0.038461538461538464,
+        -0.038461538461538464,
+        0.11538461538461539,
+        0.373
+      ],
+      "supported": false,
+      "holm_p": 1.0
+    },
+    "H4 claude-sonnet-5-5 P2-P1": {
+      "detection": [
+        0.02564102564102564,
+        0.0,
+        0.0641025641025641,
+        0.257
+      ],
+      "false_alarm": [
+        -0.01282051282051282,
+        -0.05128205128205128,
+        0.02564102564102564,
+        0.786
+      ],
+      "supported": false,
+      "holm_p": 1.0
+    },
+    "H4 claude-sonnet-5-5 P3-P1": {
+      "detection": [
+        -0.01282051282051282,
+        -0.0641025641025641,
+        0.02564102564102564,
+        0.823
+      ],
+      "false_alarm": [
+        -0.01282051282051282,
+        -0.05128205128205128,
+        0.02564102564102564,
+        0.76
+      ],
+      "supported": false,
+      "holm_p": 1.0
+    },
+    "H4 claude-opus-5-5 P2-P1": {
+      "detection": [
+        0.11538461538461539,
+        0.05128205128205128,
+        0.19230769230769232,
+        0.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "supported": true,
+      "holm_p": 0.0
+    },
+    "H4 claude-opus-5-5 P3-P1": {
+      "detection": [
+        0.07692307692307693,
+        0.01282051282051282,
+        0.14102564102564102,
+        0.035
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "supported": false,
+      "holm_p": 0.315
+    },
+    "H4 deepseek-flash P2-P1": {
+      "detection": [
+        -0.01282051282051282,
+        -0.038461538461538464,
+        0.0,
+        0.723
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "supported": false,
+      "holm_p": 1.0
+    },
+    "H4 deepseek-flash P3-P1": {
+      "detection": [
+        -0.01282051282051282,
+        -0.038461538461538464,
+        0.0,
+        0.731
+      ],
+      "false_alarm": [
+        0.01282051282051282,
+        0.0,
+        0.038461538461538464,
+        0.747
+      ],
+      "supported": false,
+      "holm_p": 1.0
+    },
+    "H5 deepseek-flash - claude-haiku-5-5 (P1)": {
+      "detection": [
+        0.2564102564102564,
+        0.16666666666666666,
+        0.34615384615384615,
+        0.0
+      ],
+      "holm_p": 0.0
+    },
+    "H5 deepseek-flash - claude-sonnet-5-5 (P1)": {
+      "detection": [
+        0.02564102564102564,
+        0.0,
+        0.0641025641025641,
+        0.257
+      ],
+      "holm_p": 1.0
+    },
+    "H5 deepseek-flash - claude-opus-5-5 (P1)": {
+      "detection": [
+        0.11538461538461539,
+        0.05128205128205128,
+        0.19230769230769232,
+        0.0
+      ],
+      "holm_p": 0.0
+    },
+    "H6 Haiku-P2 minus Opus-P1 on Opus answers": {
+      "detection": [
+        0.16,
+        -0.04,
+        0.4,
+        0.208
+      ],
+      "supported": true,
+      "holm_p": 1.0
+    }
+  },
+  "cost_matched": {
+    "claude-haiku-5-5": {
+      "author_high_error": 0.49583333333333335,
+      "author_max_accuracy": 0.975,
+      "author_high_tokens": 3069.3875,
+      "author_max_tokens": 28247.3,
+      "pipelines": {
+        "claude-haiku-5-5 | P1": {
+          "expected_accuracy": 0.7845818425760286,
+          "detection": 0.6976744186046512,
+          "false_alarm": 0.038461538461538464,
+          "tokens_author_plus_review": 4679.517934782609,
+          "n": 69
+        },
+        "claude-haiku-5-5 | P2": {
+          "expected_accuracy": 0.765190816935003,
+          "detection": 0.7906976744186046,
+          "false_alarm": 0.07692307692307693,
+          "tokens_author_plus_review": 4783.532427536232,
+          "n": 69
+        },
+        "claude-haiku-5-5 | P3": {
+          "expected_accuracy": 0.7536598091830651,
+          "detection": 0.6744186046511628,
+          "false_alarm": 0.07692307692307693,
+          "tokens_author_plus_review": 4675.054166666667,
+          "n": 69
+        },
+        "claude-opus-5-5 | P1": {
+          "expected_accuracy": 0.965406976744186,
+          "detection": 0.9767441860465116,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3511.3875,
+          "n": 69
+        },
+        "claude-opus-5-5 | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3563.8802536231883,
+          "n": 69
+        },
+        "claude-opus-5-5 | P3": {
+          "expected_accuracy": 0.9769379844961241,
+          "detection": 0.9767441860465116,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3578.06865942029,
+          "n": 69
+        },
+        "claude-sonnet-5-5 | P1": {
+          "expected_accuracy": 0.9229539355992844,
+          "detection": 0.9534883720930233,
+          "false_alarm": 0.038461538461538464,
+          "tokens_author_plus_review": 3738.213586956522,
+          "n": 69
+        },
+        "claude-sonnet-5-5 | P2": {
+          "expected_accuracy": 0.9884689922480621,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3795.633876811594,
+          "n": 69
+        },
+        "claude-sonnet-5-5 | P3": {
+          "expected_accuracy": 0.9769379844961241,
+          "detection": 0.9767441860465116,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3773.8947463768113,
+          "n": 69
+        },
+        "deepseek-flash | P1": {
+          "expected_accuracy": 0.9884689922480621,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 6876.228079710145,
+          "n": 69
+        },
+        "deepseek-flash | P2": {
+          "expected_accuracy": 0.9884689922480621,
+          "detection": 0.9767441860465116,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 7468.155615942029,
+          "n": 69
+        },
+        "deepseek-flash | P3": {
+          "expected_accuracy": 0.965406976744186,
+          "detection": 0.9767441860465116,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 7416.735326086957,
+          "n": 69
+        },
+        "gemini-3-flash-preview | P1": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 11204.958928571428,
+          "n": 7
+        },
+        "gemini-3-flash-preview | P2": {
+          "expected_accuracy": 0.8347222222222221,
+          "detection": 0.6666666666666666,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 10809.244642857142,
+          "n": 7
+        }
+      }
+    },
+    "claude-sonnet-5-5": {
+      "author_high_error": 0.18125,
+      "author_max_accuracy": 0.9875,
+      "author_high_tokens": 1492.525,
+      "author_max_tokens": 6009.55,
+      "pipelines": {
+        "claude-haiku-5-5 | P1": {
+          "expected_accuracy": 0.8760267857142857,
+          "detection": 0.8,
+          "false_alarm": 0.10714285714285714,
+          "tokens_author_plus_review": 3109.288157894737,
+          "n": 38
+        },
+        "claude-haiku-5-5 | P2": {
+          "expected_accuracy": 0.8579017857142857,
+          "detection": 0.7,
+          "false_alarm": 0.10714285714285714,
+          "tokens_author_plus_review": 3327.472368421053,
+          "n": 38
+        },
+        "claude-haiku-5-5 | P3": {
+          "expected_accuracy": 0.8690178571428572,
+          "detection": 0.8,
+          "false_alarm": 0.07142857142857142,
+          "tokens_author_plus_review": 3046.7355263157897,
+          "n": 38
+        },
+        "claude-opus-5-5 | P1": {
+          "expected_accuracy": 0.96375,
+          "detection": 0.9,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1863.6565789473684,
+          "n": 38
+        },
+        "claude-opus-5-5 | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1931.5513157894738,
+          "n": 38
+        },
+        "claude-opus-5-5 | P3": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1957.9986842105263,
+          "n": 38
+        },
+        "claude-sonnet-5-5 | P1": {
+          "expected_accuracy": 0.9707589285714285,
+          "detection": 1.0,
+          "false_alarm": 0.03571428571428571,
+          "tokens_author_plus_review": 2112.525,
+          "n": 38
+        },
+        "claude-sonnet-5-5 | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 2181.8934210526318,
+          "n": 38
+        },
+        "claude-sonnet-5-5 | P3": {
+          "expected_accuracy": 0.96375,
+          "detection": 0.8,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 2156.288157894737,
+          "n": 38
+        },
+        "deepseek-flash | P1": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 4694.893421052631,
+          "n": 38
+        },
+        "deepseek-flash | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 4957.577631578948,
+          "n": 38
+        },
+        "deepseek-flash | P3": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 5055.893421052631,
+          "n": 38
+        },
+        "gemini-3-flash-preview | P1": {
+          "expected_accuracy": 0.81875,
+          "detection": 0.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 5372.858333333334,
+          "n": 3
+        },
+        "gemini-3-flash-preview | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 10295.191666666666,
+          "n": 3
+        }
+      }
+    },
+    "claude-opus-5-5": {
+      "author_high_error": 0.35,
+      "author_max_accuracy": 1.0,
+      "author_high_tokens": 1326.5,
+      "author_max_tokens": 5976.0625,
+      "pipelines": {
+        "claude-haiku-5-5 | P1": {
+          "expected_accuracy": 0.902,
+          "detection": 0.8,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3058.5612244897957,
+          "n": 49
+        },
+        "claude-haiku-5-5 | P2": {
+          "expected_accuracy": 0.8076666666666668,
+          "detection": 0.88,
+          "false_alarm": 0.16666666666666666,
+          "tokens_author_plus_review": 3184.0714285714284,
+          "n": 49
+        },
+        "claude-haiku-5-5 | P3": {
+          "expected_accuracy": 0.8627499999999999,
+          "detection": 0.84,
+          "false_alarm": 0.125,
+          "tokens_author_plus_review": 3110.0510204081634,
+          "n": 49
+        },
+        "claude-opus-5-5 | P1": {
+          "expected_accuracy": 0.902,
+          "detection": 0.72,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1700.8673469387754,
+          "n": 49
+        },
+        "claude-opus-5-5 | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1799.4795918367347,
+          "n": 49
+        },
+        "claude-opus-5-5 | P3": {
+          "expected_accuracy": 0.972,
+          "detection": 0.92,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1814.295918367347,
+          "n": 49
+        },
+        "claude-sonnet-5-5 | P1": {
+          "expected_accuracy": 0.986,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 1993.908163265306,
+          "n": 49
+        },
+        "claude-sonnet-5-5 | P2": {
+          "expected_accuracy": 0.9729166666666667,
+          "detection": 1.0,
+          "false_alarm": 0.041666666666666664,
+          "tokens_author_plus_review": 2042.091836734694,
+          "n": 49
+        },
+        "claude-sonnet-5-5 | P3": {
+          "expected_accuracy": 0.9589166666666666,
+          "detection": 1.0,
+          "false_alarm": 0.041666666666666664,
+          "tokens_author_plus_review": 2019.908163265306,
+          "n": 49
+        },
+        "deepseek-flash | P1": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 4527.336734693878,
+          "n": 49
+        },
+        "deepseek-flash | P2": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 5035.051020408164,
+          "n": 49
+        },
+        "deepseek-flash | P3": {
+          "expected_accuracy": 0.9729166666666667,
+          "detection": 1.0,
+          "false_alarm": 0.041666666666666664,
+          "tokens_author_plus_review": 5612.091836734694,
+          "n": 49
+        },
+        "gemini-3-flash-preview | P1": {
+          "expected_accuracy": NaN,
+          "detection": NaN,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 5894.5,
+          "n": 1
+        },
+        "gemini-3-flash-preview | P2": {
+          "expected_accuracy": NaN,
+          "detection": NaN,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 3009.5,
+          "n": 1
+        }
+      }
+    }
+  }
+}
