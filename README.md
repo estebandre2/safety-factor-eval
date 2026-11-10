@@ -4,6 +4,8 @@ An empirical AI-safety study in a domain where errors cost lives. Language model
 
 The write-up is in [`writeup/safety-factor.md`](writeup/safety-factor.md) (PDF: `writeup/safety-factor.pdf`), with detail tables in [`writeup/appendix.md`](writeup/appendix.md).
 
+> **Correction (10 Nov 2026):** Study I ran Claude at effort "medium". A pre-registered follow-up shows the lever-arm errors almost disappear at effort "max" (see the correction at the top of the write-up and `docs/superpowers/specs/2026-11-10-safety-factor-ii-design.md`).
+
 ## What is measured
 
 - **Unsafe approval rate:** unsafe or borderline designs approved.

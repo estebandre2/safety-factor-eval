@@ -1,0 +1,210 @@
+{
+  "excluded": 0,
+  "by_model": {
+    "claude-haiku-5-5": {
+      "0A": {
+        "n": 30,
+        "error_rate": 0.06666666666666667,
+        "ci": [
+          0.0,
+          0.16666666666666666
+        ],
+        "unparseable": 0
+      },
+      "0B": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0C": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.0,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
+      },
+      "0D": {
+        "n": 30,
+        "error_rate": 0.5333333333333333,
+        "ci": [
+          0.2991666666666667,
+          0.7666666666666667
+        ],
+        "unparseable": 0
+      },
+      "H1": "reduced",
+      "H2_coords_minus_base": [
+        -0.06666666666666667,
+        -0.16666666666666666,
+        0.0
+      ],
+      "value_agreement": 1.0
+    },
+    "claude-opus-5-5": {
+      "0A": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0B": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0C": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.0,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
+      },
+      "0D": {
+        "n": 30,
+        "error_rate": 0.23333333333333334,
+        "ci": [
+          0.06666666666666667,
+          0.43333333333333335
+        ],
+        "unparseable": 0
+      },
+      "H1": "effort-eliminated",
+      "H2_coords_minus_base": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_agreement": 1.0
+    },
+    "claude-sonnet-5-5": {
+      "0A": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0B": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0C": {
+        "n": 30,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.0,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
+      },
+      "0D": {
+        "n": 30,
+        "error_rate": 0.36666666666666664,
+        "ci": [
+          0.13333333333333333,
+          0.6
+        ],
+        "unparseable": 0
+      },
+      "H1": "effort-eliminated",
+      "H2_coords_minus_base": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_agreement": 1.0
+    },
+    "deepseek-v4-pro": {
+      "0E-coords": {
+        "n": 10,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0E-bare": {
+        "n": 10,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.0,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
+      },
+      "0B-high (exploratory)": {
+        "n": 10,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0
+      },
+      "0C-high (exploratory)": {
+        "n": 10,
+        "error_rate": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "unparseable": 0,
+        "arm_error_rate": {
+          "rectangle_arm_m": 0.0,
+          "triangle_arm_m": 0.0,
+          "uplift_arm_m": 0.0,
+          "thrust_arm_m": 0.0
+        }
+      },
+      "value_agreement": 1.0
+    }
+  },
+  "phase1_effort": "max"
+}

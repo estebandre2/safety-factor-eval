@@ -2,6 +2,15 @@
 
 Esteban Garzon · November 2026 · Code, data and appendix: this repository
 
+> **Correction, 10 November 2026: the errors depend on the effort setting.** This study ran Claude at effort "medium". A pre-registered follow-up (Safety Factor II, `docs/superpowers/specs/2026-11-10-safety-factor-ii-design.md`) re-ran the 10 overturning cases at higher effort. At "max", the lever-arm errors almost disappear: Haiku 2/30, Sonnet 0/30, Opus 0/30. At "high" they remain: Haiku 16/30, Sonnet 11/30, Opus 7/30.
+>
+> At "max" the models reason 4–10 times longer. The findings below therefore describe Claude at "medium" effort. Two of them are confounded by reasoning volume:
+>
+> - the comparison with DeepSeek, which ran at "high" and wrote about as much as Claude does at "max";
+> - the calculator result.
+>
+> The text is otherwise unchanged; the affected statements are marked.
+
 ## Summary
 
 I asked five language models (Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5; DeepSeek Flash and V4-Pro) to approve or reject 40 hydraulic design checks:
@@ -22,7 +31,7 @@ Every unsafe approval (67 of 2,784 unsafe-case answers) was a **calculation erro
 
 - **Two lever-arm mistakes explain 280 of 281 wrong overturning values from Claude models.** Both place a triangular load's resultant at the wrong third of the base.
 - **The direction of the mistake decides the failure.** Haiku and Sonnet mostly misplace the uplift, which inflates the safety factor, so they approve unsafe dams. Opus always misplaces the concrete triangle, which deflates it. Opus never approved an unsafe design, but it rejected 6.7% of safe ones.
-- **A calculator tool did not help,** because the models applied it faithfully to a wrongly set-up equation.
+- **A calculator tool did not help,** because the models applied it faithfully to a wrongly set-up equation. *(At "medium" effort; see the correction above.)*
 - **A same-model verifier both caught and created errors.**
 
 The risk I measured is not sycophancy but confident, systematic miscalculation that looks like sound engineering.
@@ -153,7 +162,7 @@ Opus's record of zero unsafe approvals is therefore not evidence of correct reas
 
 The answers read as competent work: tidy moment tables, consistent units, caveats about drainage and the middle-third rule. Nothing signals the misplaced arm, and a reviewer who checks only the arithmetic finds no error.
 
-DeepSeek computed overturning correctly in 97% of cases or better (V4-Pro 50/50, Flash 151/156). An independently trained model reproducing the code's values also supports the ground truth.
+DeepSeek computed overturning correctly in 97% of cases or better (V4-Pro 50/50, Flash 151/156). An independently trained model reproducing the code's values also supports the ground truth. *Correction: DeepSeek ran at "high" and wrote about 5,700–11,300 output tokens per overturning answer, against 1,300–2,500 for Claude at "medium". The difference is therefore not evidence of a family effect. Claude at "max" also computes these cases correctly.*
 
 ### 3.4 Mitigations (H3 not supported)
 
@@ -178,7 +187,7 @@ Unsafe approvals, Mode A, unsafe cases under pressure:
     - A same-model verifier shares them, and sometimes injects them.
     - Their sign, not the model's caution, decides between an unsafe approval and a false rejection.
     - Aggregate safety metrics can therefore reward a model for an error that happens to be conservative.
-- **Tools do not fix a mis-specified set-up.** "Compute with code" addresses arithmetic, but the failure sits one step earlier, in setting up the equation. A better mitigation is an independent check of the set-up: a reference calculation, a second method such as the resultant location, or a model from another family. DeepSeek made almost none of these errors.
+- **Tools do not fix a mis-specified set-up.** "Compute with code" addresses arithmetic, but the failure sits one step earlier, in setting up the equation. A better mitigation is an independent check of the set-up: a reference calculation, a second method such as the resultant location, or a model from another family. *Correction: the most effective lever found so far is the effort setting itself; at "max" the errors almost disappear. Whether a cheaper reviewer can match that is the subject of Safety Factor II.*
 
 ## 5. Limitations
 
@@ -188,7 +197,7 @@ Unsafe approvals, Mode A, unsafe cases under pressure:
     - English only.
     - Mode B ran only in the pilot and the probe.
     - Opus and V4-Pro ran only M0.
-    - One effort setting per provider.
+    - One effort setting per provider: Claude at "medium", DeepSeek at "high". The follow-up shows that the error rate depends strongly on effort (correction at the top).
 - **No human labels.** The judge was validated by a rule reader and a second model, and the rule reader abstains on 149 of 3,967 answers. The judge belongs to the same family as three tested models; the model-free check covers verdicts, not extracted values.
 - **Statistics.** Fisher's test treats repeats as independent, so its p-values are optimistic; none is significant regardless. Mechanism attribution matches values within 2%, so a different mistake that lands on the same number would be misattributed.
 
@@ -196,6 +205,6 @@ Unsafe approvals, Mode A, unsafe cases under pressure:
 
 Given a fully specified hydraulic check, the models I tested did not trade safety for a client's budget, a senior engineer's approval or a deadline. They did approve unsafe dams by misplacing a triangle's resultant. The error is stable and plausible-looking, a calculator does not catch it, a same-model reviewer can introduce it, and with the opposite sign it makes another model look safer than it is. The checks are idealized, but the same mistakes move the USACE resultant-location criterion in the same direction.
 
-For engineering review, the open problem is independent verification of the problem set-up, not resistance to pressure.
+For engineering review, the open problem is independent verification of the problem set-up, not resistance to pressure. A follow-up shows the error is largely a function of how much the model is allowed to reason: at "max" effort it almost disappears. That makes the effort setting, often lowered to save cost, a safety-relevant choice.
 
 *Reproducibility:* `README.md`. Detail tables are in `writeup/appendix.md`.

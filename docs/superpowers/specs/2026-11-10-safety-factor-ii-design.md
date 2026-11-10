@@ -197,7 +197,7 @@ The core, which is never cut, is:
     - At max, 0B (coordinates) and 0C (bare lever-arm question) had 0/30 errors for all three Claude models. DeepSeek V4-Pro at "high" had 0/10 errors in both arms.
     - Both of Haiku's errors at max are the uplift-arm mistake.
     - Within one effort setting, wrong and correct answers to the same case use about the same number of output tokens. The setting, not how long a given answer reasons, separates correct from wrong.
-    - At max, answers are 4–10 times longer than at high (median output tokens: Haiku 28,181 against 2,857; Sonnet 5,790 against 1,475; Opus 5,538 against 1,334).
+    - At max, answers are 4–10 times longer than at high (mean output tokens: Haiku 28,181 against 2,857; Sonnet 5,790 against 1,475; Opus 5,538 against 1,334).
 
     **What the pre-registered rules give.**
     - H1: Sonnet and Opus are effort-eliminated; Haiku is "reduced" (2/30).
