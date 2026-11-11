@@ -141,7 +141,8 @@ def _run_sync(trial: Trial, call: Callable) -> Trial:
             apply_reply(trial, call(request, trial.model))
         except ToolsUnsupported:
             trial.status, trial.phase = "unsupported", "done"
-        except (httpx.HTTPError, RuntimeError):
+        except (httpx.HTTPError, RuntimeError) as exc:
+            print(f"{trial.model} {trial.case.id}: {type(exc).__name__}: {str(exc)[:200]}", file=sys.stderr)
             trial.status, trial.phase = "error", "done"
     return trial
 

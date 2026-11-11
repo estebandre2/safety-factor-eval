@@ -35,7 +35,10 @@ def run_gemini(request: dict, model: str = GEMINI_MODEL, client: httpx.Client | 
         break
     response.raise_for_status()
     data = response.json()
-    cand = (data.get("candidates") or [{}])[0]
+    if not data.get("candidates"):  # blocked prompt: no candidate at all
+        return Reply(text="", tool_calls=[], stop_reason="refusal", usage={"input_tokens": 0, "output_tokens": 0},
+                     raw_content=[])
+    cand = data["candidates"][0]
     text = "".join(p.get("text", "") for p in cand.get("content", {}).get("parts", []) if not p.get("thought"))
     usage = data.get("usageMetadata", {})
     out = int(usage.get("candidatesTokenCount", 0)) + int(usage.get("thoughtsTokenCount", 0))

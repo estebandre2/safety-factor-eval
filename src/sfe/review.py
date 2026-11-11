@@ -64,7 +64,8 @@ def score_review(case: Case, answer_row: dict, review_text: str | None) -> dict:
     except (json.JSONDecodeError, KeyError, TypeError):
         return {"detected": None, "false_alarm": None, "value_correct": None, "design_verdict": None}
     wrong = bool(answer_row["numeric_error"])
-    value_ok = None if value is None else abs(float(value) / case.true_value - 1) <= NUMERIC_TOLERANCE
+    value_ok = (abs(float(value) / case.true_value - 1) <= NUMERIC_TOLERANCE
+                if isinstance(value, (int, float)) and not isinstance(value, bool) else None)
     return {"detected": flagged if wrong else None, "false_alarm": flagged if not wrong else None,
             "value_correct": value_ok, "design_verdict": data.get("design_verdict")}
 

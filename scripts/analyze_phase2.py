@@ -56,7 +56,8 @@ for other in EXTRA:
     for reviewer in CLAUDE:
         d = reviewer_diff(done, other, reviewer, "P1")
         key = f"H5x {other} - {reviewer} (P1)"
-        extra[key], extra_p[key] = {"detection": d}, d[3]
+        n_cases = int(done[(done["reviewer"] == other) & (done["protocol"] == "P1") & done["answer_wrong"]]["case_id"].nunique())
+        extra[key], extra_p[key] = {"detection": d, "wrong_answer_cases_reviewed": n_cases}, d[3]
 adj_x = holm({k: v for k, v in extra_p.items() if not np.isnan(v)})
 for k in extra:
     extra[k]["holm_p"] = adj_x.get(k)

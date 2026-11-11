@@ -106,8 +106,11 @@ def _chat(request: dict, model: str, base_url: str, key_env: str, client: httpx.
             continue
         break
     response.raise_for_status()
-    data = response.json()
-    choice = data["choices"][0]
+    try:
+        data = response.json()
+        choice = data["choices"][0]
+    except (KeyError, IndexError, TypeError, ValueError) as exc:  # e.g. HTTP 200 with an error body
+        raise RuntimeError(f"unexpected response from {base_url}: {response.text[:200]}") from exc
     message = choice.get("message", {})
     text = (message.get("content") or "").strip()
     calls = [{"id": c["id"], "name": c["function"]["name"], "input": _arguments(c["function"].get("arguments"))}

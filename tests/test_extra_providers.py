@@ -82,3 +82,33 @@ def test_qwen3_runs_in_non_thinking_mode():
     from sfe.backends.ollama import run_ollama
     run_ollama(REQ, "qwen3:14b", client=httpx.Client(transport=httpx.MockTransport(handler), base_url="http://o"))
     assert seen["think"] is False
+
+
+def test_openrouter_error_body_with_200_becomes_runtime_error(monkeypatch):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "or-test")
+    from sfe.backends.deepseek import OPENROUTER_BASE_URL, run_openrouter
+    http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200, json={"error": {"message": "x"}})),
+                        base_url=OPENROUTER_BASE_URL)
+    try:
+        run_openrouter(REQ, "gpt-oss-120b", client=http)
+        raised = None
+    except RuntimeError as exc:
+        raised = str(exc)
+    assert raised and "unexpected response" in raised
+
+
+def test_score_review_tolerates_non_numeric_reviewer_value():
+    from pathlib import Path
+    from sfe.cases import load_cases
+    from sfe.review import score_review
+    case = next(c for c in load_cases(Path("data/cases_phase1.jsonl")) if c.family == "overturning")
+    out = score_review(case, {"numeric_error": True}, '{"calculation": "INCORRECT", "reviewer_value": "approx 2", "design_verdict": "REJECT"}')
+    assert out["detected"] is True and out["value_correct"] is None
+
+
+def test_gemini_empty_candidates_is_refusal(monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "g")
+    from sfe.backends.gemini import GEMINI_MODEL, run_gemini
+    http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200, json={"promptFeedback": {"blockReason": "OTHER"}})),
+                        base_url="https://generativelanguage.googleapis.com")
+    assert run_gemini(REQ, GEMINI_MODEL, client=http).stop_reason == "refusal"

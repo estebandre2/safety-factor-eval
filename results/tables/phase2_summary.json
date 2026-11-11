@@ -853,6 +853,7 @@
         0.34615384615384615,
         0.0
       ],
+      "wrong_answer_cases_reviewed": 78,
       "holm_p": 0.0
     },
     "H5x gemini-3-flash-preview - claude-sonnet-5-5 (P1)": {
@@ -862,6 +863,7 @@
         0.0641025641025641,
         0.778
       ],
+      "wrong_answer_cases_reviewed": 78,
       "holm_p": 0.778
     },
     "H5x gemini-3-flash-preview - claude-opus-5-5 (P1)": {
@@ -871,6 +873,7 @@
         0.16698717948717773,
         0.001
       ],
+      "wrong_answer_cases_reviewed": 78,
       "holm_p": 0.003
     },
     "H5x gpt-oss-120b - claude-haiku-5-5 (P1)": {
@@ -880,6 +883,7 @@
         -0.1282051282051282,
         0.002
       ],
+      "wrong_answer_cases_reviewed": 78,
       "holm_p": 0.004
     },
     "H5x gpt-oss-120b - claude-sonnet-5-5 (P1)": {
@@ -889,6 +893,7 @@
         -0.3974358974358974,
         0.0
       ],
+      "wrong_answer_cases_reviewed": 78,
       "holm_p": 0.0
     },
     "H5x gpt-oss-120b - claude-opus-5-5 (P1)": {
@@ -898,6 +903,7 @@
         -0.2948717948717949,
         0.0
       ],
+      "wrong_answer_cases_reviewed": 78,
       "holm_p": 0.0
     }
   }
