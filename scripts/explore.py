@@ -68,7 +68,15 @@ def main() -> None:
     parser.add_argument("--round2", action="store_true", help="run E5-E6 instead of E1-E2")
     parser.add_argument("--round3", action="store_true", help="held-out dams with placebo control")
     parser.add_argument("--side", action="store_true", help="round 3: set-up-first on gate, wall, sliding")
+    parser.add_argument("--oss-setup", action="store_true", help="E7: set-up-first on gpt-oss-120b (OpenRouter)")
     args = parser.parse_args()
+    if args.oss_setup:  # within the prepaid OpenRouter balance; no Claude cost except the judge
+        cases = [c for c in load_cases(CASES) if c.family == "overturning"]
+        trials = [new_trial(c, "neutral", "A", "gpt-oss-120b", "M0", 0, effort="high", variant="setup") for c in cases]
+        out = Path("results/raw/explore_oss.jsonl")
+        print(f"E7: {len(trials)} gpt-oss-120b trials -> {out}")
+        run(trials, out)
+        return
     if args.round3 or args.side:
         trials, out = plan3(args.side), (OUT3_SIDE if args.side else OUT3)
     else:
