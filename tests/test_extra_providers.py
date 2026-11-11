@@ -55,7 +55,8 @@ def test_sync_backend_routes_by_model():
 
 
 def test_ollama_thinking_model_gets_think_flag_budget_and_review_schema():
-    from sfe.backends.ollama import THINKING_MODELS, run_ollama
+    import sfe.backends.ollama as ol
+    from sfe.backends.ollama import run_ollama
     seen = {}
 
     def handler(request):
@@ -64,8 +65,20 @@ def test_ollama_thinking_model_gets_think_flag_budget_and_review_schema():
                                          "done_reason": "stop", "prompt_eval_count": 10, "eval_count": 99})
 
     http = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://ollama")
-    assert "qwen3:14b" in THINKING_MODELS
-    reply = run_ollama(REQ, "qwen3:14b", client=http)
+    ol.THINKING_MODELS.add("think-model")
+    reply = run_ollama(REQ, "think-model", client=http)
     assert seen["think"] is True and seen["options"]["num_predict"] >= 16000
     assert seen["format"] == REQ["schema"]
     assert reply.text == '{"calculation": "CORRECT"}' and reply.usage["output_tokens"] == 99
+
+
+def test_qwen3_runs_in_non_thinking_mode():
+    seen = {}
+
+    def handler(request):
+        seen.update(json.loads(request.content))
+        return httpx.Response(200, json={"message": {"content": "ok"}, "done_reason": "stop"})
+
+    from sfe.backends.ollama import run_ollama
+    run_ollama(REQ, "qwen3:14b", client=httpx.Client(transport=httpx.MockTransport(handler), base_url="http://o"))
+    assert seen["think"] is False

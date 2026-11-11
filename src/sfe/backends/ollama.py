@@ -11,7 +11,8 @@ NUM_CTX = 16384  # Ollama defaults to 4096, which silently truncates multi-turn 
 NUM_PREDICT = 4000  # output cap; hitting it is recorded as max_tokens
 # Exploratory E4 (amendment 2026-11-10 night): local reasoning models think before answering; the thinking counts
 # toward num_predict, so they get a larger budget and context.
-THINKING_MODELS = {"qwen3:14b"}
+THINKING_MODELS: set[str] = set()  # qwen3:14b with thinking took over 20 minutes per overturning answer here
+NON_THINKING_MODELS = {"qwen3:14b"}  # E4 as revised: Qwen3's documented non-thinking mode
 THINKING_NUM_PREDICT, THINKING_NUM_CTX = 24000, 32768
 
 
@@ -53,6 +54,8 @@ def run_ollama(request: dict, model: str, base_url: str = DEFAULT_URL, client: h
                   "messages": to_ollama_messages(request.get("system", ""), request["messages"])}
     if thinking:
         body["think"] = True
+    elif model in NON_THINKING_MODELS:
+        body["think"] = False
     if request.get("tools"):
         body["tools"] = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
                                                            "parameters": t["input_schema"]}} for t in request["tools"]]
