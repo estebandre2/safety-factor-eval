@@ -114,7 +114,7 @@ These runs were designed after the pre-registered phases, from their results. Ea
 
 - **E1, effort dose-response (80 dams).** The error falls monotonically with effort for every model: Haiku 80% → 68% → 50% → 2.5% from "low" to "max", Sonnet 29% → 1.3%, Opus 64% → 0%.
 - **E2/E6, set-up first.** One sentence before the question (*"Before computing anything, write down for every load and weight where its line of action is, measured from the point about which moments are taken, and how you located it."*) lowers the error at every effort. Opus makes no errors even at "low", at about a quarter of the output and cost of "max".
-- **E3/E5, why the wall had no errors.** Without uplift, Opus still misplaces the dam's triangle (17.5%). Stating where the triangle's apex is, as the wall text does, removes Opus's error, but makes Haiku and Sonnet worse through more uplift errors. A sentence that fixes one model's set-up can disturb another's.
+- **E3/E5, why the wall's front batter had no errors.** Without uplift, Opus still misplaces the dam's triangle (17.5%). Stating where the triangle's apex is, as the wall text does, removes Opus's error, but makes Haiku and Sonnet worse through more uplift errors. A sentence that fixes one model's set-up can disturb another's.
 - **E7.** Set-up first does not help gpt-oss-120b (27.5% → 23%, CI includes zero).
 - **E4.** A small local model (qwen3:14b, non-thinking) got 94% of the dams wrong, almost all in ways unrelated to the lever arms, and reviewed at chance level (appendix §D).
 
