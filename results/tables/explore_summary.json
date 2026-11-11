@@ -253,5 +253,189 @@
     -0.05625
    ]
   }
+ },
+ "E5": {
+  "claude-haiku-5-5": {
+   "n": 240,
+   "rate": 0.6083333333333333,
+   "ci": [
+    0.5498958333333334,
+    0.6666666666666666
+   ],
+   "mechanisms": {
+    "uplift_arm (hard)": 124,
+    "uplift+triangle (hard)": 12,
+    "triangle_centroid (hard)": 8,
+    "other": 1,
+    "ambiguous": 1
+   },
+   "apex_minus_base": [
+    0.1125,
+    0.03333333333333333,
+    0.1958333333333333
+   ],
+   "triangle_share_diff": [
+    -0.075,
+    -0.12916666666666665,
+    -0.02083333333333333
+   ]
+  },
+  "claude-sonnet-5-5": {
+   "n": 160,
+   "rate": 0.3125,
+   "ci": [
+    0.2375,
+    0.3875
+   ],
+   "mechanisms": {
+    "uplift_arm (hard)": 45,
+    "uplift+triangle (hard)": 3,
+    "triangle_centroid (hard)": 2
+   },
+   "apex_minus_base": [
+    0.13125,
+    0.0375,
+    0.225
+   ],
+   "triangle_share_diff": [
+    0.0125,
+    -0.01875,
+    0.05
+   ]
+  },
+  "claude-opus-5-5": {
+   "n": 160,
+   "rate": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "mechanisms": {},
+   "apex_minus_base": [
+    -0.35,
+    -0.43125,
+    -0.26875
+   ],
+   "triangle_share_diff": [
+    -0.34375,
+    -0.425,
+    -0.26875
+   ]
+  }
+ },
+ "E6": {
+  "claude-haiku-5-5": {
+   "low": {
+    "n": 240,
+    "rate": 0.48333333333333334,
+    "ci": [
+     0.4166666666666667,
+     0.55
+    ],
+    "setup_minus_base": [
+     -0.3166666666666667,
+     -0.4041666666666667,
+     -0.225
+    ],
+    "meets_threshold": true,
+    "mechanisms": {
+     "uplift_arm (hard)": 71,
+     "uplift+triangle (hard)": 24,
+     "triangle_centroid (hard)": 18,
+     "other": 2,
+     "ambiguous": 1
+    }
+   },
+   "medium": {
+    "n": 240,
+    "rate": 0.37083333333333335,
+    "ci": [
+     0.3,
+     0.44166666666666665
+    ],
+    "setup_minus_base": [
+     -0.3083333333333334,
+     -0.3916666666666667,
+     -0.2208333333333333
+    ],
+    "meets_threshold": true,
+    "mechanisms": {
+     "uplift_arm (hard)": 62,
+     "uplift+triangle (hard)": 14,
+     "triangle_centroid (hard)": 12,
+     "thrust_arm (easy)": 1
+    }
+   }
+  },
+  "claude-sonnet-5-5": {
+   "low": {
+    "n": 160,
+    "rate": 0.025,
+    "ci": [
+     0.00625,
+     0.05
+    ],
+    "setup_minus_base": [
+     -0.26875,
+     -0.35625,
+     -0.1875
+    ],
+    "meets_threshold": true,
+    "mechanisms": {
+     "uplift_arm (hard)": 4
+    }
+   },
+   "medium": {
+    "n": 160,
+    "rate": 0.0625,
+    "ci": [
+     0.025,
+     0.10625
+    ],
+    "setup_minus_base": [
+     -0.20625,
+     -0.29390625,
+     -0.11875
+    ],
+    "meets_threshold": true,
+    "mechanisms": {
+     "uplift_arm (hard)": 8,
+     "uplift+triangle (hard)": 1,
+     "triangle_centroid (hard)": 1
+    }
+   }
+  },
+  "claude-opus-5-5": {
+   "low": {
+    "n": 160,
+    "rate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "setup_minus_base": [
+     -0.64375,
+     -0.71875,
+     -0.56875
+    ],
+    "meets_threshold": true,
+    "mechanisms": {}
+   },
+   "medium": {
+    "n": 160,
+    "rate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "setup_minus_base": [
+     -0.36875,
+     -0.44375,
+     -0.29375
+    ],
+    "meets_threshold": true,
+    "mechanisms": {}
+   }
+  }
  }
 }

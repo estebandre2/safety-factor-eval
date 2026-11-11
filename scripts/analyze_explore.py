@@ -1,7 +1,9 @@
 """Exploratory E1-E3 (amendment 2026-11-10 night) -> results/tables/explore_summary.json.
 E1: overturning error rate by effort (low, medium from explore; high, max from Phase 1), medium minus high paired.
 E2: set-up-first prompt at "high" minus base prompt at "high", paired by case; threshold >= 10 points, CI > 0.
-E3: dams without uplift at "high" against the same geometries in Phase 1 (paired by geometry)."""
+E3: dams without uplift at "high" against the same geometries in Phase 1 (paired by geometry).
+E5: apex sentence at "high" against the base prompt at "high" (error and triangle-centroid share, paired by case).
+E6: set-up-first at "low" and "medium" against the base prompt at the same effort (paired by case)."""
 import json
 from pathlib import Path
 
@@ -26,12 +28,13 @@ def load(path: str) -> pd.DataFrame:
 p1 = load("results/graded/phase1.jsonl")
 p1 = p1[(p1["family"] == "overturning") & p1["model"].isin(CLAUDE)]
 ex, nu = load("results/graded/explore.jsonl"), load("results/graded/explore_nouplift.jsonl")
-df = pd.concat([p1, ex], ignore_index=True)
+ex2 = load("results/graded/explore2.jsonl")
+df = pd.concat([p1, ex, ex2], ignore_index=True)
 df = df[df["status"] == "done"]
 df["mechanism"] = [attribute(CASES[c], v) for c, v in zip(df["case_id"], df["value_pred"])]
 summary: dict = {"excluded": {"explore": int((ex["status"] != "done").sum()) if len(ex) else None,
                               "nouplift": int((nu["status"] != "done").sum()) if len(nu) else None},
-                 "E1": {}, "E2": {}, "E3": {}}
+                 "E1": {}, "E2": {}, "E3": {}, "E5": {}, "E6": {}}
 
 for model in CLAUDE:
     m = df[df["model"] == model]
@@ -52,6 +55,31 @@ for model in CLAUDE:
         summary["E2"][model] = {"n": n, "rate": rate, "ci": error_ci(s), "setup_minus_base": d,
                                 "meets_threshold": bool(d[0] <= -0.10 and d[2] < 0),
                                 "mechanisms": mechanism_shares(s, model)}
+
+def tri_share(g: pd.DataFrame) -> pd.Series:
+    return g.assign(t=g["mechanism"].fillna("").str.contains("triangle").astype(float)).groupby("case_id")["t"].mean()
+
+
+for model in CLAUDE:
+    m = df[df["model"] == model]
+    a = m[(m["effort"] == "high") & (m["variant"] == "apex")]
+    if len(a):
+        b = m[(m["effort"] == "high") & (m["variant"] == "base")]
+        rate, n = error_rate(a)
+        common = tri_share(a).index.intersection(tri_share(b).index)
+        summary["E5"][model] = {"n": n, "rate": rate, "ci": error_ci(a), "mechanisms": mechanism_shares(a, model),
+                                "apex_minus_base": paired_case_diff(m, ("apex", "high"), ("base", "high")),
+                                "triangle_share_diff": _boot_mean((tri_share(a)[common] - tri_share(b)[common]).to_numpy())}
+    e6 = {}
+    for effort in ("low", "medium"):
+        s6 = m[(m["effort"] == effort) & (m["variant"] == "setup")]
+        if len(s6):
+            rate, n = error_rate(s6)
+            d = paired_case_diff(m, ("setup", effort), ("base", effort))
+            e6[effort] = {"n": n, "rate": rate, "ci": error_ci(s6), "setup_minus_base": d,
+                          "meets_threshold": bool(d[0] <= -0.10 and d[2] < 0), "mechanisms": mechanism_shares(s6, model)}
+    if e6:
+        summary["E6"][model] = e6
 
 if len(nu):
     nu = nu[nu["status"] == "done"].copy()
