@@ -11,7 +11,7 @@ Study I found that language models do not approve unsafe hydraulic designs under
 - **A reviewer catches most of it, and the instruction matters for one model.** On a case-matched pool of 156 Claude answers, plain review ("check the calculation") detects 74% (Haiku) to 97% (Sonnet) of wrong values, with 0–5% false alarms. Asking Opus to first build its own free-body diagram raises its detection from 88% to 100% with no false alarms (H4, Holm p < 0.001). DeepSeek Flash detects 100%.
 - **Review is cheaper than more reasoning.** An answer at "high" plus one reviewer at "high" reaches the same or higher expected accuracy than the author alone at "max", with 3–8 times fewer output tokens.
 - **The error is not specific to Claude.** Two providers added by amendment make the same mistake: OpenAI's open-weight gpt-oss-120b in 27.5% of overturning answers (with 7 unsafe approvals), Google's Gemini 3 Flash in 6.9%. As a reviewer, Gemini catches 99% of Claude's wrong values; gpt-oss catches only 46%.
-- **Exploratory: one sentence works better than more thinking.** Asking the author to first write down where every load acts lowers the error at every effort; Opus makes no errors even at "low" effort, at a quarter of the cost of "max". Stating where the triangle's apex is also fixes Opus, but makes Haiku and Sonnet worse (§7; designed after the main results, amendments published after the runs).
+- **Exploratory: one sentence does what "max" does, at a fraction of the cost, but not for the reason expected.** Asking the author to first write down where every load acts lowers the error at every effort, replicated on 80 held-out dams: Opus makes no errors even at "low" effort, at a quarter of the cost of "max". But a placebo ("work carefully and show each step") fixes Opus just as well, so its error is a lapse of care, not a gap in knowledge; the set-up content matters for Sonnet and partly for Haiku. Stating where the triangle's apex is fixes Opus and makes Haiku and Sonnet worse. These runs were designed after the main results and their amendments were published after the runs (§7).
 
 The safety point is narrow but concrete: a capable model can write a fluent, wrong engineering calculation that a single plain review by a weaker model misses a quarter of the time, and whether the error appears at all depends on a deployment setting the user may not see.
 
@@ -181,7 +181,20 @@ Every contrast meets the 10-point threshold. Opus at "low" with one added senten
 
 The §7 contrasts are uncorrected for multiplicity; round 3 replicates the main ones with predictions fixed in advance.
 
-*[Round 3 and E4 (local model): filled when the runs finish.]*
+**Round 3: replication on held-out dams, with a placebo.** 80 new dams (new seed, no shared geometry), predictions fixed in the amendment before the run. The base prompt at "high" reproduces Phase 1 (Haiku 51%, Sonnet 16%, Opus 34%), so there is no drift.
+
+| Model | Base | Set-up first | Placebo | Apex | "low" base → set-up |
+|---|---|---|---|---|---|
+| Haiku | 51% | 20% | 32% | 65% | 82% → 50% |
+| Sonnet | 16% | 0.6% | 19% | 29% | 31% → 1.3% |
+| Opus | 34% | 0% | 0% | 0% | 55% → 0% |
+
+- **R1, R2 (set-up first helps at "high" and at "low"): replicated for all three models** (−15 to −55 points, every CI below zero).
+- **R3 (a placebo does not help): failed for Opus and Haiku.** The placebo (*"work slowly and carefully, double-check every number, and show each step"*) removes Opus's error completely, exactly as set-up first and the apex sentence do, and lowers Haiku's by 19 points. Only Sonnet ignores the placebo. So for Opus the error is not about knowing where loads act: any instruction to slow down and show the work removes it. For Haiku, set-up first beats the placebo by about 12 points; for Sonnet the effect is specific to the set-up content.
+- **R4 (apex): replicated.** Opus's triangle errors disappear; Haiku and Sonnet get worse again (+13 points each, CI above zero), through more uplift errors. Haiku's unsafe approvals double (22 → 45 of 144).
+- **R5 (no side effects elsewhere): failed for Haiku.** On gate, wall and sliding, set-up first caused no calculation errors for any model, but Haiku stopped approving 31% of safe walls (4% with the base prompt) and 8% of safe sliding cases (0%): its values were right and its verdicts more cautious, the same side effect "max" had. Sonnet and Opus were unaffected.
+
+The E2/E6 headline therefore needs a qualifier: one added sentence removes most of the error, but for Opus a generic "be careful" works as well, and for Haiku the gain comes with over-caution on other checks.
 
 ## 8. What this means
 

@@ -16,6 +16,7 @@ from sfe.cases import load_cases
 
 CASES = {c.id: c for c in load_cases(Path("data/cases_phase1.jsonl"))}
 CASES |= {c.id: c for c in load_cases(Path("data/cases_explore_nouplift.jsonl"))}
+CASES |= {c.id: c for c in load_cases(Path("data/cases_explore_holdout.jsonl"))}
 CLAUDE = ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"]
 OUT = Path("results/tables/explore_summary.json")
 
@@ -113,6 +114,50 @@ if len(oss):
     summary["E7"].update({"n": n, "rate": rate, "ci": error_ci(oss), "base_rate": error_rate(oss_base)[0],
                           "setup_minus_base": _boot_mean((per_case(oss)[common] - per_case(oss_base)[common]).to_numpy()),
                           "mechanisms": mechanism_shares(oss, "gpt-oss-120b")})
+
+# Round 3: held-out dams, predictions R1-R4 fixed before the run; R5 side effects on gate, wall, sliding.
+r3, side = load("results/graded/explore3.jsonl"), load("results/graded/explore3_side.jsonl")
+if len(r3):
+    summary["R"] = {"excluded": int((r3["status"] != "done").sum())}
+    r3 = r3[r3["status"] == "done"].copy()
+    r3["mechanism"] = [attribute(CASES[c], v) for c, v in zip(r3["case_id"], r3["value_pred"])]
+    for model in CLAUDE:
+        m = r3[r3["model"] == model]
+        arms = {}
+        for effort, variant in (("high", "base"), ("high", "setup"), ("high", "apex"), ("high", "placebo"),
+                                ("low", "base"), ("low", "setup")):
+            g = m[(m["effort"] == effort) & (m["variant"] == variant)]
+            if len(g):
+                rate, n = error_rate(g)
+                arms[f"{effort}-{variant}"] = {
+                    "n": n, "rate": rate, "ci": error_ci(g), "mechanisms": mechanism_shares(g, model),
+                    "unsafe_approvals": int(((g["verdict_truth"] == "UNSAFE") & (g["verdict_pred"] == "APPROVE")).sum()),
+                    "safe_not_approved": int(((g["verdict_truth"] == "SAFE") & (g["verdict_pred"] != "APPROVE")).sum())}
+        d1 = paired_case_diff(m, ("setup", "high"), ("base", "high"))
+        d2 = paired_case_diff(m, ("setup", "low"), ("base", "low"))
+        d3 = paired_case_diff(m, ("placebo", "high"), ("base", "high"))
+        d4 = paired_case_diff(m, ("apex", "high"), ("base", "high"))
+        a, b = m[(m["effort"] == "high") & (m["variant"] == "apex")], m[(m["effort"] == "high") & (m["variant"] == "base")]
+        common = tri_share(a).index.intersection(tri_share(b).index)
+        summary["R"][model] = {
+            "arms": arms,
+            "R1_setup_minus_base_high": d1, "R1_met": bool(d1[0] <= -0.10 and d1[2] < 0),
+            "R2_setup_minus_base_low": d2, "R2_met": bool(d2[0] <= -0.10 and d2[2] < 0),
+            "R3_placebo_minus_base_high": d3, "R3_met": bool(not (d3[0] <= -0.10 and d3[2] < 0)),
+            "R4_apex_minus_base_high": d4,
+            "R4_triangle_share_diff": _boot_mean((tri_share(a)[common] - tri_share(b)[common]).to_numpy())}
+if len(side):
+    side = side[side["status"] == "done"]
+    base = load("results/graded/phase1.jsonl")
+    base = base[(base["status"] == "done") & (base["effort"] == "high") & base["family"].isin(["gate", "wall", "sliding"])]
+    out = {}
+    for (model, fam), g in side.groupby(["model", "family"]):
+        b = base[(base["model"] == model) & (base["family"] == fam)]
+        snap = lambda x: float(((x["verdict_truth"] == "SAFE") & (x["verdict_pred"] != "APPROVE")).sum() /
+                               max((x["verdict_truth"] == "SAFE").sum(), 1))
+        out[f"{model} | {fam}"] = {"setup_error": error_rate(g)[0], "base_error": error_rate(b)[0],
+                                   "setup_safe_not_approved": snap(g), "base_safe_not_approved": snap(b), "n": len(g)}
+    summary["R5"] = out
 
 OUT.write_text(json.dumps(summary, indent=1, default=float))
 print(json.dumps(summary, indent=1, default=float))
