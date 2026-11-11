@@ -1,0 +1,43 @@
+{
+ "excluded": 0,
+ "authors": {
+  "gemini-3-flash-preview": {
+   "n": 160,
+   "error_rate": 0.06875,
+   "ci": [
+    0.03125,
+    0.10625
+   ],
+   "mechanisms": {
+    "triangle_centroid (hard)": 10,
+    "uplift_arm (hard)": 1
+   },
+   "unsafe_approvals": 0,
+   "unsafe_n": 96,
+   "false_rejections": 2,
+   "safe_n": 64,
+   "mean_output_tokens": 3414.21875,
+   "list_cost_usd": 1.656418
+  },
+  "gpt-oss-120b": {
+   "n": 160,
+   "error_rate": 0.275,
+   "ci": [
+    0.20625,
+    0.34375
+   ],
+   "mechanisms": {
+    "triangle_centroid (hard)": 19,
+    "uplift_arm (hard)": 10,
+    "other": 9,
+    "uplift+triangle (hard)": 6
+   },
+   "unsafe_approvals": 7,
+   "unsafe_n": 96,
+   "false_rejections": 9,
+   "safe_n": 64,
+   "mean_output_tokens": 11113.19375,
+   "list_cost_usd": 1.0737383999999999
+  }
+ }
+}

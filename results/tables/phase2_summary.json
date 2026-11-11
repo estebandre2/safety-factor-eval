@@ -1,7 +1,7 @@
 {
-  "reviews": 1894,
+  "reviews": 2808,
   "not_done": 0,
-  "unparseable": 0,
+  "unparseable": 2,
   "rates": {
     "claude-haiku-5-5 | P1": {
       "detection": [
@@ -185,8 +185,8 @@
     },
     "gemini-3-flash-preview | P1": {
       "detection": [
-        0.75,
-        0.25,
+        0.9871794871794872,
+        0.9615384615384616,
         1.0
       ],
       "false_alarm": [
@@ -195,13 +195,13 @@
         0.0
       ],
       "value_correct_when_flagging_wrong": 1.0,
-      "mean_output_tokens": 6650.727272727273,
-      "n": 11
+      "mean_output_tokens": 7629.083333333333,
+      "n": 156
     },
     "gemini-3-flash-preview | P2": {
       "detection": [
-        0.75,
-        0.25,
+        0.974025974025974,
+        0.935064935064935,
         1.0
       ],
       "false_alarm": [
@@ -210,8 +210,68 @@
         0.0
       ],
       "value_correct_when_flagging_wrong": 1.0,
-      "mean_output_tokens": 7479.090909090909,
-      "n": 11
+      "mean_output_tokens": 8139.115384615385,
+      "n": 156
+    },
+    "gemini-3-flash-preview | P3": {
+      "detection": [
+        0.974025974025974,
+        0.935064935064935,
+        1.0
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 1.0,
+      "mean_output_tokens": 7980.423076923077,
+      "n": 156
+    },
+    "gpt-oss-120b | P1": {
+      "detection": [
+        0.46153846153846156,
+        0.34615384615384615,
+        0.5769230769230769
+      ],
+      "false_alarm": [
+        0.02564102564102564,
+        0.0,
+        0.0641025641025641
+      ],
+      "value_correct_when_flagging_wrong": 0.8611111111111112,
+      "mean_output_tokens": 9296.99358974359,
+      "n": 156
+    },
+    "gpt-oss-120b | P2": {
+      "detection": [
+        0.41025641025641024,
+        0.3076923076923077,
+        0.5128205128205128
+      ],
+      "false_alarm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "value_correct_when_flagging_wrong": 0.9375,
+      "mean_output_tokens": 9013.865384615385,
+      "n": 156
+    },
+    "gpt-oss-120b | P3": {
+      "detection": [
+        0.4230769230769231,
+        0.32051282051282054,
+        0.5256410256410257
+      ],
+      "false_alarm": [
+        0.02564102564102564,
+        0.0,
+        0.0641025641025641
+      ],
+      "value_correct_when_flagging_wrong": 0.9696969696969697,
+      "mean_output_tokens": 8123.74358974359,
+      "n": 156
     }
   },
   "contrasts": {
@@ -476,15 +536,43 @@
           "expected_accuracy": 1.0,
           "detection": 1.0,
           "false_alarm": 0.0,
-          "tokens_author_plus_review": 11204.958928571428,
-          "n": 7
+          "tokens_author_plus_review": 11725.648369565217,
+          "n": 69
         },
         "gemini-3-flash-preview | P2": {
-          "expected_accuracy": 0.8347222222222221,
-          "detection": 0.6666666666666666,
+          "expected_accuracy": 0.9769379844961241,
+          "detection": 0.9534883720930233,
           "false_alarm": 0.0,
-          "tokens_author_plus_review": 10809.244642857142,
-          "n": 7
+          "tokens_author_plus_review": 12032.5759057971,
+          "n": 69
+        },
+        "gemini-3-flash-preview | P3": {
+          "expected_accuracy": 0.9769379844961241,
+          "detection": 0.9534883720930233,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 11332.633876811593,
+          "n": 69
+        },
+        "gpt-oss-120b | P1": {
+          "expected_accuracy": 0.7117248062015504,
+          "detection": 0.5116279069767442,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 12516.257065217393,
+          "n": 69
+        },
+        "gpt-oss-120b | P2": {
+          "expected_accuracy": 0.6540697674418604,
+          "detection": 0.3488372093023256,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 12124.373007246377,
+          "n": 69
+        },
+        "gpt-oss-120b | P3": {
+          "expected_accuracy": 0.696004770423375,
+          "detection": 0.4883720930232558,
+          "false_alarm": 0.07692307692307693,
+          "tokens_author_plus_review": 11160.865760869565,
+          "n": 69
         }
       }
     },
@@ -579,18 +667,46 @@
           "n": 38
         },
         "gemini-3-flash-preview | P1": {
-          "expected_accuracy": 0.81875,
-          "detection": 0.0,
+          "expected_accuracy": 0.9818749999999999,
+          "detection": 0.9,
           "false_alarm": 0.0,
-          "tokens_author_plus_review": 5372.858333333334,
-          "n": 3
+          "tokens_author_plus_review": 6610.182894736843,
+          "n": 38
         },
         "gemini-3-flash-preview | P2": {
           "expected_accuracy": 1.0,
           "detection": 1.0,
           "false_alarm": 0.0,
-          "tokens_author_plus_review": 10295.191666666666,
-          "n": 3
+          "tokens_author_plus_review": 7790.340789473685,
+          "n": 38
+        },
+        "gemini-3-flash-preview | P3": {
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 8638.077631578948,
+          "n": 38
+        },
+        "gpt-oss-120b | P1": {
+          "expected_accuracy": 0.8731249999999999,
+          "detection": 0.4,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 10716.288157894736,
+          "n": 38
+        },
+        "gpt-oss-120b | P2": {
+          "expected_accuracy": 0.9456249999999999,
+          "detection": 0.7,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 10588.919736842105,
+          "n": 38
+        },
+        "gpt-oss-120b | P3": {
+          "expected_accuracy": 0.89125,
+          "detection": 0.4,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 9266.630263157895,
+          "n": 38
         }
       }
     },
@@ -685,20 +801,104 @@
           "n": 49
         },
         "gemini-3-flash-preview | P1": {
-          "expected_accuracy": NaN,
-          "detection": NaN,
+          "expected_accuracy": 1.0,
+          "detection": 1.0,
           "false_alarm": 0.0,
-          "tokens_author_plus_review": 5894.5,
-          "n": 1
+          "tokens_author_plus_review": 9456.785714285714,
+          "n": 49
         },
         "gemini-3-flash-preview | P2": {
-          "expected_accuracy": NaN,
-          "detection": NaN,
+          "expected_accuracy": 0.986,
+          "detection": 0.96,
           "false_alarm": 0.0,
-          "tokens_author_plus_review": 3009.5,
-          "n": 1
+          "tokens_author_plus_review": 9733.132653061224,
+          "n": 49
+        },
+        "gemini-3-flash-preview | P3": {
+          "expected_accuracy": 0.986,
+          "detection": 0.96,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 9556.112244897959,
+          "n": 49
+        },
+        "gpt-oss-120b | P1": {
+          "expected_accuracy": 0.7358333333333333,
+          "detection": 0.4,
+          "false_alarm": 0.08333333333333333,
+          "tokens_author_plus_review": 10469.234693877552,
+          "n": 49
+        },
+        "gpt-oss-120b | P2": {
+          "expected_accuracy": 0.79,
+          "detection": 0.4,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 10218.459183673469,
+          "n": 49
+        },
+        "gpt-oss-120b | P3": {
+          "expected_accuracy": 0.762,
+          "detection": 0.32,
+          "false_alarm": 0.0,
+          "tokens_author_plus_review": 9766.826530612245,
+          "n": 49
         }
       }
+    }
+  },
+  "contrasts_extra": {
+    "H5x gemini-3-flash-preview - claude-haiku-5-5 (P1)": {
+      "detection": [
+        0.24358974358974358,
+        0.14102564102564102,
+        0.34615384615384615,
+        0.0
+      ],
+      "holm_p": 0.0
+    },
+    "H5x gemini-3-flash-preview - claude-sonnet-5-5 (P1)": {
+      "detection": [
+        0.01282051282051282,
+        -0.02564102564102564,
+        0.0641025641025641,
+        0.778
+      ],
+      "holm_p": 0.778
+    },
+    "H5x gemini-3-flash-preview - claude-opus-5-5 (P1)": {
+      "detection": [
+        0.10256410256410256,
+        0.038461538461538464,
+        0.16698717948717773,
+        0.001
+      ],
+      "holm_p": 0.003
+    },
+    "H5x gpt-oss-120b - claude-haiku-5-5 (P1)": {
+      "detection": [
+        -0.28205128205128205,
+        -0.4358974358974359,
+        -0.1282051282051282,
+        0.002
+      ],
+      "holm_p": 0.004
+    },
+    "H5x gpt-oss-120b - claude-sonnet-5-5 (P1)": {
+      "detection": [
+        -0.5128205128205128,
+        -0.6282051282051282,
+        -0.3974358974358974,
+        0.0
+      ],
+      "holm_p": 0.0
+    },
+    "H5x gpt-oss-120b - claude-opus-5-5 (P1)": {
+      "detection": [
+        -0.4230769230769231,
+        -0.5384615384615384,
+        -0.2948717948717949,
+        0.0
+      ],
+      "holm_p": 0.0
     }
   }
 }
