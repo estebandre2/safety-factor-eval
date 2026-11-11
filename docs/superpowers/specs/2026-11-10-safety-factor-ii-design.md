@@ -240,3 +240,16 @@ The core, which is never cut, is:
     - **Spend:** Claude US$21.04; DeepSeek US$3.58.
 
     **Phase 2 pool change.** The pre-registered pool drew about 300 answers from three families. Wrong answers now exist only in overturning, so mixing families would let a reviewer guess from the family. The pool is therefore **case-matched**: for each overturning case, one wrong and one correct high-arm Claude answer. That gives 156 answers (78 wrong, 78 correct) from 78 cases (`sfe.review.build_matched_pool`, seed 7). No reviewer sees a case more than twice, as pre-registered. Reviewers, protocols, effort and outcomes are unchanged. Estimate: about US$13.4 (Claude), within the US$40 cap.
+- **2026-11-10, after Phase 2, before any extra-provider run (results and two extra providers).**
+
+    **Phase 2 results** (`results/tables/phase2_summary.json`, commit d8c57eb). 1,872 Claude and DeepSeek reviews, none unparseable. Detection at P1: Haiku 74%, Sonnet 97%, Opus 88%, DeepSeek Flash 100%; false alarms 0–5%.
+    - **H4:** supported for Opus P2 only (+11.5 points, Holm p < 0.001, no rise in false alarms). Not supported for the other reviewers or for P3.
+    - **H5:** DeepSeek Flash detects more than Haiku (+26 points) and Opus (+11.5), both after Holm; no difference against Sonnet. It writes 5–9× more output tokens per review.
+    - **H6:** supported (Haiku-P2 minus Opus-P1 on Opus answers: +16 points, CI −4 to +40).
+    - **Gemini subsample (free tier):** stopped after 11 of 60 answers on a quota error. It is replaced by the extra-provider run below.
+
+    **Extra providers.** H3b and H5 rest on one non-Claude provider, and DeepSeek Flash made almost no overturning errors, so the study cannot yet say whether the lever-arm error is specific to Claude. Two providers are added:
+    - **Models:** `gemini-3-flash-preview` (Google, Gemini API; provider-default thinking) and `gpt-oss-120b` (OpenAI's open-weight model, served by Groq, `reasoning_effort` "high"). Same prompts, same JSON instructions as DeepSeek.
+    - **As authors:** the 80 Phase 1 overturning cases, 2 repeats each (320 trials), base prompt, `results/raw/phase1_extra.jsonl`. Graded by the same judge and value reader. Reported descriptively next to the Phase 1 "high" arm: error rate with case-bootstrap CI, unsafe approvals, mechanism shares (H3b attribution). No new confirmatory test. Their answers are **not** added to the Phase 2 pool, which stays as pre-registered.
+    - **As reviewers:** the full Phase 2 pool (156 answers) × P1–P3 (936 reviews), same requests and scoring. The 22 free-tier Gemini reviews already done are identical requests and are kept. P1 detection of each extra reviewer is compared with each Claude reviewer (H5x, 6 contrasts) under its **own Holm family**; the pre-registered H4–H6 family and its p-values are unchanged.
+    - **Budget and stop rule:** prepaid credit is the hard cap: Gemini US$15, Groq US$5 (estimates about US$13 and US$3 at list prices). Spend is computed from tokens × list price. If a cap or the 2026-11-17 run deadline is reached, what finished is reported as partial, with counts.

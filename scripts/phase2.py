@@ -4,6 +4,7 @@ Usage:
   uv run python scripts/phase2.py                       # builds the pool, prints the estimate, runs nothing
   uv run python scripts/phase2.py --confirm-budget 40   # runs Claude + DeepSeek reviewers (resumable)
   uv run python scripts/phase2.py --gemini 60           # optional third provider on a 60-answer subsample (free tier)
+  uv run python scripts/phase2.py --extra               # amendment 2026-11-10 (after Phase 2): Gemini + gpt-oss, full pool x P1-P3
 Writes results/raw/phase2_pool.jsonl and results/raw/phase2.jsonl.
 """
 import argparse
@@ -17,7 +18,7 @@ from pathlib import Path
 import httpx
 
 from sfe.backends.claude import claude_cost, run_claude_round
-from sfe.backends.deepseek import run_deepseek
+from sfe.backends.deepseek import run_deepseek, run_groq
 from sfe.backends.gemini import GEMINI_MODEL, run_gemini
 from sfe.cases import load_cases
 from sfe.grade import _delivered
@@ -29,6 +30,7 @@ POOL = Path("results/raw/phase2_pool.jsonl")
 OUT = Path("results/raw/phase2.jsonl")
 CLAUDE_REVIEWERS = ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"]
 DEEPSEEK_REVIEWER = "deepseek-flash"
+EXTRA_REVIEWERS = {GEMINI_MODEL: run_gemini, "gpt-oss-120b": run_groq}  # amendment 2026-11-10 (after Phase 2)
 REVIEW_COST_FACTOR = 1.5  # reviews read the answer too; estimate = 1.5 x the model's Phase 1 high-arm cost
 
 
@@ -72,6 +74,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm-budget", type=float)
     parser.add_argument("--gemini", type=int, default=0, help="answers in the Gemini subsample (0 = skip)")
+    parser.add_argument("--extra", action="store_true", help="run the amendment 2026-11-10 (after Phase 2) extra reviewers")
     args = parser.parse_args()
     pool = load_pool()
     wrong = sum(r["numeric_error"] for r in pool)
@@ -79,6 +82,30 @@ def main() -> None:
     finished = done_ids()
     todo = [(a, m, p) for a in pool for m in CLAUDE_REVIEWERS + [DEEPSEEK_REVIEWER] for p in PROTOCOLS
             if review_id(a["trial_id"], m, p) not in finished]
+
+    if args.extra:
+        jobs = [(a, m, p) for a in pool for m in EXTRA_REVIEWERS for p in PROTOCOLS
+                if review_id(a["trial_id"], m, p) not in finished]
+        print(f"Extra reviews to run: {len(jobs)}")
+
+        def extra_job(job):
+            a, m, p = job
+            try:
+                reply = EXTRA_REVIEWERS[m](review_request(CASES[a["case_id"]], _delivered(a) or "", p), m)
+            except (httpx.HTTPError, RuntimeError) as exc:
+                return f"{m}: {type(exc).__name__}"
+            return record(a, m, p, reply, 0.0)
+
+        failures = 0
+        with OUT.open("a") as fh, ThreadPoolExecutor(max_workers=8) as ex:
+            for row in ex.map(extra_job, jobs):
+                if isinstance(row, str):
+                    failures += 1
+                    continue
+                fh.write(json.dumps(row) + "\n")
+                fh.flush()
+        print(f"Extra reviews done; {failures} failed (re-run to resume).")
+        return
 
     if args.gemini:
         sample = random.Random(11).sample(pool, min(args.gemini, len(pool)))

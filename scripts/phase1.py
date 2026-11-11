@@ -3,6 +3,7 @@
 Usage:
   uv run python scripts/phase1.py                       # prints the estimate, runs nothing
   uv run python scripts/phase1.py --confirm-budget 40   # runs, refuses above the Claude estimate
+  uv run python scripts/phase1.py --extra               # amendment 2026-11-10 (after Phase 2): extra providers, overturning only
 Effort comes from results/tables/phase0_summary.json ("phase1_effort"). Writes results/raw/phase1.jsonl.
 """
 import argparse
@@ -24,6 +25,10 @@ REPEATS = {"claude-haiku-5-5": 3, "claude-sonnet-5-5": 2, "claude-opus-5-5": 2, 
 # Claude model, to test whether max effort removes the error beyond the 10 Phase 0 cases).
 MAX_ARM_REPEATS = 1
 V4_PRO_FAMILIES = {"overturning", "wall"}  # spec §4: budget
+# amendment 2026-11-10 (after Phase 2): two extra providers as authors, overturning only, 2 repeats, provider-side "high" reasoning.
+EXTRA_AUTHORS = ("gemini-3-flash-preview", "gpt-oss-120b")
+EXTRA_REPEATS = 2
+EXTRA_OUT = Path("results/raw/phase1_extra.jsonl")
 
 
 def trials(cases, effort: str, drop: set[str] = frozenset()):
@@ -56,8 +61,15 @@ def cost_per_trial(effort: str) -> dict[str, float]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm-budget", type=float)
+    parser.add_argument("--extra", action="store_true", help="run the amendment 2026-11-10 (after Phase 2) extra authors")
     args = parser.parse_args()
     cases = load_cases(CASES)
+    if args.extra:
+        plan = [new_trial(c, "neutral", "A", m, "M0", rep, effort="high", variant="base")
+                for m in EXTRA_AUTHORS for c in cases if c.family == "overturning" for rep in range(EXTRA_REPEATS)]
+        print(f"Extra authors: {len(plan)} trials -> {EXTRA_OUT}")
+        run(plan, EXTRA_OUT)
+        return
     per = {e: cost_per_trial(e) for e in ("high", "max")}
     # Spec §8 cut order, applied only if the estimate exceeds the budget.
     for drop in (set(), {"wall"}, {"wall", "deepseek-v4-pro"}):

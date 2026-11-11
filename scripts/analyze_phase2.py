@@ -13,6 +13,7 @@ P1_GRADED, P1_RAW = Path("results/graded/phase1.jsonl"), Path("results/raw/phase
 OUT = Path("results/tables/phase2_summary.json")
 CLAUDE = ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"]
 DS = "deepseek-flash"
+EXTRA = ["gemini-3-flash-preview", "gpt-oss-120b"]  # amendment 2026-11-10 (after Phase 2): own Holm family (H5x), pre-registered family unchanged
 
 rv = pd.DataFrame([json.loads(l) for l in RAW.read_text().splitlines()])
 rv["out_tokens"] = rv["usage"].apply(lambda u: u.get("output_tokens", 0))
@@ -47,6 +48,19 @@ adj = holm({k: v for k, v in pvals.items() if not np.isnan(v)})
 for k in contrasts:
     contrasts[k]["holm_p"] = adj.get(k)
 summary["contrasts"] = contrasts
+
+extra, extra_p = {}, {}
+for other in EXTRA:
+    if not (done["reviewer"] == other).any():
+        continue
+    for reviewer in CLAUDE:
+        d = reviewer_diff(done, other, reviewer, "P1")
+        key = f"H5x {other} - {reviewer} (P1)"
+        extra[key], extra_p[key] = {"detection": d}, d[3]
+adj_x = holm({k: v for k, v in extra_p.items() if not np.isnan(v)})
+for k in extra:
+    extra[k]["holm_p"] = adj_x.get(k)
+summary["contrasts_extra"] = extra
 
 # Cost-matched: author at "high" + one reviewer at "high", versus the author alone at "max" (overturning).
 p1 = pd.DataFrame([json.loads(l) for l in P1_GRADED.read_text().splitlines()])

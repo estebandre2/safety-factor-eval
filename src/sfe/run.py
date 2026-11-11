@@ -14,7 +14,8 @@ from typing import Callable
 import httpx
 
 from sfe.backends.claude import claude_cost, run_claude_round
-from sfe.backends.deepseek import run_deepseek
+from sfe.backends.deepseek import run_deepseek, run_groq
+from sfe.backends.gemini import run_gemini
 from sfe.backends.ollama import ToolsUnsupported, run_ollama
 from sfe.cases import Case, load_cases
 from sfe.engine import Trial, apply_reply, new_trial, next_request
@@ -30,6 +31,21 @@ def is_claude(model: str) -> bool:
 
 def is_deepseek(model: str) -> bool:
     return model.startswith("deepseek-")
+
+
+def is_api(model: str) -> bool:
+    """Synchronous hosted APIs that the runner parallelizes (DeepSeek, Gemini, Groq)."""
+    return model.startswith(("deepseek-", "gemini-", "gpt-oss-"))
+
+
+def sync_backend(model: str) -> Callable:
+    if model.startswith("gemini-"):
+        return run_gemini
+    if model.startswith("gpt-oss-"):
+        return run_groq
+    if is_deepseek(model):
+        return run_deepseek
+    return run_ollama
 
 
 def build_matrix(cases: list[Case], models: list[str], arms: list[Arm], modes: list[str],
@@ -143,13 +159,15 @@ def run(trials: list[Trial], out_path: Path,
                 fh.write(json.dumps(_record(trial)) + "\n")
                 fh.flush()
 
-        deepseek = [t for t in pending if is_deepseek(t.model)]
-        if deepseek:
+        hosted = [t for t in pending if is_api(t.model)]
+        if hosted:
+            def call_for(t: Trial) -> Callable:
+                return deepseek_call if is_deepseek(t.model) else sync_backend(t.model)
             with ThreadPoolExecutor(max_workers=DEEPSEEK_WORKERS) as pool:
-                for done in pool.map(lambda t: _run_sync(t, deepseek_call), deepseek):
+                for done in pool.map(lambda t: _run_sync(t, call_for(t)), hosted):
                     write(done)
 
-        for trial in (t for t in pending if not is_claude(t.model) and not is_deepseek(t.model)):
+        for trial in (t for t in pending if not is_claude(t.model) and not is_api(t.model)):
             write(_run_sync(trial, ollama_call))
 
         active = [t for t in pending if is_claude(t.model)]

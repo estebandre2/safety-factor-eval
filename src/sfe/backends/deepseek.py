@@ -66,9 +66,22 @@ def _arguments(raw: str) -> dict:
 
 
 def run_deepseek(request: dict, model: str, client: httpx.Client | None = None) -> Reply:
-    key = os.environ.get("DEEPSEEK_API_KEY")
+    return _chat(request, model, BASE_URL, "DEEPSEEK_API_KEY", client)
+
+
+# amendment 2026-11-10 (after Phase 2): gpt-oss-120b on Groq (OpenAI-compatible) as an extra provider, at reasoning_effort "high".
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+GROQ_MODELS = {"gpt-oss-120b": "openai/gpt-oss-120b"}
+
+
+def run_groq(request: dict, model: str, client: httpx.Client | None = None) -> Reply:
+    return _chat(request, GROQ_MODELS[model], GROQ_BASE_URL, "GROQ_API_KEY", client)
+
+
+def _chat(request: dict, model: str, base_url: str, key_env: str, client: httpx.Client | None) -> Reply:
+    key = os.environ.get(key_env)
     if not key:
-        raise RuntimeError("DEEPSEEK_API_KEY is not set (add it to .env)")
+        raise RuntimeError(f"{key_env} is not set (add it to .env)")
     system = request.get("system", "")
     if request.get("structured"):
         system = f"{system}\n\n{json_hint(request.get('schema'))}".strip()
@@ -80,7 +93,7 @@ def run_deepseek(request: dict, model: str, client: httpx.Client | None = None) 
     if request.get("structured"):
         body["response_format"] = {"type": "json_object"}
 
-    http = client or httpx.Client(base_url=BASE_URL, timeout=900)
+    http = client or httpx.Client(base_url=base_url, timeout=900)
     headers = {"Authorization": f"Bearer {key}"}
     for attempt in range(RETRIES):
         response = http.post("/chat/completions", json=body, headers=headers)
