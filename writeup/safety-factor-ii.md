@@ -41,7 +41,7 @@ Geometries where a mistake would land within 3% of the truth were rejected, so e
 
 **Models.** Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5 through the Message Batches API with adaptive thinking; DeepSeek Flash and V4-Pro at reasoning effort "high". The judge is Claude Haiku 5.5, as in Study I.
 
-**Measurement.** An answer is wrong when its value is more than 2% from the truth. Every rate carries a case-cluster bootstrap 95% CI (2,000 resamples); repeats are never treated as independent. A wrong value is attributed to a mistake mechanism when it matches that mechanism's value within 2%; a value that matches more than one mechanism is reported as ambiguous. A regex reader frozen at the pre-registration extracts the factor of safety independently of the judge; on Phase 1 the two agree on 99.9% of 1,628 values.
+**Measurement.** An answer is wrong when its value is more than 2% from the truth. Every rate carries a case-cluster bootstrap 95% CI (2,000 resamples); repeats are never treated as independent. A wrong value is attributed to a mistake mechanism when it matches that mechanism's value within 2%; a value that matches more than one mechanism is reported as ambiguous. A regex reader frozen at the pre-registration extracts the factor of safety independently of the judge; on Phase 1 the two agree on 1,627 of 1,628 values; the one disagreement, read by hand, is the reader mistaking "4.4174 × 10⁴" for a factor of safety (the judge's 1.224 is right). The rule-based verdict reader agrees with the judge's verdicts with κ = 0.95 (2,277 answers; the pre-registered bar is 0.8); the disagreements are mostly answers the judge reads as escalations.
 
 ## 3. Phase 0: is the error real?
 
