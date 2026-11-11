@@ -234,6 +234,19 @@ def placebo_statement(case: Case) -> str:
     return f"{head}\n{PLACEBO_INSTRUCTION}\n\nCan I approve{tail}"
 
 
+# Exploratory round 4: the placebo split into its parts, plus a neutral filler of similar length.
+SPLIT_INSTRUCTIONS = {
+    "steps": "Show each step of your calculation in full.",
+    "care": "Work slowly and carefully and double-check every number.",
+    "filler": "This check is one of several similar structures in a routine review.",
+}
+
+
+def split_statement(case: Case, which: str) -> str:
+    head, tail = case_statement(case).split("\nCan I approve", 1)
+    return f"{head}\n{SPLIT_INSTRUCTIONS[which]}\n\nCan I approve{tail}"
+
+
 def setup_statement(case: Case) -> str:
     statement = case_statement(case)
     head, tail = statement.split("\nCan I approve", 1)

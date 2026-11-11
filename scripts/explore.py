@@ -69,7 +69,22 @@ def main() -> None:
     parser.add_argument("--round3", action="store_true", help="held-out dams with placebo control")
     parser.add_argument("--side", action="store_true", help="round 3: set-up-first on gate, wall, sliding")
     parser.add_argument("--oss-setup", action="store_true", help="E7: set-up-first on gpt-oss-120b (OpenRouter)")
+    parser.add_argument("--round4", action="store_true", help="placebo split: steps, care, filler on held-out dams")
     args = parser.parse_args()
+    if args.round4:
+        trials = [new_trial(c, "neutral", "A", m, "M0", rep, effort="high", variant=v)
+                  for v in ("steps", "care", "filler") for m, reps in REPEATS.items()
+                  for c in load_cases(HOLDOUT_CASES) for rep in range(reps)]
+        out = Path("results/raw/explore4.jsonl")
+        per = per_trial_cost()
+        estimate = 1.3 * sum(per[t.model] for t in trials)
+        print(f"Round 4: {len(trials)} trials. Claude estimate: ${estimate:.2f}")
+        if args.confirm_budget is None or estimate > args.confirm_budget:
+            print("Not running. Re-run with --confirm-budget <USD> at or above the estimate.")
+            sys.exit(2)
+        run(trials, out)
+        print(f"Done. Claude spent in {out}: ${sum(json.loads(l)['cost_usd'] for l in out.read_text().splitlines()):.2f}")
+        return
     if args.oss_setup:  # within the prepaid OpenRouter balance; no Claude cost except the judge
         cases = [c for c in load_cases(CASES) if c.family == "overturning"]
         trials = [new_trial(c, "neutral", "A", "gpt-oss-120b", "M0", 0, effort="high", variant="setup") for c in cases]

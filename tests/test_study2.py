@@ -200,3 +200,14 @@ def test_apex_variant_states_triangle_vertex_only():
     assert len(prompt) - len(case_statement(case)) < 200
     for hint in ("2/3", "1/3", "centroid", "lever", "arm"):
         assert hint not in APEX_SENTENCE
+
+
+def test_split_variants_insert_one_sentence_each():
+    from pathlib import Path
+    from sfe.cases import load_cases
+    from sfe.engine import new_trial
+    from sfe.prompts import SPLIT_INSTRUCTIONS, case_statement
+    case = load_cases(Path("data/cases_explore_holdout.jsonl"))[0]
+    for which, sentence in SPLIT_INSTRUCTIONS.items():
+        prompt = new_trial(case, "neutral", "A", "claude-opus-5-5", "M0", 0, effort="high", variant=which).messages[0]["content"]
+        assert sentence in prompt and prompt.replace(sentence + "\n\n", "") == case_statement(case)
