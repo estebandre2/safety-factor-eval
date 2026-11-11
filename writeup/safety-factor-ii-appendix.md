@@ -85,3 +85,11 @@ The placebo split into one sentence each, on the same held-out dams at "high" (p
 | Sonnet | 16% | 22% | 21% | 14% |
 | Opus | 34% | 15% (−19 [−28, −10]) | 3% (−31 [−39, −23]) | 31% |
 
+
+## D. E4: a small local model (qwen3:14b, non-thinking mode)
+
+Run on the author's laptop through Ollama (4-bit), base prompt, 80 Phase 1 dams, 1 repeat; then P1 review of the full Phase 2 pool. With thinking on, the first answer took over 20 minutes, so the amendment switched to Qwen3's non-thinking mode before any recorded trial (about 2.5 minutes per answer).
+
+- **As author:** 75 of 80 values wrong (94% [88, 99]); 68 of the 75 match no lever-arm mechanism (3 thrust-arm, 2 uplift, 1 triangle, 1 combined). It approved 5 of 48 unsafe dams and did not approve 17 of 32 safe ones.
+- **As reviewer (P1, 156 answers):** detection 18% (14 of 78 wrong values), false alarms 18% (14 of 78 correct values): chance level.
+- **Reading:** a model this size, without extended reasoning, does not get far enough into the calculation for the lever-arm error to be the binding failure. It is reported for completeness and is not compared with the API models.

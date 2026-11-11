@@ -1049,10 +1049,10 @@
    "unsafe_n": 48
   },
   "reviewer_P1": {
-   "reviews": 40,
-   "detection": 0.09523809523809523,
-   "false_alarm": 0.21052631578947367,
-   "wrong_reviewed": 21
+   "reviews": 156,
+   "detection": 0.1794871794871795,
+   "false_alarm": 0.1794871794871795,
+   "wrong_reviewed": 78
   }
  }
 }

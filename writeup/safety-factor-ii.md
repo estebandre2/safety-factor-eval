@@ -116,6 +116,7 @@ These runs were designed after the pre-registered phases, from their results. Ea
 - **E2/E6, set-up first.** One sentence before the question (*"Before computing anything, write down for every load and weight where its line of action is, measured from the point about which moments are taken, and how you located it."*) lowers the error at every effort. Opus makes no errors even at "low", at about a quarter of the output and cost of "max".
 - **E3/E5, why the wall had no errors.** Without uplift, Opus still misplaces the dam's triangle (17.5%). Stating where the triangle's apex is, as the wall text does, removes Opus's error, but makes Haiku and Sonnet worse through more uplift errors. A sentence that fixes one model's set-up can disturb another's.
 - **E7.** Set-up first does not help gpt-oss-120b (27.5% → 23%, CI includes zero).
+- **E4, a small local model.** qwen3:14b in non-thinking mode on a laptop got 94% of the dams wrong, but 68 of its 75 wrong values match none of the lever-arm mistakes: it fails in unrelated ways, so it says nothing about this specific error. As a plain reviewer of the 156-answer pool it flagged 18% of the wrong values and 18% of the correct ones: no better than chance.
 
 ![Overturning error by effort, base prompt against set-up first, for Haiku, Sonnet and Opus](figures/effort_setup.png)
 
