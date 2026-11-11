@@ -132,7 +132,7 @@ These runs were designed after the pre-registered phases, from their results. Ea
 | Sonnet | 29% (1) | 27% (0) | 18% (10) | 1.3% (0) |
 | Opus | 64% (0) | 37% (0) | 35% (0) | 0% (0) |
 
-The error falls monotonically with effort for every model, and the large drop is between "high" and "max". Study I's "medium" rates (55%, 33%, 35% on 10 cases) sit where this curve puts them.
+The error falls monotonically with effort for every model. For Haiku and Sonnet most of the drop is between "high" and "max"; Opus drops as much from "low" to "medium". Study I's "medium" rates (55%, 33%, 35% on 10 cases) are close to this curve. The mechanism can change with effort: Sonnet's errors at "low" and "medium" are mostly triangle-centroid errors (41 of 47 and 36 of 43 attributed), which lower the safety factor, so they produce non-approvals of safe dams (11 of 64 at "low") rather than unsafe approvals (1 of 96); at "high" its errors are uplift errors and its unsafe approvals rise to 10.
 
 **E2, set-up first (author).** One sentence added before the question: *"Before computing anything, write down for every load and weight where its line of action is, measured from the point about which moments are taken, and how you located it."* At "high":
 
@@ -142,11 +142,11 @@ The error falls monotonically with effort for every model, and the large drop is
 | Sonnet | 18% | 2% | −16 [−23, −10] | 1,490 → 1,960 (max 6,000) |
 | Opus | 35% | 0% | −35 [−43, −27] | 1,330 → 1,950 (max 6,000) |
 
-All three meet the threshold fixed beforehand (at least 10 points, CI excluding zero). For Opus and Sonnet, one sentence does what "max" does at about a third of the output. Haiku's remaining errors are still uplift errors (45 of 57 attributed).
+All three meet the threshold fixed beforehand (at least 10 points, CI excluding zero). For Opus and Sonnet, one sentence does what "max" does at about a third of the output. The verdicts follow: Sonnet's unsafe approvals fall from 10 of 96 to 0, Opus's non-approvals of safe dams from 9 of 64 to 0; Haiku's unsafe approvals fall only from 14 to 11 of 144, and its remaining errors are still uplift errors (45 of 57 attributed).
 
 **E3, the same dams without uplift.** With the uplift removed, Haiku's errors become triangle-centroid errors (23%, 54 of 56 attributed) and Opus still misplaces the triangle in 17.5% of answers (28 errors), half its Phase 1 rate. The front-batter retaining wall in Phase 1, with the same triangle orientation, had none. One difference is wording: the wall text says where the triangle's apex is ("apex at the toe"); the dam text does not. E5 tests that.
 
-**E5, apex stated.** Adding *"The downstream triangle's vertical side is at the downstream edge of the crest, and its apex (zero thickness) is at the toe"* to the dam text removes Opus's error entirely (35% → 0%; triangle-centroid share −34 points [−43, −27]), as fixed beforehand. The wording difference explains Opus's mistake: told where the apex is, it places the centroid correctly. For Haiku and Sonnet the same sentence made things *worse* (+11 points [+3, +20] and +13 [+4, +23]), almost entirely through more uplift errors (Haiku: 124 uplift-arm errors against 79). A sentence that fixes one model's set-up can disturb another's.
+**E5, apex stated.** Adding *"The downstream triangle's vertical side is at the downstream edge of the crest, and its apex (zero thickness) is at the toe"* to the dam text removes Opus's error entirely (35% → 0%; triangle-centroid share −34 points [−43, −27]), as fixed beforehand. This is consistent with Opus misreading the geometry rather than misapplying a rule: told where the apex is, it places the centroid correctly. Phase 0 points the same way: with explicit coordinates at "high", Opus made no errors (0/30) while Haiku and Sonnet did not improve. For Haiku and Sonnet the apex sentence made things *worse* (+11 points [+3, +20] and +13 [+4, +23]), almost entirely through more uplift errors (Haiku: 124 uplift-arm errors against 79), and Haiku's unsafe approvals rose from 14 to 33 of 144. A sentence that fixes one model's set-up can disturb another's.
 
 **E6, set-up first at lower effort.** The E2 sentence at "low" and "medium", against the base prompt at the same effort:
 
@@ -156,9 +156,11 @@ All three meet the threshold fixed beforehand (at least 10 points, CI excluding 
 | Sonnet | 29% → 2.5% | 27% → 6% | ~1,040 |
 | Opus | 64% → 0% | 37% → 0% | ~1,600 |
 
-Every contrast meets the 10-point threshold. Opus at "low" with one added sentence makes no errors in 160 answers, as at "max", at about a quarter of the output (1,600 against 6,000 tokens) and a quarter of the cost per answer. For this mistake, how the task is framed matters more than how long the model thinks; Haiku is the exception, where effort still matters most.
+Every contrast meets the 10-point threshold. Opus at "low" with one added sentence makes no errors in 160 answers, as at "max", at about a quarter of the output (1,600 against 6,000 tokens) and a quarter of the cost per answer. Haiku is the exception: its error halves but stays high. Round 3 (below) tests whether any added instruction would do the same.
 
-*[E4 (local model): filled when the run finishes.]*
+The §7 contrasts are uncorrected for multiplicity; round 3 replicates the main ones with predictions fixed in advance.
+
+*[Round 3 and E4 (local model): filled when the runs finish.]*
 
 ## 8. What this means
 
