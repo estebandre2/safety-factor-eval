@@ -1029,5 +1029,30 @@
    "F1_met": true,
    "F2_met_opus": true
   }
+ },
+ "E4": {
+  "author": {
+   "n": 80,
+   "rate": 0.9375,
+   "ci": [
+    0.875,
+    0.9875
+   ],
+   "mechanisms": {
+    "other": 68,
+    "thrust_arm (easy)": 3,
+    "uplift_arm (hard)": 2,
+    "triangle_centroid (hard)": 1,
+    "uplift+triangle (hard)": 1
+   },
+   "unsafe_approvals": 5,
+   "unsafe_n": 48
+  },
+  "reviewer_P1": {
+   "reviews": 40,
+   "detection": 0.09523809523809523,
+   "false_alarm": 0.21052631578947367,
+   "wrong_reviewed": 21
+  }
  }
 }

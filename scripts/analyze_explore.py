@@ -178,5 +178,21 @@ if len(r4) and len(r3):
         row["F2_met_opus"] = (row["steps"]["reaches_minus_10"] or row["care"]["reaches_minus_10"]) if "opus" in model else None
         summary["R4split"][model] = row
 
+# E4: local qwen3:14b (non-thinking) as author (80 dams, 1 repeat) and P1 reviewer (time-boxed, partial).
+loc = load("results/graded/explore_local.jsonl")
+if len(loc):
+    loc = loc[loc["status"] == "done"].copy()
+    loc["mechanism"] = [attribute(CASES[c], v) for c, v in zip(loc["case_id"], loc["value_pred"])]
+    rate, n = error_rate(loc)
+    summary["E4"] = {"author": {"n": n, "rate": rate, "ci": error_ci(loc), "mechanisms": mechanism_shares(loc, "qwen3:14b"),
+                                "unsafe_approvals": int(((loc["verdict_truth"] == "UNSAFE") & (loc["verdict_pred"] == "APPROVE")).sum()),
+                                "unsafe_n": int((loc["verdict_truth"] == "UNSAFE").sum())}}
+    rv = load("results/raw/explore_local_reviews.jsonl")
+    if len(rv):
+        rv = rv[rv["status"] == "done"]
+        summary["E4"]["reviewer_P1"] = {"reviews": len(rv), "detection": float(rv["detected"].dropna().mean()),
+                                        "false_alarm": float(rv["false_alarm"].dropna().mean()),
+                                        "wrong_reviewed": int(rv["detected"].notna().sum())}
+
 OUT.write_text(json.dumps(summary, indent=1, default=float))
 print(json.dumps(summary, indent=1, default=float))
