@@ -10,7 +10,7 @@ Study I found that language models do not approve unsafe hydraulic designs under
 - **It is specific to the dam overturning check.** On 80 new overturning geometries the Study I mechanisms reappear exactly: Haiku and Sonnet misplace the uplift (which inflates the safety factor and approves unsafe dams), Opus misplaces the concrete triangle (which deflates it). Two new families with the same "hard" triangle orientation, a hinged gate and a battered retaining wall, show essentially no errors. The pre-registered orientation hypothesis (H3) is therefore **not supported**.
 - **A reviewer catches most of it, and the instruction matters for one model.** On a case-matched pool of 156 Claude answers, plain review ("check the calculation") detects 74% (Haiku) to 97% (Sonnet) of wrong values, with 0–5% false alarms. Asking Opus to first build its own free-body diagram raises its detection from 88% to 100% with no false alarms (H4, Holm p < 0.001). DeepSeek Flash detects 100%.
 - **Review is cheaper than more reasoning.** An answer at "high" plus one reviewer at "high" reaches the same or higher expected accuracy than the author alone at "max", with 3–8 times fewer output tokens.
-- **Two more providers** (Google's Gemini 3 Flash and OpenAI's open-weight gpt-oss-120b) were added by amendment to test whether the error is specific to Claude. *[Results: §6.]*
+- **The error is not specific to Claude.** Two providers added by amendment make the same mistake: OpenAI's open-weight gpt-oss-120b in 27.5% of overturning answers (with 7 unsafe approvals), Google's Gemini 3 Flash in 6.9%. As a reviewer, Gemini catches 99% of Claude's wrong values; gpt-oss catches only 46%.
 - **Exploratory: one sentence works better than more thinking.** Asking the author to first write down where every load acts lowers the error at every effort; Opus makes no errors even at "low" effort, at a quarter of the cost of "max". Stating where the triangle's apex is also fixes Opus, but makes Haiku and Sonnet worse (§7; designed after the main results, amendments published after the runs).
 
 The safety point is narrow but concrete: a capable model can write a fluent, wrong engineering calculation that a single plain review by a weaker model misses a quarter of the time, and whether the error appears at all depends on a deployment setting the user may not see.
@@ -118,8 +118,25 @@ Tokens are not dollars across models, but within one model the comparison holds:
 
 ## 6. Other providers
 
-*[Filled after the extra-provider run: Gemini 3 Flash and gpt-oss-120b as authors on the 80 overturning cases (2 repeats) and as reviewers on the full pool (P1–P3), H5x under its own Holm family.]*
+DeepSeek Flash made almost no overturning errors, so after Phase 2 an amendment (public before the run) added two more providers to test whether the error is specific to Claude: **Gemini 3 Flash** (Google; provider-default thinking) and **gpt-oss-120b** (OpenAI's open-weight model, served by Groq through OpenRouter, reasoning effort "high"). Each answered the 80 overturning cases twice and reviewed the full pool under P1–P3. The 22 Gemini reviews run earlier on the free tier were identical requests and are kept. The value reader agrees with the judge on 160 of 160 Gemini values and 144 of 146 gpt-oss values.
 
+**As authors** (overturning, 160 answers each):
+
+| Model | Error rate [95% CI] | Mechanisms (attributed) | Unsafe approvals | Safe not approved | Output tokens |
+|---|---|---|---|---|---|
+| Gemini 3 Flash | 6.9% [3, 11] | triangle centroid 10, uplift 1 | 0 / 96 | 2 / 64 | ~3,400 |
+| gpt-oss-120b | 27.5% [21, 34] | triangle 19, uplift 10, both 6, other 9 | 7 / 96 | 9 / 64 | ~11,100 |
+
+**The error is not specific to Claude.** gpt-oss-120b, writing about 11,000 tokens per answer, misplaces the same two resultants in more than a quarter of its answers and approves 7 unsafe-case answers. Gemini 3 Flash makes the same triangle-centroid mistake, less often. More reasoning text is not the whole story: gpt-oss writes more than Claude at "max" and still errs.
+
+**As reviewers** (P1 / P2 / P3; false alarms in parentheses):
+
+| Reviewer | Detection | Output tokens per review |
+|---|---|---|
+| Gemini 3 Flash | 99% (0%) / 97% (0%) / 97% (0%) | ~7,600–8,100 |
+| gpt-oss-120b | 46% (3%) / 41% (0%) / 42% (3%) | ~8,100–9,300 |
+
+Under its own Holm family (H5x, P1, six contrasts), Gemini detects more than Haiku (+24 points) and Opus (+10), not more than Sonnet (+1); gpt-oss detects fewer than every Claude reviewer (−28 to −51 points), all after correction. gpt-oss is the only reviewer in the study that misses most wrong answers, which matches its own error rate as an author: a model that makes the mistake also tends not to see it. The set-up protocols did not help it.
 ## 7. Exploratory additions
 
 These runs were designed after the pre-registered phases, from their results. Each was specified in a dated amendment committed before it ran, but the repository could not be pushed overnight, so the amendments were published after the data. They are reported as exploratory and do not change any result above. Same 80 overturning cases, same repeats (Haiku 3, Sonnet 2, Opus 2), same judge and attribution.
