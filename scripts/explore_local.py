@@ -1,4 +1,4 @@
-"""Exploratory E4 (amendment 2026-11-10 night): a local open-weight reasoning model (qwen3:14b via Ollama, on this
+"""Exploratory E4 (amendment 2026-11-10 night): a local open-weight model (qwen3:14b via Ollama, non-thinking mode, on this
 machine) as author on the 80 Phase 1 overturning cases (1 repeat, base prompt) and as reviewer (P1, then P2) on the
 Phase 2 pool. Time-boxed: no new request starts after STOP_AT; whatever finished is reported, with counts.
 
@@ -55,7 +55,7 @@ def reviews() -> None:
     finished = done(REV_OUT, "review_id")
     pool = [json.loads(l) for l in POOL.read_text().splitlines()]
     with REV_OUT.open("a") as fh:
-        for protocol in ("P1", "P2"):
+        for protocol in ("P1",):  # E4 revised: P1 only (time)
             for a in pool:
                 rid = review_id(a["trial_id"], MODEL, protocol)
                 if rid in finished:
