@@ -116,7 +116,7 @@ These runs were designed after the pre-registered phases, from their results. Ea
 - **E2/E6, set-up first.** One sentence before the question (*"Before computing anything, write down for every load and weight where its line of action is, measured from the point about which moments are taken, and how you located it."*) lowers the error at every effort. Opus makes no errors even at "low", at about a quarter of the output and cost of "max".
 - **E3/E5, why the wall had no errors.** Without uplift, Opus still misplaces the dam's triangle (17.5%). Stating where the triangle's apex is, as the wall text does, removes Opus's error, but makes Haiku and Sonnet worse through more uplift errors. A sentence that fixes one model's set-up can disturb another's.
 - **E7.** Set-up first does not help gpt-oss-120b (27.5% → 23%, CI includes zero).
-- **E4, a small local model.** qwen3:14b in non-thinking mode on a laptop got 94% of the dams wrong, but 68 of its 75 wrong values match none of the lever-arm mistakes: it fails in unrelated ways, so it says nothing about this specific error. As a plain reviewer of the 156-answer pool it flagged 18% of the wrong values and 18% of the correct ones: no better than chance.
+- **E4.** A small local model (qwen3:14b, non-thinking) got 94% of the dams wrong, almost all in ways unrelated to the lever arms, and reviewed at chance level (appendix §D).
 
 ![Overturning error by effort, base prompt against set-up first, for Haiku, Sonnet and Opus](figures/effort_setup.png)
 
@@ -148,10 +148,10 @@ These runs were designed after the pre-registered phases, from their results. Ea
 - **One task family carries the effect.** Only dam overturning produced errors; the new families did not. The findings on review and on prompts are findings about this one mistake.
 - **The dam text leaves the triangle's orientation to inference.** That is part of what is being tested, but it means part of the "error" is a reading problem that a clearer drawing or sentence removes (E5).
 - **Effort is a vendor setting.** "Low" to "max" are not defined in tokens and may change between versions. DeepSeek, Gemini and gpt-oss expose different controls; cross-provider comparisons confound provider with reasoning volume.
-- **Exploratory results.** §7 was designed after the main results; its amendments were committed before each run but published after, and its contrasts are uncorrected. Round 3 replicates the main ones on held-out cases with a placebo.
+- **Exploratory results** (§7) were designed after the main results, published after they ran, and are uncorrected; round 3 replicates the main ones.
 - **Synthetic, idealized checks.** The acceptance criteria are illustrative (Study I §2.6 compares them with USACE and FEMA practice); real design reviews involve drawings, codes and judgment.
 - **The judge is a Claude model** (checked against model-free readers, §2), and **the Phase 2 pool was reshaped after Phase 1** (amendment before any review).
 
 ## 10. Reproducibility and cost
 
-Scripts: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py`, `explore_local.py`, `h6_replication.py` and the `analyze_*` scripts; tables in `results/tables/`, graded answers in `results/graded/`, Phase 2 reviews in `results/raw/phase2.jsonl`. **Spend.** Claude: US$35.42 for the pre-registered phases (Phase 0 8.13, Phase 1 21.04, Phase 2 6.25), US$71.90 for the exploratory runs (including US$3.66 for the review replication), and an estimated US$3–6 for the judge (not itemized). DeepSeek: about US$5 (account balance). Gemini 3 Flash: about US$13 at list price, prepaid. gpt-oss-120b through OpenRouter: US$4.19 (account usage). The local qwen3:14b run cost nothing.
+Scripts: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py`, `explore_local.py`, `h6_replication.py` and the `analyze_*` scripts; tables in `results/tables/`, graded answers in `results/graded/`, Phase 2 reviews in `results/raw/phase2.jsonl`. **Spend (US$).** Claude 35.42 pre-registered + 71.90 exploratory + about 3–6 judge (estimated); DeepSeek about 5; Gemini about 13 (list price); gpt-oss via OpenRouter 4.19; local model 0.
