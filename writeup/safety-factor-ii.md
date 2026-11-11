@@ -17,27 +17,13 @@ The safety point is narrow but concrete: a capable model can write a fluent, wro
 
 ## 1. Background
 
-Study I gave five models 40 hydraulic design checks with a stated acceptance criterion, neutrally or under pressure. No model approved an unsafe design after computing the correct value, and no model reversed a correct rejection after pushback (0 of 537). All 67 unsafe approvals came from two lever-arm mistakes in gravity-dam overturning, both of which place a triangular load's resultant at the wrong third of its base:
-
-- **Uplift arm:** the triangular uplift resultant at B/3 from the toe instead of 2B/3. The overturning moment is understated and the factor of safety is too high.
-- **Triangle centroid:** the concrete triangle's centroid at 1/3 of its base from the toe instead of 2/3. The resisting moment is understated and the factor of safety is too low.
-
-In both, the moment centre (the toe) sits at the triangle's zero end, so the correct arm is 2/3 of the length. The water thrust, whose moment centre is at its maximum end (correct arm 1/3), was almost never misplaced. Study I left three gaps: the approvals came from only 4 cases, Claude ran at effort "medium" while DeepSeek ran at "high", and only verdicts, not values, were validated.
+In Study I, no model approved an unsafe design after computing the correct value, under any pressure; all 67 unsafe approvals came from two lever-arm mistakes in gravity-dam overturning. The **uplift arm** mistake puts the triangular uplift resultant at B/3 from the toe instead of 2B/3, so the factor of safety comes out too high; the **triangle centroid** mistake puts the concrete triangle's centroid at 1/3 of its base from the toe instead of 2/3, so it comes out too low. In both, the moment centre sits at the triangle's zero end, where the correct arm is 2/3. Study I left three gaps: the approvals came from only 4 cases, Claude ran at effort "medium" while DeepSeek ran at "high", and only verdicts, not values, were validated.
 
 ## 2. Design
 
 **Pre-registration.** The spec fixed the hypotheses, thresholds, sample sizes, analysis and budget caps before the first trial. Every later change is a dated amendment pushed to the public repository before the data it governs: after the token check (`8568bd6`), after Phase 0 (`93b431b`), after Phase 1 (`a77c880`) and after Phase 2 (`f398c03`, revised before any run in `c5a08e1`). Further amendments for the exploratory additions in §7 were each committed before their run but published after.
 
-**Families.** Phase 1 uses 180 new cases (`data/cases_phase1.jsonl`, seed 2027), each re-derived from its prompt text by an independent script:
-
-| Family | Cases | Orientation |
-|---|---|---|
-| Dam overturning (Study I geometry, new seeds) | 80 | uplift and concrete triangle are hard (arm 2/3); water thrust is easy (arm 1/3) |
-| Vertical gate, hydrostatic load, latch reaction | 40 (20 geometries × 2) | hinge at the top edge is hard (arm 2d/3); hinge at the bottom edge is easy (d/3) |
-| Gravity retaining wall, Rankine active pressure | 40 (20 × 2) | batter on the front face (triangle apex at the toe) is hard; on the back face is easy |
-| Sliding (negative control) | 20 | no lever arms |
-
-Geometries where a mistake would land within 3% of the truth were rejected, so every mistake is detectable.
+**Families.** Phase 1 uses 180 new cases (`data/cases_phase1.jsonl`, seed 2027), each re-derived from its prompt text by an independent script: 80 dam-overturning cases (Study I geometry; uplift and the concrete triangle are "hard" loads with arm 2/3, the water thrust "easy" with arm 1/3); 40 hinged vertical gates (20 geometries, each hinged at the top edge, hard, and at the bottom edge, easy); 40 gravity retaining walls (20 geometries, each with the batter on the front face, triangle apex at the toe, hard, and on the back face, easy); and 20 sliding cases with no lever arms (negative control). Geometries where a mistake would land within 3% of the truth were rejected, so every mistake is detectable.
 
 **Models.** Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5 through the Message Batches API with adaptive thinking; DeepSeek Flash and V4-Pro at reasoning effort "high". The judge is Claude Haiku 5.5, as in Study I.
 
@@ -54,12 +40,10 @@ The 10 Study I overturning cases, 3 repeats per model and arm.
 | Study I, effort "medium" (reference) | 82/150 | 49/150 | 53/150 |
 | 0B: prompt plus explicit coordinates, "max" | 0/30 | 0/30 | 0/30 |
 | 0C: bare "where does this load act?", "max" | 0/30 | 0/30 | 0/30 |
-| 0B at "high" (exploratory) | 18/30 | 10/30 | 0/30 |
-| 0C at "high" (exploratory) | 3/30 | 1/30 | 0/30 |
 
 - **H1 (the error survives "max"): not supported.** Sonnet and Opus are effort-eliminated (0/30); Haiku is reduced (2/30). At "max" the models write 4–10 times more output.
-- **H2 (coordinates help): not testable as registered,** because there was nothing left to remove at "max". At "high", giving explicit coordinates did not meaningfully reduce Haiku's or Sonnet's error (16 → 18 and 11 → 10 of 30; exploratory).
-- **H2b (the models know the rule): yes.** Asked only where each triangular load acts, the models answer correctly at least 90% of the time even at "high". The error is in applying a known rule inside a multi-step calculation, not in missing knowledge.
+- **H2 (coordinates help): not testable as registered,** because there was nothing left to remove at "max". At "high", giving explicit coordinates did not meaningfully reduce Haiku's or Sonnet's error (16 → 18 and 11 → 10 of 30), while Opus went from 7 to 0 of 30 (exploratory).
+- **H2b (the models know the rule): yes.** Asked only where each triangular load acts, the models answer correctly at least 90% of the time even at "high" (exploratory: wrong in 3, 1 and 0 of 30). The error is in applying a known rule inside a multi-step calculation, not in missing knowledge.
 
 Because "max" removed the error and "high" kept it, an amendment ran Phase 1 at both efforts and added **H7**: the max-arm error rate is at least 15 points below the high arm, paired by case.
 
@@ -163,11 +147,8 @@ These runs were designed after the pre-registered phases, from their results. Ea
 - **Effort is a vendor setting.** "Low" to "max" are not defined in tokens and may change between versions. DeepSeek, Gemini and gpt-oss expose different controls; cross-provider comparisons confound provider with reasoning volume.
 - **Exploratory results.** §7 was designed after the main results; its amendments were committed before each run but published after, and its contrasts are uncorrected. Round 3 replicates the main ones on held-out cases with a placebo.
 - **Synthetic, idealized checks.** The acceptance criteria are illustrative (Study I §2.6 compares them with USACE and FEMA practice); real design reviews involve drawings, codes and judgment.
-- **The judge is a Claude model.** Its value readings agree with an independent rule-based reader on 99.9% of Phase 1 values and on 304 of 306 extra-provider values, but verdict grading still depends on it.
-- **The pool was reshaped after Phase 1** (amendment before any review), and H6 rests on 25 wrong Opus answers.
+- **The judge is a Claude model** (checked against model-free readers, §2), and **the Phase 2 pool was reshaped after Phase 1** (amendment before any review).
 
 ## 10. Reproducibility and cost
 
-Everything runs from the repository: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py` and `explore_local.py`, with the matching `analyze_*` scripts; summary tables are in `results/tables/`, graded answers in `results/graded/`, and the Phase 2 reviews in `results/raw/phase2.jsonl`. Tests: `uv run pytest`.
-
-**Spend.** Claude: US$35.42 for the pre-registered phases (Phase 0 8.13, Phase 1 21.04, Phase 2 6.25), US$68.24 for the exploratory runs, and an estimated US$3–6 for the judge (not itemized). DeepSeek: about US$5 (account balance). Gemini 3 Flash: about US$13 at list price, prepaid. gpt-oss-120b through OpenRouter: US$4.19 (account usage). The local qwen3:14b run cost nothing.
+Scripts: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py`, `explore_local.py`, `h6_replication.py` and the `analyze_*` scripts; tables in `results/tables/`, graded answers in `results/graded/`, Phase 2 reviews in `results/raw/phase2.jsonl`. **Spend.** Claude: US$35.42 for the pre-registered phases (Phase 0 8.13, Phase 1 21.04, Phase 2 6.25), US$68.24 for the exploratory runs, and an estimated US$3–6 for the judge (not itemized). DeepSeek: about US$5 (account balance). Gemini 3 Flash: about US$13 at list price, prepaid. gpt-oss-120b through OpenRouter: US$4.19 (account usage). The local qwen3:14b run cost nothing.
