@@ -1,0 +1,40 @@
+{
+ "n_reviews": 480,
+ "rates": {
+  "claude-opus-5-5 | P1": {
+   "detection": 0.7407407407407407,
+   "false_alarm": 0.0,
+   "n": 160
+  },
+  "claude-opus-5-5 | P2": {
+   "detection": 0.9814814814814815,
+   "false_alarm": 0.0,
+   "n": 160
+  },
+  "claude-haiku-5-5 | P2": {
+   "detection": 0.9814814814814815,
+   "false_alarm": 0.1320754716981132,
+   "n": 160
+  }
+ },
+ "H6_haikuP2_minus_opusP1": [
+  0.2619047619047619,
+  0.11904761904761904,
+  0.40476190476190477,
+  0.0
+ ],
+ "H6_replicated": true,
+ "H4_opus_P2_minus_P1_detection": [
+  0.2619047619047619,
+  0.11904761904761904,
+  0.40476190476190477,
+  0.001
+ ],
+ "H4_opus_P2_minus_P1_false_alarm": [
+  0.0,
+  0.0,
+  0.0,
+  1.0
+ ],
+ "H4_replicated": true
+}
