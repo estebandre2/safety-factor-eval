@@ -18,7 +18,7 @@ from pathlib import Path
 import httpx
 
 from sfe.backends.claude import claude_cost, run_claude_round
-from sfe.backends.deepseek import run_deepseek, run_groq
+from sfe.backends.deepseek import run_deepseek, run_openrouter
 from sfe.backends.gemini import GEMINI_MODEL, run_gemini
 from sfe.cases import load_cases
 from sfe.grade import _delivered
@@ -30,7 +30,7 @@ POOL = Path("results/raw/phase2_pool.jsonl")
 OUT = Path("results/raw/phase2.jsonl")
 CLAUDE_REVIEWERS = ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"]
 DEEPSEEK_REVIEWER = "deepseek-flash"
-EXTRA_REVIEWERS = {GEMINI_MODEL: run_gemini, "gpt-oss-120b": run_groq}  # amendment 2026-11-10 (after Phase 2)
+EXTRA_REVIEWERS = {GEMINI_MODEL: run_gemini, "gpt-oss-120b": run_openrouter}  # amendment 2026-11-10 (after Phase 2)
 REVIEW_COST_FACTOR = 1.5  # reviews read the answer too; estimate = 1.5 x the model's Phase 1 high-arm cost
 
 

@@ -14,7 +14,7 @@ from typing import Callable
 import httpx
 
 from sfe.backends.claude import claude_cost, run_claude_round
-from sfe.backends.deepseek import run_deepseek, run_groq
+from sfe.backends.deepseek import run_deepseek, run_openrouter
 from sfe.backends.gemini import run_gemini
 from sfe.backends.ollama import ToolsUnsupported, run_ollama
 from sfe.cases import Case, load_cases
@@ -34,7 +34,7 @@ def is_deepseek(model: str) -> bool:
 
 
 def is_api(model: str) -> bool:
-    """Synchronous hosted APIs that the runner parallelizes (DeepSeek, Gemini, Groq)."""
+    """Synchronous hosted APIs that the runner parallelizes (DeepSeek, Gemini, OpenRouter)."""
     return model.startswith(("deepseek-", "gemini-", "gpt-oss-"))
 
 
@@ -42,7 +42,7 @@ def sync_backend(model: str) -> Callable:
     if model.startswith("gemini-"):
         return run_gemini
     if model.startswith("gpt-oss-"):
-        return run_groq
+        return run_openrouter
     if is_deepseek(model):
         return run_deepseek
     return run_ollama

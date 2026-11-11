@@ -69,16 +69,20 @@ def run_deepseek(request: dict, model: str, client: httpx.Client | None = None) 
     return _chat(request, model, BASE_URL, "DEEPSEEK_API_KEY", client)
 
 
-# amendment 2026-11-10 (after Phase 2): gpt-oss-120b on Groq (OpenAI-compatible) as an extra provider, at reasoning_effort "high".
-GROQ_BASE_URL = "https://api.groq.com/openai/v1"
-GROQ_MODELS = {"gpt-oss-120b": "openai/gpt-oss-120b"}
+# amendment 2026-11-10 (after Phase 2): gpt-oss-120b through OpenRouter, pinned to the Groq endpoint (no fallback to
+# other hosts), reasoning effort "high". Groq's own paid tier was closed to new upgrades.
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+OPENROUTER_MODELS = {"gpt-oss-120b": "openai/gpt-oss-120b"}
+OPENROUTER_PROVIDER = {"order": ["Groq"], "allow_fallbacks": False, "require_parameters": True}
 
 
-def run_groq(request: dict, model: str, client: httpx.Client | None = None) -> Reply:
-    return _chat(request, GROQ_MODELS[model], GROQ_BASE_URL, "GROQ_API_KEY", client)
+def run_openrouter(request: dict, model: str, client: httpx.Client | None = None) -> Reply:
+    extra = {"reasoning": {"effort": REASONING_EFFORT}, "provider": OPENROUTER_PROVIDER}
+    return _chat(request, OPENROUTER_MODELS[model], OPENROUTER_BASE_URL, "OPENROUTER_API_KEY", client, extra)
 
 
-def _chat(request: dict, model: str, base_url: str, key_env: str, client: httpx.Client | None) -> Reply:
+def _chat(request: dict, model: str, base_url: str, key_env: str, client: httpx.Client | None,
+          extra: dict | None = None) -> Reply:
     key = os.environ.get(key_env)
     if not key:
         raise RuntimeError(f"{key_env} is not set (add it to .env)")
@@ -86,7 +90,7 @@ def _chat(request: dict, model: str, base_url: str, key_env: str, client: httpx.
     if request.get("structured"):
         system = f"{system}\n\n{json_hint(request.get('schema'))}".strip()
     body: dict = {"model": model, "messages": to_openai_messages(system, request["messages"]),
-                  "reasoning_effort": REASONING_EFFORT, "max_tokens": MAX_TOKENS, "stream": False}
+                  "max_tokens": MAX_TOKENS, "stream": False, **(extra or {"reasoning_effort": REASONING_EFFORT})}
     if request.get("tools"):
         body["tools"] = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
                                                            "parameters": t["input_schema"]}} for t in request["tools"]]
