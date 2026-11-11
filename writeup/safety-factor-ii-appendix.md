@@ -93,3 +93,7 @@ Run on the author's laptop through Ollama (4-bit), base prompt, 80 Phase 1 dams,
 - **As author:** 75 of 80 values wrong (94% [88, 99]); 68 of the 75 match no lever-arm mechanism (3 thrust-arm, 2 uplift, 1 triangle, 1 combined). It approved 5 of 48 unsafe dams and did not approve 17 of 32 safe ones.
 - **As reviewer (P1, 156 answers):** detection 18% (14 of 78 wrong values), false alarms 18% (14 of 78 correct values): chance level.
 - **Reading:** a model this size, without extended reasoning, does not get far enough into the calculation for the lever-arm error to be the binding failure. It is reported for completeness and is not compared with the API models.
+
+## E. Value-reader check on the exploratory arms
+
+Every exploratory arm has its planned number of answers, and the judge extracted a value from every one. The model-free value reader agrees with the judge's value on 99.6–100% of answers in each file (explore, explore2, explore3, explore4, nouplift, side, extra providers, local model). Three arms fall below 98%: Sonnet with the placebo (155 of 159), Sonnet with "show each step" (155 of 160) and gpt-oss with set-up first (70 of 74). All 13 disagreements were read by hand; in every one the judge's value equals the true value, and the reader had picked an earlier number the model later corrected. For example, one Sonnet answer first states 2.43, then concludes: "The correct overturning factor of safety is about 1.98. This is lower than the 2.43 I would have obtained with the wrong uplift arm." The reported error rates therefore stand.
