@@ -173,3 +173,17 @@ def test_phase0_ignores_unparseable_rows():
     df = _df([("m", "bare", "max", "c0", None), ("m", "bare", "max", "c0", True), ("m", "bare", "max", "c1", False)])
     rate, n = error_rate(df)
     assert n == 2 and rate == 0.5
+
+
+def test_setup_variant_asks_for_lines_of_action_without_hints():
+    from sfe.cases import load_cases
+    from pathlib import Path
+    from sfe.engine import new_trial
+    from sfe.prompts import SETUP_INSTRUCTION, case_statement
+    case = next(c for c in load_cases(Path("data/cases_phase1.jsonl")) if c.family == "overturning")
+    t = new_trial(case, "neutral", "A", "claude-haiku-5-5", "M0", 0, effort="high", variant="setup")
+    prompt = t.messages[0]["content"]
+    assert SETUP_INSTRUCTION in prompt and prompt.startswith(case_statement(case).split("Can I approve")[0])
+    assert prompt.rstrip().endswith("APPROVE or REJECT and explain.")
+    for hint in ("2/3", "1/3", "B/3", "centroid", "toe"):
+        assert hint not in SETUP_INSTRUCTION

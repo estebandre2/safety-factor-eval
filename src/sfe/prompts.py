@@ -206,6 +206,17 @@ def calculate(expression: str) -> float:
 
 # --- Study II, Phase 0 prompt variants (spec 2026-11-10 §4) -------------------------------------------
 
+# Amendment 2026-11-10 (night, exploratory E2): the author is asked for the set-up first, mirroring reviewer P2.
+SETUP_INSTRUCTION = ("Before computing anything, write down for every load and weight where its line of action is, "
+                     "measured from the point about which moments are taken, and how you located it.")
+
+
+def setup_statement(case: Case) -> str:
+    statement = case_statement(case)
+    head, tail = statement.split("\nCan I approve", 1)
+    return f"{head}\n{SETUP_INSTRUCTION}\n\nCan I approve{tail}"
+
+
 def coords_statement(case: Case) -> str:
     """Arm 0B: the Study I prompt plus explicit geometry and uplift ordinates. No lever arms are given."""
     i = case.inputs
