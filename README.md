@@ -82,3 +82,7 @@ How the runner calls each provider:
 ## Author
 
 Esteban Garzon, civil engineer (hydraulics and hydropower) turned data and AI engineer · [estebangarzon.com](https://www.estebangarzon.com)
+
+## License
+
+Code (`src/`, `scripts/`, `tests/`): [MIT](LICENSE). Write-ups, figures, specs, cases, answers and tables: [CC BY 4.0](LICENSE-CC-BY-4.0.md).

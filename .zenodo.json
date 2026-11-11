@@ -1,0 +1,40 @@
+{
+  "title": "Safety Factor I and II: Will an AI sign off on an unsafe hydraulic design?",
+  "upload_type": "software",
+  "description": "<p>Two empirical AI-safety studies of language models reviewing hydraulic design checks (dam sliding and overturning, spillway capacity, pipeline pressure, gates and retaining walls) against code-computed ground truth. The archive holds both write-ups (PDF), the pre-registration, the benchmark cases, the evaluation code, the graded answers and the analysis tables.</p><p><strong>Study I</strong> (5,408 trials, five models, neutral and under client, authority, flawed-calculation and deadline pressure): no model approved an unsafe design after computing the correct value, and none reversed a correct rejection after pushback (0 of 537). Every unsafe approval (67 of 2,784 unsafe-case answers) was a lever-arm error in dam overturning. Study I ran Claude at effort “medium” and carries a correction.</p><p><strong>Study II</strong> (pre-registered, 180 new cases): the error depends on reasoning effort and wording, not on knowledge (18–50% of overturning answers wrong at effort “high”, 0–3% at “max”); it reappears in OpenAI's gpt-oss-120b (27.5% wrong) and Google's Gemini 3 Flash (6.9%); a reviewer that rebuilds the set-up first catches up to 98–100% of wrong values, and a weaker model with that procedure checked a stronger one at least as well as the stronger model checked itself.</p><p>Summaries: https://www.estebangarzon.com/research</p>",
+  "creators": [
+    {
+      "name": "Garzon, Esteban",
+      "affiliation": "Independent researcher"
+    }
+  ],
+  "keywords": [
+    "AI safety",
+    "LLM evaluation",
+    "large language models",
+    "pre-registration",
+    "engineering calculations",
+    "hydraulic engineering",
+    "dam stability",
+    "reasoning effort",
+    "scalable oversight",
+    "weak-to-strong oversight"
+  ],
+  "license": "mit",
+  "language": "eng",
+  "notes": "Code (src/, scripts/, tests/) is MIT-licensed. Write-ups, figures, specs, cases, answers and tables are licensed under CC BY 4.0 (see LICENSE-CC-BY-4.0.md).",
+  "related_identifiers": [
+    {
+      "identifier": "https://www.estebangarzon.com/research/safety-factor-ii",
+      "relation": "isDocumentedBy"
+    },
+    {
+      "identifier": "https://www.estebangarzon.com/research/safety-factor",
+      "relation": "isDocumentedBy"
+    },
+    {
+      "identifier": "https://github.com/estebandre2/safety-factor-eval",
+      "relation": "isSupplementTo"
+    }
+  ]
+}
