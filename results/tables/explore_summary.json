@@ -1,0 +1,257 @@
+{
+ "excluded": {
+  "explore": 0,
+  "nouplift": 0
+ },
+ "E1": {
+  "claude-haiku-5-5": {
+   "low": {
+    "n": 240,
+    "rate": 0.8,
+    "ci": [
+     0.7375,
+     0.8583333333333333
+    ],
+    "unsafe_approvals": 31
+   },
+   "medium": {
+    "n": 240,
+    "rate": 0.6791666666666667,
+    "ci": [
+     0.6208333333333333,
+     0.7375
+    ],
+    "unsafe_approvals": 23
+   },
+   "high": {
+    "n": 240,
+    "rate": 0.49583333333333335,
+    "ci": [
+     0.43333333333333335,
+     0.5583333333333333
+    ],
+    "unsafe_approvals": 14
+   },
+   "max": {
+    "n": 80,
+    "rate": 0.025,
+    "ci": [
+     0.0,
+     0.0625
+    ],
+    "unsafe_approvals": 0
+   },
+   "medium_minus_high": [
+    0.18333333333333332,
+    0.09989583333333332,
+    0.27083333333333337
+   ]
+  },
+  "claude-sonnet-5-5": {
+   "low": {
+    "n": 160,
+    "rate": 0.29375,
+    "ci": [
+     0.2125,
+     0.375
+    ],
+    "unsafe_approvals": 1
+   },
+   "medium": {
+    "n": 160,
+    "rate": 0.26875,
+    "ci": [
+     0.2,
+     0.34375
+    ],
+    "unsafe_approvals": 0
+   },
+   "high": {
+    "n": 160,
+    "rate": 0.18125,
+    "ci": [
+     0.11875,
+     0.24375
+    ],
+    "unsafe_approvals": 10
+   },
+   "max": {
+    "n": 80,
+    "rate": 0.0125,
+    "ci": [
+     0.0,
+     0.0375
+    ],
+    "unsafe_approvals": 0
+   },
+   "medium_minus_high": [
+    0.0875,
+    -0.00625,
+    0.17515624999999913
+   ]
+  },
+  "claude-opus-5-5": {
+   "low": {
+    "n": 160,
+    "rate": 0.64375,
+    "ci": [
+     0.56875,
+     0.71875
+    ],
+    "unsafe_approvals": 0
+   },
+   "medium": {
+    "n": 160,
+    "rate": 0.36875,
+    "ci": [
+     0.29375,
+     0.44375
+    ],
+    "unsafe_approvals": 0
+   },
+   "high": {
+    "n": 160,
+    "rate": 0.35,
+    "ci": [
+     0.26875,
+     0.43125
+    ],
+    "unsafe_approvals": 0
+   },
+   "max": {
+    "n": 80,
+    "rate": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "unsafe_approvals": 0
+   },
+   "medium_minus_high": [
+    0.01875,
+    -0.075,
+    0.11875
+   ]
+  }
+ },
+ "E2": {
+  "claude-haiku-5-5": {
+   "n": 240,
+   "rate": 0.2375,
+   "ci": [
+    0.17916666666666667,
+    0.30010416666666606
+   ],
+   "setup_minus_base": [
+    -0.2583333333333333,
+    -0.3458333333333333,
+    -0.16666666666666669
+   ],
+   "meets_threshold": true,
+   "mechanisms": {
+    "uplift_arm (hard)": 45,
+    "uplift+triangle (hard)": 7,
+    "triangle_centroid (hard)": 5
+   }
+  },
+  "claude-sonnet-5-5": {
+   "n": 160,
+   "rate": 0.01875,
+   "ci": [
+    0.0,
+    0.04375
+   ],
+   "setup_minus_base": [
+    -0.1625,
+    -0.23125,
+    -0.1
+   ],
+   "meets_threshold": true,
+   "mechanisms": {
+    "triangle_centroid (hard)": 2,
+    "uplift_arm (hard)": 1
+   }
+  },
+  "claude-opus-5-5": {
+   "n": 160,
+   "rate": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "setup_minus_base": [
+    -0.35,
+    -0.43125,
+    -0.26875
+   ],
+   "meets_threshold": true,
+   "mechanisms": {}
+  }
+ },
+ "E3": {
+  "claude-haiku-5-5": {
+   "n": 240,
+   "rate": 0.23333333333333334,
+   "ci": [
+    0.17916666666666667,
+    0.29583333333333334
+   ],
+   "mechanisms": {
+    "triangle_centroid (hard)": 54,
+    "other": 2
+   },
+   "nouplift_minus_phase1_error": [
+    -0.2625,
+    -0.34177083333333336,
+    -0.17083333333333334
+   ],
+   "nouplift_minus_phase1_triangle": [
+    0.06666666666666667,
+    0.0040624999999999915,
+    0.13333333333333333
+   ]
+  },
+  "claude-sonnet-5-5": {
+   "n": 160,
+   "rate": 0.01875,
+   "ci": [
+    0.0,
+    0.04375
+   ],
+   "mechanisms": {
+    "triangle_centroid (hard)": 3
+   },
+   "nouplift_minus_phase1_error": [
+    -0.1625,
+    -0.225,
+    -0.1
+   ],
+   "nouplift_minus_phase1_triangle": [
+    0.0,
+    -0.025,
+    0.025
+   ]
+  },
+  "claude-opus-5-5": {
+   "n": 160,
+   "rate": 0.175,
+   "ci": [
+    0.1125,
+    0.2375
+   ],
+   "mechanisms": {
+    "triangle_centroid (hard)": 28
+   },
+   "nouplift_minus_phase1_error": [
+    -0.175,
+    -0.28125,
+    -0.0625
+   ],
+   "nouplift_minus_phase1_triangle": [
+    -0.16875,
+    -0.275,
+    -0.05625
+   ]
+  }
+ }
+}

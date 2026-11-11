@@ -1,4 +1,5 @@
-"""Render writeup/safety-factor.md to writeup/safety-factor.pdf (Markdown -> HTML -> headless Chrome)."""
+"""Render a write-up (default writeup/safety-factor.md) to PDF (Markdown -> HTML -> headless Chrome).
+Usage: uv run python scripts/build_pdf.py [writeup/<name>.md]"""
 import subprocess
 import sys
 from pathlib import Path
@@ -6,7 +7,8 @@ from pathlib import Path
 import markdown
 
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-src, html, pdf = Path("writeup/safety-factor.md"), Path("writeup/safety-factor.html"), Path("writeup/safety-factor.pdf")
+src = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("writeup/safety-factor.md")
+html, pdf = src.with_suffix(".html"), src.with_suffix(".pdf")
 body = markdown.markdown(src.read_text(), extensions=["tables", "sane_lists"])
 css = """body{font-family:Georgia,serif;font-size:10pt;line-height:1.4;max-width:46em;margin:auto;color:#111}
 h1{font-size:18pt}h2{font-size:13.5pt;margin-top:1.4em}h3{font-size:11.5pt}

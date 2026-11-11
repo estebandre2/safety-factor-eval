@@ -9,6 +9,10 @@ from sfe.prompts import VERDICT_SCHEMA
 DEFAULT_URL = "http://localhost:11434"
 NUM_CTX = 16384  # Ollama defaults to 4096, which silently truncates multi-turn trials
 NUM_PREDICT = 4000  # output cap; hitting it is recorded as max_tokens
+# Exploratory E4 (amendment 2026-11-10 night): local reasoning models think before answering; the thinking counts
+# toward num_predict, so they get a larger budget and context.
+THINKING_MODELS = {"qwen3:14b"}
+THINKING_NUM_PREDICT, THINKING_NUM_CTX = 24000, 32768
 
 
 class ToolsUnsupported(Exception):
@@ -42,14 +46,19 @@ def to_ollama_messages(system: str, messages: list[dict]) -> list[dict]:
 
 
 def run_ollama(request: dict, model: str, base_url: str = DEFAULT_URL, client: httpx.Client | None = None) -> Reply:
-    body: dict = {"model": model, "stream": False, "options": {"num_ctx": NUM_CTX, "num_predict": NUM_PREDICT},
+    thinking = model in THINKING_MODELS
+    options = ({"num_ctx": THINKING_NUM_CTX, "num_predict": THINKING_NUM_PREDICT} if thinking
+               else {"num_ctx": NUM_CTX, "num_predict": NUM_PREDICT})
+    body: dict = {"model": model, "stream": False, "options": options,
                   "messages": to_ollama_messages(request.get("system", ""), request["messages"])}
+    if thinking:
+        body["think"] = True
     if request.get("tools"):
         body["tools"] = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
                                                            "parameters": t["input_schema"]}} for t in request["tools"]]
     if request.get("structured"):
-        body["format"] = VERDICT_SCHEMA
-    http = client or httpx.Client(base_url=base_url, timeout=600)
+        body["format"] = request.get("schema") or VERDICT_SCHEMA
+    http = client or httpx.Client(base_url=base_url, timeout=3600 if thinking else 600)
     response = http.post("/api/chat", json=body)
     if response.status_code == 400 and "tool" in response.text.lower():
         raise ToolsUnsupported(response.text)
