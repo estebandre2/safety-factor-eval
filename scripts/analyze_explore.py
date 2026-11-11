@@ -159,5 +159,24 @@ if len(side):
                                    "setup_safe_not_approved": snap(g), "base_safe_not_approved": snap(b), "n": len(g)}
     summary["R5"] = out
 
+# Round 4: the placebo split (steps, care, filler) on the held-out dams, against the round 3 base arm.
+r4 = load("results/graded/explore4.jsonl")
+if len(r4) and len(r3):
+    summary["R4split"] = {"excluded": int((r4["status"] != "done").sum())}
+    both = pd.concat([r3, r4[r4["status"] == "done"]], ignore_index=True)
+    for model in CLAUDE:
+        m = both[both["model"] == model]
+        row = {}
+        for v in ("steps", "care", "filler"):
+            g = m[(m["effort"] == "high") & (m["variant"] == v)]
+            rate, n = error_rate(g)
+            d = paired_case_diff(m, (v, "high"), ("base", "high"))
+            row[v] = {"n": n, "rate": rate, "ci": error_ci(g), "minus_base": d,
+                      "reaches_minus_10": bool(d[0] <= -0.10 and d[2] < 0),
+                      "unsafe_approvals": int(((g["verdict_truth"] == "UNSAFE") & (g["verdict_pred"] == "APPROVE")).sum())}
+        row["F1_met"] = not row["filler"]["reaches_minus_10"]
+        row["F2_met_opus"] = (row["steps"]["reaches_minus_10"] or row["care"]["reaches_minus_10"]) if "opus" in model else None
+        summary["R4split"][model] = row
+
 OUT.write_text(json.dumps(summary, indent=1, default=float))
 print(json.dumps(summary, indent=1, default=float))

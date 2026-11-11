@@ -175,4 +175,14 @@ These runs were designed after the pre-registered phases, from their results. Ea
 
 ## 10. Reproducibility and cost
 
-Everything runs from the repository: `scripts/phase0.py`, `phase1.py`, `phase2.py` and the matching `analyze_*` scripts; tables are in `results/tables/`. Claude spend: Phase 0 US$8.13, Phase 1 US$21.04, Phase 2 US$6.25, plus judge grading. DeepSeek: about US$5 (from the account balance). *[Extra providers: §6.]*
+Everything runs from the repository: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py` and `explore_local.py`, with the matching `analyze_*` scripts; summary tables are in `results/tables/`, graded answers in `results/graded/`, and the Phase 2 reviews in `results/raw/phase2.jsonl`. Tests: `uv run pytest`.
+
+| | Spend (US$) |
+|---|---|
+| Claude, pre-registered phases (Phase 0, 1, 2) | 8.13 + 21.04 + 6.25 = 35.42 |
+| Claude, exploratory runs (§7) | 68.24 |
+| Claude judge (Haiku, grading every answer) | about 3–6 (estimated; not itemized) |
+| DeepSeek (Phases 0–2) | about 5 (from the account balance) |
+| Gemini 3 Flash (authors and reviews) | about 13 at list price, prepaid |
+| gpt-oss-120b via OpenRouter (authors, reviews, E7) | 4.19 (account usage) |
+| Local qwen3:14b (E4) | 0 |
