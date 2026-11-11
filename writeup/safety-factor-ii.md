@@ -90,6 +90,8 @@ Contrasts, with Holm correction across the pre-registered family (H4–H6):
 - **H5 (DeepSeek Flash detects more than the Claude reviewers, under P1): supported against Haiku (+26 points) and Opus (+11.5), not against Sonnet (+3).** DeepSeek writes 2–9 times more output per review (about 3,500 tokens against 400–1,650), so this compares reasoning volume as much as providers.
 - **H6 (a weak reviewer with a good protocol is not worse than a strong reviewer reviewing itself): supported.** On Opus's wrong answers, Haiku with P2 minus Opus with P1 is +16 points, CI [−4, +40]: the lower bound clears the −5-point margin, but the interval is wide (25 wrong Opus answers).
 
+**Secondary outcomes (P1).** When a reviewer flags a wrong value, its own value is right 90% (Haiku) to 99% (DeepSeek) of the time. Its design verdict (approve versus not) matches the truth in 94% (Haiku) to 100% (DeepSeek) of reviews; Haiku approved 5 and Sonnet 2 of 92 unsafe-case reviews, the other reviewers none.
+
 **Cost-matched comparison** (registered by amendment; table in the appendix, §B). Against each author alone at "max", the same author at "high" plus one reviewer at "high" (expected accuracy, assuming a flagged answer is replaced by the reviewer's value) is as accurate or more, with roughly 3–8 times fewer output tokens: Haiku alone at "max" reaches 97.5% with about 28,200 tokens per answer; Haiku at "high" reviewed by Opus with P2 reaches 100% with about 3,560.
 
 ## 6. Other providers
