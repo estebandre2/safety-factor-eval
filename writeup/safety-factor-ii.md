@@ -156,6 +156,8 @@ All three meet the threshold fixed beforehand (at least 10 points, CI excluding 
 | Sonnet | 29% → 2.5% | 27% → 6% | ~1,040 |
 | Opus | 64% → 0% | 37% → 0% | ~1,600 |
 
+![Overturning error by effort, base prompt against set-up first, for Haiku, Sonnet and Opus](figures/effort_setup.png)
+
 Every contrast meets the 10-point threshold. Opus at "low" with one added sentence makes no errors in 160 answers, as at "max", at about a quarter of the output (1,600 against 6,000 tokens) and a quarter of the cost per answer. Haiku is the exception: its error halves but stays high. Round 3 (below) tests whether any added instruction would do the same.
 
 The §7 contrasts are uncorrected for multiplicity; round 3 replicates the main ones with predictions fixed in advance.
