@@ -9,7 +9,7 @@ Study I found that language models do not approve unsafe hydraulic designs under
 - **The error depends on reasoning effort, not on knowledge.** Asked only where each triangular load acts, the Claude models answer correctly at least 90% of the time even at "high" effort. Inside a full design check at "high" they misplace a resultant in 18–50% of overturning answers. At "max" effort the error almost disappears (0–3%). Study I ran at "medium"; its headline numbers describe that setting only, and its write-up now carries a correction.
 - **It is specific to the dam overturning check.** On 80 new overturning geometries the Study I mechanisms reappear exactly: Haiku and Sonnet misplace the uplift (which inflates the safety factor and approves unsafe dams), Opus misplaces the concrete triangle (which deflates it). Two new families with the same "hard" triangle orientation, a hinged gate and a battered retaining wall, show essentially no errors. The pre-registered orientation hypothesis (H3) is therefore **not supported**.
 - **A reviewer catches most of it, and the instruction matters for one model.** On a case-matched pool of 156 Claude answers, plain review ("check the calculation") detects 74% (Haiku) to 97% (Sonnet) of wrong values, with 0–5% false alarms. Asking Opus to first build its own free-body diagram raises its detection from 88% to 100% with no false alarms (H4, Holm p < 0.001). DeepSeek Flash detects 100%.
-- **Review is cheaper than more reasoning.** An answer at "high" plus one reviewer at "high" reaches the same or higher expected accuracy than the author alone at "max", with 3–8 times fewer output tokens.
+- **Review is cheaper than more reasoning.** An answer at "high" plus one reviewer at "high" reaches the same or higher expected accuracy than the author alone at "max", with roughly 3–8 times fewer output tokens.
 - **The error is not specific to Claude.** Two providers added by amendment make the same mistake: OpenAI's open-weight gpt-oss-120b in 27.5% of overturning answers (with 7 unsafe approvals), Google's Gemini 3 Flash in 6.9%. As a reviewer, Gemini catches 99% of Claude's wrong values; gpt-oss catches only 46%.
 - **Exploratory: one sentence does what "max" does, at a fraction of the cost, but not for the reason expected.** Asking the author to first write down where every load acts lowers the error at every effort, replicated on 80 held-out dams: Opus makes no errors even at "low" effort, at a quarter of the cost of "max". But a placebo ("work carefully and show each step") fixes Opus just as well, which suggests a lapse of procedure rather than a gap in knowledge; the set-up content matters for Sonnet and partly for Haiku. Stating where the triangle's apex is fixes Opus and makes Haiku and Sonnet worse. These runs were designed after the main results and their amendments were published after the runs (§7).
 
@@ -26,7 +26,7 @@ In both, the moment centre (the toe) sits at the triangle's zero end, so the cor
 
 ## 2. Design
 
-**Pre-registration.** The spec fixed the hypotheses, thresholds, sample sizes, analysis and budget caps before the first trial. Every later change is a dated amendment pushed to the public repository before the data it governs: after the token check (`8568bd6`), after Phase 0 (`93b431b`), after Phase 1 (`a77c880`) and after Phase 2 (`f398c03`, revised before any run in `c5a08e1`). A fifth amendment, for the exploratory additions in §7, was committed before those runs but published after them.
+**Pre-registration.** The spec fixed the hypotheses, thresholds, sample sizes, analysis and budget caps before the first trial. Every later change is a dated amendment pushed to the public repository before the data it governs: after the token check (`8568bd6`), after Phase 0 (`93b431b`), after Phase 1 (`a77c880`) and after Phase 2 (`f398c03`, revised before any run in `c5a08e1`). Further amendments for the exploratory additions in §7 were each committed before their run but published after.
 
 **Families.** Phase 1 uses 180 new cases (`data/cases_phase1.jsonl`, seed 2027), each re-derived from its prompt text by an independent script:
 
@@ -58,7 +58,7 @@ The 10 Study I overturning cases, 3 repeats per model and arm.
 | 0C at "high" (exploratory) | 3/30 | 1/30 | 0/30 |
 
 - **H1 (the error survives "max"): not supported.** Sonnet and Opus are effort-eliminated (0/30); Haiku is reduced (2/30). At "max" the models write 4–10 times more output.
-- **H2 (coordinates help): not testable as registered,** because there was nothing left to remove at "max". At "high", giving explicit coordinates did not reduce Haiku's or Sonnet's error (exploratory).
+- **H2 (coordinates help): not testable as registered,** because there was nothing left to remove at "max". At "high", giving explicit coordinates did not meaningfully reduce Haiku's or Sonnet's error (16 → 18 and 11 → 10 of 30; exploratory).
 - **H2b (the models know the rule): yes.** Asked only where each triangular load acts, the models answer correctly at least 90% of the time even at "high". The error is in applying a known rule inside a multi-step calculation, not in missing knowledge.
 
 Because "max" removed the error and "high" kept it, an amendment ran Phase 1 at both efforts and added **H7**: the max-arm error rate is at least 15 points below the high arm, paired by case.
@@ -77,9 +77,9 @@ Error rates at effort "high" (in parentheses: unsafe approvals / unsafe answers 
 
 At "max" (1 repeat), every Claude model is at or below 3% in every family (overturning: Haiku 2.5%, Sonnet 1.3%, Opus 0%).
 
-- **H3 (orientation predicts the error): not supported.** In overturning, hard-load mechanisms account for nearly all errors (hard minus easy: Haiku +49 points, Opus +34, Sonnet +18, each CI excluding zero). But the gate and the wall show no errors in either orientation, so the pre-registered condition (the effect in at least one new family) fails. The wall's front batter has exactly the dam's triangle orientation and still produced no errors. The mistake belongs to the dam overturning check, not to triangular loads in general. The exploratory runs in §7 point to wording: the wall text says where the triangle's apex is and the dam text leaves it to inference; stating the apex in the dam text removes Opus's error (E5).
+- **H3 (orientation predicts the error): not supported.** In overturning, hard-load mechanisms account for nearly all errors (hard minus easy: Haiku +49 points, Opus +34, Sonnet +18, each CI excluding zero). But the gate shows no errors and the wall almost none (4 Haiku errors at "high", all in the easy back-batter version), so the pre-registered condition (the effect in at least one new family) fails. The wall's front batter has exactly the dam's triangle orientation and still produced no errors. The mistake belongs to the dam overturning check, not to triangular loads in general. The exploratory runs in §7 point to wording: the wall text says where the triangle's apex is and the dam text leaves it to inference; stating the apex in the dam text removes Opus's error (E5).
 - **H3b (the same mechanisms): supported.** Uplift arm dominates for Haiku (79 errors, plus 27 combined with the triangle, of 119) and Sonnet (26 of 29). The triangle centroid explains 55 of Opus's 56 errors. The direction decides the harm: Haiku and Sonnet approved 24 unsafe-case answers at "high"; Opus approved none but failed to approve 9 of 64 safe-case answers.
-- **H7 (max beats high by ≥ 15 points): supported for Haiku (+22 points overall) and Opus (+16); not supported for Sonnet (+7).** The new families have no errors at either effort, which dilutes the overall difference. In overturning alone the difference is +47, +35 and +17 points, each CI excluding zero.
+- **H7 (max beats high by ≥ 15 points): supported for Haiku (+22 points overall) and Opus (+16); not supported for Sonnet (+7.5).** The new families have almost no errors at either effort, which dilutes the overall difference. In overturning alone the difference is +47, +35 and +17 points, each CI excluding zero.
 - **Control.** Sliding stays at or below 2%, as expected.
 - **A side effect of "max".** Haiku at "max" did not approve 6 of 16 safe walls although its values were correct: more reasoning removed the calculation error but added caution that a user would read as a rejection.
 
@@ -103,10 +103,10 @@ Detection and false alarm are scored on the reviewer's judgment of the calculati
 Contrasts, with Holm correction across the pre-registered family (H4–H6):
 
 - **H4 (a set-up protocol beats plain review by ≥ 10 points without raising false alarms by more than 5): supported for Opus with P2 only** (+11.5 points [+5, +19], Holm p < 0.001, false alarms unchanged at 0). Opus with P3 gains +8 points, which does not survive correction. For Haiku, P2 adds 6 points but also 6 points of false alarms; Sonnet and DeepSeek were already near the ceiling.
-- **H5 (DeepSeek Flash detects more than the Claude reviewers, under P1): supported against Haiku (+26 points) and Opus (+11.5), not against Sonnet (+3).** DeepSeek writes 5–9 times more output per review, so this compares reasoning volume as much as providers.
+- **H5 (DeepSeek Flash detects more than the Claude reviewers, under P1): supported against Haiku (+26 points) and Opus (+11.5), not against Sonnet (+3).** DeepSeek writes 2–9 times more output per review (about 3,500 tokens against 400–1,650), so this compares reasoning volume as much as providers.
 - **H6 (a weak reviewer with a good protocol is not worse than a strong reviewer reviewing itself): supported.** On Opus's wrong answers, Haiku with P2 minus Opus with P1 is +16 points, CI [−4, +40]: the lower bound clears the −5-point margin, but the interval is wide (25 wrong Opus answers).
 
-**Cost-matched comparison** (registered by amendment; table in the appendix, §B). Against each author alone at "max", the same author at "high" plus one reviewer at "high" (expected accuracy, assuming a flagged answer is replaced by the reviewer's value) is as accurate or more, with 3–8 times fewer output tokens: Haiku alone at "max" reaches 97.5% with about 28,200 tokens per answer; Haiku at "high" reviewed by Opus with P2 reaches 100% with about 3,560.
+**Cost-matched comparison** (registered by amendment; table in the appendix, §B). Against each author alone at "max", the same author at "high" plus one reviewer at "high" (expected accuracy, assuming a flagged answer is replaced by the reviewer's value) is as accurate or more, with roughly 3–8 times fewer output tokens: Haiku alone at "max" reaches 97.5% with about 28,200 tokens per answer; Haiku at "high" reviewed by Opus with P2 reaches 100% with about 3,560.
 
 ## 6. Other providers
 
@@ -149,7 +149,7 @@ These runs were designed after the pre-registered phases, from their results. Ea
 | Opus | 34% | 0% | 0% | 0% | 55% → 0% |
 
 - **Set-up first replicates** at "high" and "low" for all three models (−15 to −55 points, every CI below zero).
-- **The placebo** (*"work slowly and carefully, double-check every number, and show each step"*) **removes Opus's error as well**, and cuts Haiku's by 19 points; Sonnet ignores it. Set-up first beats the placebo for Haiku (−12 points [−19, −4]) and Sonnet (−19 [−26, −13]) at about the same answer length. For Opus, the error looks like a lapse of procedure rather than missing knowledge.
+- **The placebo** (*"Before answering, work slowly and carefully, double-check every number you use, and show each step of your calculation in full."*) **removes Opus's error as well**, and cuts Haiku's by 19 points; Sonnet ignores it. Set-up first beats the placebo for Haiku (−12 points [−19, −4]) and Sonnet (−19 [−26, −13]) at about the same answer length. For Opus, the error looks like a lapse of procedure rather than missing knowledge.
 - **The apex sentence's harm replicates** for Haiku and Sonnet (+13 points each); Haiku's unsafe approvals double.
 - **Side effect:** on gate, wall and sliding, set-up first caused no errors, but Haiku stopped approving 15–31% of safe walls (base 4%), the same over-caution "max" produced.
 
@@ -175,4 +175,4 @@ These runs were designed after the pre-registered phases, from their results. Ea
 
 ## 10. Reproducibility and cost
 
-Everything runs from the repository: `scripts/phase0.py`, `phase1.py`, `phase2.py` and the matching `analyze_*` scripts; tables are in `results/tables/`. Claude spend: Phase 0 US$8.13, Phase 1 US$21.04, Phase 2 US$6.25, plus judge grading. DeepSeek: about US$5. *[Extra providers: §6.]*
+Everything runs from the repository: `scripts/phase0.py`, `phase1.py`, `phase2.py` and the matching `analyze_*` scripts; tables are in `results/tables/`. Claude spend: Phase 0 US$8.13, Phase 1 US$21.04, Phase 2 US$6.25, plus judge grading. DeepSeek: about US$5 (from the account balance). *[Extra providers: §6.]*
