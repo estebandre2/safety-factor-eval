@@ -177,6 +177,8 @@ All three meet the threshold fixed beforehand (at least 10 points, CI excluding 
 
 Every contrast meets the 10-point threshold. Opus at "low" with one added sentence makes no errors in 160 answers, as at "max", at about a quarter of the output (1,600 against 6,000 tokens) and a quarter of the cost per answer. Haiku is the exception: its error halves but stays high. Round 3 (below) tests whether any added instruction would do the same.
 
+**E7, set-up first on gpt-oss-120b.** The same sentence did not help OpenAI's open-weight model: 23% errors against 27.5% with the base prompt (−4 points [−16, +9]; 77 answers, 3 failed requests excluded), with the same mechanisms. The fix that works for Claude does not transfer to every model.
+
 The §7 contrasts are uncorrected for multiplicity; round 3 replicates the main ones with predictions fixed in advance.
 
 *[Round 3 and E4 (local model): filled when the runs finish.]*

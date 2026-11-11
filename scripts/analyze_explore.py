@@ -100,5 +100,19 @@ if len(nu):
             "nouplift_minus_phase1_error": _boot_mean((err(a)[common] - err(b)[common]).to_numpy()),
             "nouplift_minus_phase1_triangle": _boot_mean((tri(a)[common] - tri(b)[common]).to_numpy())}
 
+# E7: set-up-first on gpt-oss-120b (1 repeat) against its base answers (2 repeats), paired by case.
+oss, oss_base = load("results/graded/explore_oss.jsonl"), load("results/graded/phase1_extra.jsonl")
+if len(oss):
+    summary["E7"] = {"excluded": int((oss["status"] != "done").sum())}
+    oss = oss[oss["status"] == "done"].copy()
+    oss_base = oss_base[(oss_base["status"] == "done") & (oss_base["model"] == "gpt-oss-120b")]
+    oss["mechanism"] = [attribute(CASES[c], v) for c, v in zip(oss["case_id"], oss["value_pred"])]
+    per_case = lambda g: g.assign(e=g["numeric_error"].astype(float)).groupby("case_id")["e"].mean()
+    common = per_case(oss).index.intersection(per_case(oss_base).index)
+    rate, n = error_rate(oss)
+    summary["E7"].update({"n": n, "rate": rate, "ci": error_ci(oss), "base_rate": error_rate(oss_base)[0],
+                          "setup_minus_base": _boot_mean((per_case(oss)[common] - per_case(oss_base)[common]).to_numpy()),
+                          "mechanisms": mechanism_shares(oss, "gpt-oss-120b")})
+
 OUT.write_text(json.dumps(summary, indent=1, default=float))
 print(json.dumps(summary, indent=1, default=float))
