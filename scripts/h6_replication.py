@@ -17,7 +17,7 @@ from sfe.review import review_id, review_request, score_review
 
 CASES = {c.id: c for c in load_cases(Path("data/cases_explore_holdout.jsonl"))}
 SRC, OUT = Path("results/graded/explore3.jsonl"), Path("results/raw/h6_reviews.jsonl")
-JOBS = [("claude-opus-5-5", "P1"), ("claude-opus-5-5", "P2"), ("claude-haiku-5-5", "P2")]
+JOBS = [("claude-opus-5-5", "P1"), ("claude-opus-5-5", "P2"), ("claude-haiku-5-5", "P2"), ("claude-opus-5-5", "P1C")]
 
 
 def answers() -> list[dict]:
@@ -63,6 +63,11 @@ def analyze() -> None:
     h6 = _paired(_per_case_mean(pick("claude-haiku-5-5", "P2"), "detected"), _per_case_mean(pick("claude-opus-5-5", "P1"), "detected"))
     h4d = _paired(_per_case_mean(pick("claude-opus-5-5", "P2"), "detected"), _per_case_mean(pick("claude-opus-5-5", "P1"), "detected"))
     h4f = _paired(_per_case_mean(pick("claude-opus-5-5", "P2"), "false_alarm"), _per_case_mean(pick("claude-opus-5-5", "P1"), "false_alarm"))
+    if len(pick("claude-opus-5-5", "P1C")):
+        out["placebo_P1C_minus_P1_detection"] = _paired(_per_case_mean(pick("claude-opus-5-5", "P1C"), "detected"),
+                                                        _per_case_mean(pick("claude-opus-5-5", "P1"), "detected"))
+        out["P2_minus_P1C_detection"] = _paired(_per_case_mean(pick("claude-opus-5-5", "P2"), "detected"),
+                                                _per_case_mean(pick("claude-opus-5-5", "P1C"), "detected"))
     out |= {"H6_haikuP2_minus_opusP1": h6, "H6_replicated": bool(h6[1] > -0.05),
             "H4_opus_P2_minus_P1_detection": h4d, "H4_opus_P2_minus_P1_false_alarm": h4f,
             "H4_replicated": bool(h4d[0] >= 0.10 and h4d[1] > 0 and h4f[0] <= 0.05)}

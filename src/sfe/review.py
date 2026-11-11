@@ -31,6 +31,8 @@ _INSTRUCTIONS = {
     "P2": "Before judging, work the problem yourself from your own free-body diagram: for every load, state where its "
           "line of action is, measured from the point about which moments are taken, and only then compare your "
           "set-up and result with theirs.",
+    # Exploratory reviewer placebo (amendment 2026-11-10 night): the round 4 "care" sentence instead of a procedure.
+    "P1C": "Work slowly and carefully and double-check every number. Then check the calculation.",
     "P3": "Before judging, list every geometric assumption the answer makes (where each load acts, which point "
           "moments are taken about, which distances are used) and mark each one correct or incorrect. Do not "
           "re-check the arithmetic; only then decide whether the calculation is correct.",
