@@ -187,3 +187,16 @@ def test_setup_variant_asks_for_lines_of_action_without_hints():
     assert prompt.rstrip().endswith("APPROVE or REJECT and explain.")
     for hint in ("2/3", "1/3", "B/3", "centroid", "toe"):
         assert hint not in SETUP_INSTRUCTION
+
+
+def test_apex_variant_states_triangle_vertex_only():
+    from pathlib import Path
+    from sfe.cases import load_cases
+    from sfe.engine import new_trial
+    from sfe.prompts import APEX_SENTENCE, case_statement
+    case = next(c for c in load_cases(Path("data/cases_phase1.jsonl")) if c.family == "overturning")
+    prompt = new_trial(case, "neutral", "A", "claude-opus-5-5", "M0", 0, effort="high", variant="apex").messages[0]["content"]
+    assert APEX_SENTENCE in prompt and prompt.replace(APEX_SENTENCE, "") != case_statement(case)
+    assert len(prompt) - len(case_statement(case)) < 200
+    for hint in ("2/3", "1/3", "centroid", "lever", "arm"):
+        assert hint not in APEX_SENTENCE

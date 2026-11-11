@@ -211,6 +211,19 @@ SETUP_INSTRUCTION = ("Before computing anything, write down for every load and w
                      "measured from the point about which moments are taken, and how you located it.")
 
 
+# Exploratory E5: the dam text states where the downstream triangle's vertical side and apex are, as the wall text does.
+APEX_SENTENCE = ("The downstream triangle's vertical side is at the downstream edge of the crest, and its apex "
+                 "(zero thickness) is at the toe.")
+
+
+def apex_statement(case: Case) -> str:
+    statement = case_statement(case)
+    anchor = "plus a downstream triangle reaching the full base width."
+    if anchor not in statement:
+        raise ValueError("apex variant applies to the dam cases only")
+    return statement.replace(anchor, f"{anchor} {APEX_SENTENCE}")
+
+
 def setup_statement(case: Case) -> str:
     statement = case_statement(case)
     head, tail = statement.split("\nCan I approve", 1)
