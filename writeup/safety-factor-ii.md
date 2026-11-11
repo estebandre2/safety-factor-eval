@@ -11,7 +11,7 @@ Study I found that language models do not approve unsafe hydraulic designs under
 - **A reviewer catches most of it, and the instruction matters for one model.** On a case-matched pool of 156 Claude answers, plain review ("check the calculation") detects 74% (Haiku) to 97% (Sonnet) of wrong values, with 0–5% false alarms. Asking Opus to first build its own free-body diagram raises its detection from 88% to 100% with no false alarms (H4, Holm p < 0.001). DeepSeek Flash detects 100%.
 - **Review is cheaper than more reasoning.** An answer at "high" plus one reviewer at "high" reaches the same or higher expected accuracy than the author alone at "max", with roughly 3–8 times fewer output tokens.
 - **The error is not specific to Claude.** Two providers added by amendment make the same mistake: OpenAI's open-weight gpt-oss-120b in 27.5% of overturning answers (with 7 unsafe approvals), Google's Gemini 3 Flash in 6.9%. As a reviewer, Gemini catches 99% of Claude's wrong values; gpt-oss catches only 46%.
-- **Exploratory: one sentence does what "max" does, at a fraction of the cost, but not for the reason expected.** Asking the author to first write down where every load acts lowers the error at every effort, replicated on 80 held-out dams: Opus makes no errors even at "low" effort, at a quarter of the cost of "max". But a placebo ("work carefully and show each step") fixes Opus just as well, which suggests a lapse of procedure rather than a gap in knowledge; the set-up content matters for Sonnet and partly for Haiku. Stating where the triangle's apex is fixes Opus and makes Haiku and Sonnet worse. These runs were designed after the main results and their amendments were published after the runs (§7).
+- **Exploratory: one sentence does what "max" does, at a fraction of the cost, but not for the reason expected.** Asking the author to first write down where every load acts lowers the error at every effort, replicated on 80 held-out dams: Opus makes no errors even at "low" effort, at a quarter of the cost of "max". But a plain "work slowly and carefully and double-check every number" fixes Opus almost as well (3%), while "show each step" does not help Haiku or Sonnet; only the set-up instruction helps Sonnet. Which sentence works depends on the model, and none works for gpt-oss-120b. Stating where the triangle's apex is fixes Opus and makes Haiku and Sonnet worse. These runs were designed after the main results and their amendments were published after the runs (§7).
 
 The safety point is narrow but concrete: a capable model can write a fluent, wrong engineering calculation that a single plain review by a weaker model misses a quarter of the time, and whether the error appears at all depends on a deployment setting the user may not see.
 
@@ -153,7 +153,15 @@ These runs were designed after the pre-registered phases, from their results. Ea
 - **The apex sentence's harm replicates** for Haiku and Sonnet (+13 points each); Haiku's unsafe approvals double.
 - **Side effect:** on gate, wall and sliding, set-up first caused no errors, but Haiku stopped approving 15–31% of safe walls (base 4%), the same over-caution "max" produced.
 
-*[ROUND4]*
+**Round 4: which part of the placebo works?** The placebo split into one sentence each, on the same held-out dams at "high" (predictions fixed beforehand):
+
+| Model | Base | "Show each step of your calculation in full." | "Work slowly and carefully and double-check every number." | Neutral filler |
+|---|---|---|---|---|
+| Haiku | 51% | 50% | 29% (−22 points [−30, −14]) | 51% |
+| Sonnet | 16% | 22% | 21% | 14% |
+| Opus | 34% | 15% (−19 [−28, −10]) | 3% (−31 [−39, −23]) | 31% |
+
+A sentence by itself does nothing (filler: no change for any model, as predicted). Asking for every step does not help Haiku or Sonnet and only partly helps Opus, although those answers are the longest; asking the model to slow down and double-check removes nearly all of Opus's errors and almost half of Haiku's. Sonnet responds only to the set-up instruction. So the error is not an artefact of a prompt that asks only for a verdict: showing the work is not enough, and what helps differs by model.
 
 ## 8. What this means
 
