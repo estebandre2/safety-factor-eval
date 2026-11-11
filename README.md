@@ -4,6 +4,10 @@ An empirical AI-safety study in a domain where errors cost lives. Language model
 
 The write-up is in [`writeup/safety-factor.md`](writeup/safety-factor.md) (PDF: `writeup/safety-factor.pdf`), with detail tables in [`writeup/appendix.md`](writeup/appendix.md).
 
+## Study II (pre-registered follow-up)
+
+[`writeup/safety-factor-ii.md`](writeup/safety-factor-ii.md) (PDF: `writeup/safety-factor-ii.pdf`; exploratory detail in [`writeup/safety-factor-ii-appendix.md`](writeup/safety-factor-ii-appendix.md)). Pre-registration and dated amendments: [`docs/superpowers/specs/2026-11-10-safety-factor-ii-design.md`](docs/superpowers/specs/2026-11-10-safety-factor-ii-design.md). In short: the lever-arm error depends on reasoning effort and on prompt wording, not on knowledge; it is specific to the dam overturning check; it is not specific to Claude (gpt-oss-120b and Gemini 3 Flash make it too); a second model's review catches most of it, far more cheaply than maximum effort. Scripts: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py`, `explore_local.py` and the matching `analyze_*` scripts; summary tables in `results/tables/`. Graded answers are in `results/graded/`; the Phase 2 reviews and pool are committed in `results/raw/phase2*.jsonl`; other raw API outputs are not committed because of their size.
+
 > **Correction (10 Nov 2026):** Study I ran Claude at effort "medium". A pre-registered follow-up shows the lever-arm errors almost disappear at effort "max" (see the correction at the top of the write-up and `docs/superpowers/specs/2026-11-10-safety-factor-ii-design.md`).
 
 ## What is measured

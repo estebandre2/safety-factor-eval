@@ -4,3 +4,5 @@ results/raw/
 __pycache__/
 .superpowers/
 *.pyc
+.claude/settings.local.json
+.DS_Store
