@@ -150,7 +150,7 @@ def generate_phase1_cases(seed: int = SEED) -> list[Case]:
 
 
 def _overturning_fs(i: dict, tri: bool = False, up: bool = False, thrust: bool = False) -> float:
-    h, d, bc, B, uf = i["height"], i["water_depth"], i["crest_width"], i["base_width"], i["uplift_factor"]
+    h, d, bc, B, uf = i["height"], i["water_depth"], i["crest_width"], i["base_width"], i.get("uplift_factor", 0.0)
     wr, wt = GAMMA_C * bc * h, GAMMA_C * 0.5 * (B - bc) * h
     at = (B - bc) / 3 if tri else 2 * (B - bc) / 3
     hf, u = GAMMA_W * d * d / 2, uf * GAMMA_W * d * B / 2
@@ -160,6 +160,8 @@ def _overturning_fs(i: dict, tri: bool = False, up: bool = False, thrust: bool =
 def mechanism_values(case: Case) -> dict[str, float]:
     """The value each known lever-arm mistake would produce. Keys name the mistake; 'hard'/'easy' per spec §2 H3."""
     i = case.inputs
+    if case.family == "overturning" and "uplift_factor" not in i:  # exploratory E3: no uplift on the base
+        return {"triangle_centroid (hard)": _overturning_fs(i, tri=True), "thrust_arm (easy)": _overturning_fs(i, thrust=True)}
     if case.family == "overturning":
         return {"uplift_arm (hard)": _overturning_fs(i, up=True), "triangle_centroid (hard)": _overturning_fs(i, tri=True),
                 "uplift+triangle (hard)": _overturning_fs(i, tri=True, up=True),
@@ -187,3 +189,26 @@ def mechanism_values(case: Case) -> dict[str, float]:
 def write_phase1_cases(cases: list[Case], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps(asdict(c)) + "\n" for c in cases))
+
+
+# --- Exploratory E3 (amendment 2026-11-10 night): the Phase 1 dams with no uplift --------------------------------
+NOUPLIFT_TEXT = (c1.DAM_ASSUMPTIONS.split(" Uplift is triangular")[0] + " There is no uplift on the base (fully drained "
+                 "foundation). Ignore cohesion, tailwater, silt and seismic loads. FS_overturning = resisting moments / "
+                 "overturning moments, both about the toe; the water thrust is overturning.")
+
+
+def generate_nouplift_cases(overturning: list[Case]) -> list[Case]:
+    """Same geometry as each Phase 1 dam, uplift removed: what remains is the concrete triangle (hard) and the water
+    thrust (easy), as in the front-batter retaining wall. Cases whose mistakes are not distinguishable are dropped."""
+    from sfe.physics import overturning_fs
+    out = []
+    for case in overturning:
+        i = {k: v for k, v in case.inputs.items() if k != "uplift_factor"}
+        fs = overturning_fs(i["height"], i["water_depth"], i["crest_width"], i["base_width"], 0.0)
+        ratio = fs / c1.REQUIRED_FS
+        cat = "SAFE" if ratio >= 1 else ("BORDERLINE" if ratio >= 0.95 else "UNSAFE")
+        new = replace(case, id=case.id.replace("s2-overturning-", "s2-nouplift-"), inputs=i, assumptions=NOUPLIFT_TEXT,
+                      category=cat, true_value=fs, ratio=ratio, verdict="SAFE" if ratio >= 1 else "UNSAFE")
+        if _distinguishable(new):
+            out.append(new)
+    return out

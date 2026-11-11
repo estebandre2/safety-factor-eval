@@ -2,7 +2,8 @@
 
 E1: effort dose-response on the 80 Phase 1 overturning cases at "low" and "medium" (base prompt).
 E2: the author is asked for every load's line of action before computing (variant "setup"), at "high".
-Same repeats as Phase 1 (Haiku 3, Sonnet 2, Opus 2). Writes results/raw/explore.jsonl.
+E3 (--nouplift): the same 80 dams with no uplift (data/cases_explore_nouplift.jsonl), base prompt, at "high".
+Same repeats as Phase 1 (Haiku 3, Sonnet 2, Opus 2). Writes results/raw/explore.jsonl (E3: explore_nouplift.jsonl).
 
 Usage:
   uv run python scripts/explore.py                      # estimate only
@@ -21,14 +22,16 @@ from sfe.run import run
 
 CASES = Path("data/cases_phase1.jsonl")
 OUT = Path("results/raw/explore.jsonl")
+NOUPLIFT_CASES, NOUPLIFT_OUT = Path("data/cases_explore_nouplift.jsonl"), Path("results/raw/explore_nouplift.jsonl")
 REPEATS = {"claude-haiku-5-5": 3, "claude-sonnet-5-5": 2, "claude-opus-5-5": 2}
 ARMS = [("low", "base"), ("medium", "base"), ("high", "setup")]
 
 
-def plan():
-    cases = [c for c in load_cases(CASES) if c.family == "overturning"]
+def plan(nouplift: bool = False):
+    cases = load_cases(NOUPLIFT_CASES) if nouplift else [c for c in load_cases(CASES) if c.family == "overturning"]
+    arms = [("high", "base")] if nouplift else ARMS
     return [new_trial(c, "neutral", "A", m, "M0", rep, effort=e, variant=v)
-            for e, v in ARMS for m, reps in REPEATS.items() for c in cases for rep in range(reps)]
+            for e, v in arms for m, reps in REPEATS.items() for c in cases for rep in range(reps)]
 
 
 def per_trial_cost() -> dict[str, float]:
@@ -44,17 +47,19 @@ def per_trial_cost() -> dict[str, float]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm-budget", type=float)
+    parser.add_argument("--nouplift", action="store_true", help="run E3 instead of E1-E2")
     args = parser.parse_args()
-    trials = plan()
+    trials = plan(args.nouplift)
+    out = NOUPLIFT_OUT if args.nouplift else OUT
     per = per_trial_cost()
     estimate = 1.3 * sum(per[t.model] for t in trials)  # 30% margin for longer set-up answers
     print(f"Exploratory: {len(trials)} trials. Claude estimate: ${estimate:.2f}")
     if args.confirm_budget is None or estimate > args.confirm_budget:
         print("Not running. Re-run with --confirm-budget <USD> at or above the estimate.")
         sys.exit(2)
-    run(trials, OUT)
-    spent = sum(json.loads(l)["cost_usd"] for l in OUT.read_text().splitlines())
-    print(f"Done. Claude spent in {OUT}: ${spent:.2f}")
+    run(trials, out)
+    spent = sum(json.loads(l)["cost_usd"] for l in out.read_text().splitlines())
+    print(f"Done. Claude spent in {out}: ${spent:.2f}")
 
 
 if __name__ == "__main__":

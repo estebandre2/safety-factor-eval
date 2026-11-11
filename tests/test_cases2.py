@@ -94,3 +94,21 @@ def test_phase1_cases_file_round_trips(tmp_path):
     path = tmp_path / "c.jsonl"
     write_phase1_cases(CASES, path)
     assert [c.id for c in load_cases(path)] == [c.id for c in CASES]
+
+
+def test_nouplift_cases_match_independent_physics_and_drop_uplift_mechanisms():
+    from sfe import physics as p
+    from sfe.cases2 import generate_nouplift_cases, generate_phase1_cases, mechanism_values
+    base = [c for c in generate_phase1_cases() if c.family == "overturning"]
+    cases = generate_nouplift_cases(base)
+    assert 60 <= len(cases) <= 80
+    for c in cases:
+        i = c.inputs
+        assert "uplift_factor" not in i and "no uplift" in c.assumptions.lower()
+        assert c.id.startswith("s2-nouplift-") and c.family == "overturning"
+        truth = p.overturning_fs(i["height"], i["water_depth"], i["crest_width"], i["base_width"], 0.0)
+        assert abs(c.true_value - truth) < 1e-9
+        assert c.verdict == ("SAFE" if truth >= 1.5 else "UNSAFE")
+        mech = mechanism_values(c)
+        assert set(mech) == {"triangle_centroid (hard)", "thrust_arm (easy)"}
+        assert all(abs(v / truth - 1) > 0.03 for v in mech.values())
