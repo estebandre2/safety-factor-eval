@@ -121,14 +121,7 @@ DeepSeek Flash made almost no overturning errors, so after Phase 2 an amendment 
 
 **The error is not specific to Claude.** gpt-oss-120b, writing about 11,000 tokens per answer, misplaces the same two resultants in more than a quarter of its answers and approves 7 unsafe-case answers. Gemini 3 Flash makes the same triangle-centroid mistake, less often. More reasoning text is not the whole story: gpt-oss writes more than Sonnet and Opus at "max" and still errs.
 
-**As reviewers** (P1 / P2 / P3; false alarms in parentheses):
-
-| Reviewer | Detection | Output tokens per review |
-|---|---|---|
-| Gemini 3 Flash | 99% (0%) / 97% (0%) / 97% (0%) | ~7,600–8,100 |
-| gpt-oss-120b | 46% (3%) / 41% (0%) / 42% (3%) | ~8,100–9,300 |
-
-Under its own Holm family (H5x, P1, six contrasts), Gemini detects more than Haiku (+24 points) and Opus (+10), not more than Sonnet (+1); gpt-oss detects fewer than every Claude reviewer (−28 to −51 points), all after correction. gpt-oss is the only reviewer in the study that misses most wrong answers, which matches its own error rate as an author: here, the model that makes the mistake most often among the non-Claude models is also the one that does not see it. One model is not enough to call this a pattern. The set-up protocols did not help it.
+**As reviewers**, Gemini detects 97–99% of the wrong answers under the three protocols with no false alarms; gpt-oss-120b detects only 41–46% (false alarms 0–3%). Both write about 8,000–9,000 tokens per review. Under its own Holm family (H5x, P1, six contrasts), Gemini detects more than Haiku (+24 points) and Opus (+10), not more than Sonnet (+1); gpt-oss detects fewer than every Claude reviewer (−28 to −51 points), all after correction. gpt-oss is the only reviewer in the study that misses most wrong answers, which matches its own error rate as an author: here, the model that makes the mistake most often among the non-Claude models is also the one that does not see it. One model is not enough to call this a pattern. The set-up protocols did not help it.
 ## 7. Exploratory additions
 
 These runs were designed after the pre-registered phases, from their results. Each was specified in a dated amendment committed before it ran, but the repository could not be pushed overnight, so the amendments were published after the data. They are exploratory, their contrasts are uncorrected, and they change no result above. Full tables, mechanisms and verdicts are in `safety-factor-ii-appendix.md`.
@@ -153,21 +146,13 @@ These runs were designed after the pre-registered phases, from their results. Ea
 - **The apex sentence's harm replicates** for Haiku and Sonnet (+13 points each); Haiku's unsafe approvals double.
 - **Side effect:** on gate, wall and sliding, set-up first caused no errors, but Haiku stopped approving 15–31% of safe walls (base 4%), the same over-caution "max" produced.
 
-**Round 4: which part of the placebo works?** The placebo split into one sentence each, on the same held-out dams at "high" (predictions fixed beforehand):
-
-| Model | Base | "Show each step of your calculation in full." | "Work slowly and carefully and double-check every number." | Neutral filler |
-|---|---|---|---|---|
-| Haiku | 51% | 50% | 29% (−22 points [−30, −14]) | 51% |
-| Sonnet | 16% | 22% | 21% | 14% |
-| Opus | 34% | 15% (−19 [−28, −10]) | 3% (−31 [−39, −23]) | 31% |
-
-A sentence by itself does nothing (filler: no change for any model, as predicted). Asking for every step does not help Haiku or Sonnet and only partly helps Opus, although those answers are the longest; asking the model to slow down and double-check removes nearly all of Opus's errors and almost half of Haiku's. Sonnet responds only to the set-up instruction. So the error is not an artefact of a prompt that asks only for a verdict: showing the work is not enough, and what helps differs by model.
+**Round 4: which part of the placebo works?** Split into one sentence each on the held-out dams (table in the appendix, §C): "work slowly and carefully and double-check every number" cuts Opus to 3% (−31 points [−39, −23]) and Haiku to 29% (−22 [−30, −14]); "show each step of your calculation in full" cuts Opus to 15% and does nothing for Haiku or Sonnet; a neutral filler does nothing. A sentence by itself does nothing (filler: no change for any model, as predicted). Asking for every step does not help Haiku or Sonnet and only partly helps Opus, although those answers are the longest; asking the model to slow down and double-check removes nearly all of Opus's errors and almost half of Haiku's. Sonnet responds only to the set-up instruction. So the error is not an artefact of a prompt that asks only for a verdict: showing the work is not enough, and what helps differs by model.
 
 ## 8. What this means
 
 **For evaluation.** One effort setting can make a model look systematically unreliable on a task ("low": Haiku 80%, Opus 64% wrong) or nearly flawless ("max": 0–3%). A single added sentence can do the same (§7). Claims about technical reliability should state the effort and the prompt, and evaluations should sweep both. Study I's original conclusion that a calculator does not help was true only at "medium".
 
-**For deployment.** The error is confident and well formatted, and it is not one vendor's quirk: gpt-oss-120b and Gemini make it too. A plain review by a weaker model misses about a quarter of the wrong answers, and a reviewer that shares the blind spot (gpt-oss) misses more than half. What helps, cheapest first: asking the author to state where every load acts before computing, or for Opus simply to work carefully and show each step (this works for Claude, not for gpt-oss, and makes Haiku over-cautious on other checks), asking the reviewer to rebuild the set-up independently (P2), and choosing a reviewer from a model that does not make the mistake. All are far cheaper than running every answer at maximum effort. A prompt fix needs testing per model: the apex sentence fixed Opus and harmed Haiku and Sonnet.
+**For deployment.** The error is confident and well formatted, and it is not one vendor's quirk: gpt-oss-120b and Gemini make it too. A plain review by a weaker model misses about a quarter of the wrong answers, and a reviewer that shares the blind spot (gpt-oss) misses more than half. What helps, cheapest first: asking the author to state where every load acts before computing, or for Opus and partly Haiku simply to slow down and double-check every number (this works for Claude, not for gpt-oss, and makes Haiku over-cautious on other checks), asking the reviewer to rebuild the set-up independently (P2), and choosing a reviewer from a model that does not make the mistake. All are far cheaper than running every answer at maximum effort. A prompt fix needs testing per model: the apex sentence fixed Opus and harmed Haiku and Sonnet.
 
 **For oversight.** H6 is a small instance of weak-to-strong oversight: a weaker model with a better procedure checked a stronger model at least as well as the stronger model checked itself. gpt-oss shows the converse risk: a checker is only as good as its own grasp of the step it is checking. Both rest on one task family.
 
@@ -185,12 +170,4 @@ A sentence by itself does nothing (filler: no change for any model, as predicted
 
 Everything runs from the repository: `scripts/phase0.py`, `phase1.py`, `phase2.py`, `explore.py` and `explore_local.py`, with the matching `analyze_*` scripts; summary tables are in `results/tables/`, graded answers in `results/graded/`, and the Phase 2 reviews in `results/raw/phase2.jsonl`. Tests: `uv run pytest`.
 
-| | Spend (US$) |
-|---|---|
-| Claude, pre-registered phases (Phase 0, 1, 2) | 8.13 + 21.04 + 6.25 = 35.42 |
-| Claude, exploratory runs (§7) | 68.24 |
-| Claude judge (Haiku, grading every answer) | about 3–6 (estimated; not itemized) |
-| DeepSeek (Phases 0–2) | about 5 (from the account balance) |
-| Gemini 3 Flash (authors and reviews) | about 13 at list price, prepaid |
-| gpt-oss-120b via OpenRouter (authors, reviews, E7) | 4.19 (account usage) |
-| Local qwen3:14b (E4) | 0 |
+**Spend.** Claude: US$35.42 for the pre-registered phases (Phase 0 8.13, Phase 1 21.04, Phase 2 6.25), US$68.24 for the exploratory runs, and an estimated US$3–6 for the judge (not itemized). DeepSeek: about US$5 (account balance). Gemini 3 Flash: about US$13 at list price, prepaid. gpt-oss-120b through OpenRouter: US$4.19 (account usage). The local qwen3:14b run cost nothing.

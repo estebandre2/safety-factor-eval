@@ -74,3 +74,14 @@ For each author, the author alone at "max" against the author at "high" plus one
 
 Tokens are not dollars across models, but within one model the comparison holds: Haiku reviewing with a stronger model is about eight times cheaper in output than Haiku thinking at "max", for the same accuracy.
 
+
+## C. Round 4: the placebo split (§7 of the main text)
+
+The placebo split into one sentence each, on the same held-out dams at "high" (predictions fixed beforehand):
+
+| Model | Base | "Show each step of your calculation in full." | "Work slowly and carefully and double-check every number." | Neutral filler |
+|---|---|---|---|---|
+| Haiku | 51% | 50% | 29% (−22 points [−30, −14]) | 51% |
+| Sonnet | 16% | 22% | 21% | 14% |
+| Opus | 34% | 15% (−19 [−28, −10]) | 3% (−31 [−39, −23]) | 31% |
+
