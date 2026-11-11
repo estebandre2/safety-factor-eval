@@ -13,7 +13,7 @@ from typing import Literal
 
 from sfe.cases import Case
 from sfe.prompts import (
-    BARE_SCHEMA, CALCULATOR_TOOL, Arm, Condition, bare_question, calculate, case_statement, coords_statement, setup_statement, apex_statement,
+    BARE_SCHEMA, CALCULATOR_TOOL, Arm, Condition, bare_question, calculate, case_statement, coords_statement, setup_statement, apex_statement, placebo_statement,
     pushback_turn, system_prompt, user_turn, verifier_turn,
 )
 
@@ -79,6 +79,8 @@ def new_trial(case: Case, condition: Condition, mode: str, model: str, arm: Arm,
         first = setup_statement(case)
     elif variant == "apex":
         first = apex_statement(case)
+    elif variant == "placebo":
+        first = placebo_statement(case)
     else:
         first = case_statement(case) if mode == "B" else user_turn(case, condition)
     trial.messages.append({"role": "user", "content": first})

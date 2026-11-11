@@ -28,6 +28,20 @@ REPEATS = {"claude-haiku-5-5": 3, "claude-sonnet-5-5": 2, "claude-opus-5-5": 2}
 ARMS = [("low", "base"), ("medium", "base"), ("high", "setup")]
 ARMS2 = [("high", "apex"), ("low", "setup"), ("medium", "setup")]  # E5, E6
 OUT2 = Path("results/raw/explore2.jsonl")
+# Round 3: held-out dams (new seed) with a placebo control; plus set-up-first on the other Phase 1 families.
+HOLDOUT_CASES, OUT3, OUT3_SIDE = (Path("data/cases_explore_holdout.jsonl"), Path("results/raw/explore3.jsonl"),
+                                  Path("results/raw/explore3_side.jsonl"))
+ARMS3 = [("high", "base"), ("high", "setup"), ("high", "apex"), ("high", "placebo"), ("low", "base"), ("low", "setup")]
+
+
+def plan3(side: bool = False):
+    if side:
+        cases = [c for c in load_cases(CASES) if c.family in ("gate", "wall", "sliding")]
+        arms = [("high", "setup")]
+    else:
+        cases, arms = load_cases(HOLDOUT_CASES), ARMS3
+    return [new_trial(c, "neutral", "A", m, "M0", rep, effort=e, variant=v)
+            for e, v in arms for m, reps in REPEATS.items() for c in cases for rep in range(reps)]
 
 
 def plan(nouplift: bool = False, round2: bool = False):
@@ -52,9 +66,14 @@ def main() -> None:
     parser.add_argument("--confirm-budget", type=float)
     parser.add_argument("--nouplift", action="store_true", help="run E3 instead of E1-E2")
     parser.add_argument("--round2", action="store_true", help="run E5-E6 instead of E1-E2")
+    parser.add_argument("--round3", action="store_true", help="held-out dams with placebo control")
+    parser.add_argument("--side", action="store_true", help="round 3: set-up-first on gate, wall, sliding")
     args = parser.parse_args()
-    trials = plan(args.nouplift, args.round2)
-    out = NOUPLIFT_OUT if args.nouplift else (OUT2 if args.round2 else OUT)
+    if args.round3 or args.side:
+        trials, out = plan3(args.side), (OUT3_SIDE if args.side else OUT3)
+    else:
+        trials = plan(args.nouplift, args.round2)
+        out = NOUPLIFT_OUT if args.nouplift else (OUT2 if args.round2 else OUT)
     per = per_trial_cost()
     estimate = 1.3 * sum(per[t.model] for t in trials)  # 30% margin for longer set-up answers
     print(f"Exploratory: {len(trials)} trials. Claude estimate: ${estimate:.2f}")

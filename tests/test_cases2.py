@@ -112,3 +112,24 @@ def test_nouplift_cases_match_independent_physics_and_drop_uplift_mechanisms():
         mech = mechanism_values(c)
         assert set(mech) == {"triangle_centroid (hard)", "thrust_arm (easy)"}
         assert all(abs(v / truth - 1) > 0.03 for v in mech.values())
+
+
+def test_holdout_dams_are_new_and_rederive_independently():
+    from sfe.cases2 import GAMMA_C, GAMMA_W, generate_holdout_cases, generate_phase1_cases
+    old = {tuple(sorted(c.inputs.items())) for c in generate_phase1_cases() if c.family == "overturning"}
+    new = generate_holdout_cases()
+    assert len(new) == 80 and all(c.id.startswith("s2-holdout-") and c.family == "overturning" for c in new)
+    assert not old & {tuple(sorted(c.inputs.items())) for c in new}
+    for c in new:  # independent formula, written out here
+        i = c.inputs
+        h, d, bc, B, uf = i["height"], i["water_depth"], i["crest_width"], i["base_width"], i["uplift_factor"]
+        mr = GAMMA_C * bc * h * (B - bc / 2) + GAMMA_C * 0.5 * (B - bc) * h * (2 * (B - bc) / 3)
+        mo = GAMMA_W * d * d / 2 * d / 3 + uf * GAMMA_W * d * B / 2 * 2 * B / 3
+        assert abs(mr / mo - c.true_value) < 1e-9
+
+
+def test_placebo_variant_has_no_geometry():
+    from sfe.prompts import PLACEBO_INSTRUCTION, SETUP_INSTRUCTION
+    assert abs(len(PLACEBO_INSTRUCTION) - len(SETUP_INSTRUCTION)) < 60
+    for word in ("line of action", "load", "moment", "measured", "toe", "arm"):
+        assert word not in PLACEBO_INSTRUCTION.lower()

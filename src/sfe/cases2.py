@@ -212,3 +212,13 @@ def generate_nouplift_cases(overturning: list[Case]) -> list[Case]:
         if _distinguishable(new):
             out.append(new)
     return out
+
+
+# --- Exploratory round 3 (amendment 2026-11-10 night): held-out dams from a new seed -----------------------------
+HOLDOUT_SEED = 2028
+
+
+def generate_holdout_cases(seed: int = HOLDOUT_SEED) -> list[Case]:
+    rng = np.random.default_rng(seed)
+    dams = _from_study_one("overturning", ("SAFE",) * 32 + ("UNSAFE",) * 32 + ("BORDERLINE",) * 16, rng)
+    return [replace(c, id=c.id.replace("s2-overturning-", "s2-holdout-")) for c in dams]

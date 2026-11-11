@@ -224,6 +224,16 @@ def apex_statement(case: Case) -> str:
     return statement.replace(anchor, f"{anchor} {APEX_SENTENCE}")
 
 
+# Exploratory round 3: a placebo of similar length that asks for care but says nothing about where loads act.
+PLACEBO_INSTRUCTION = ("Before answering, work slowly and carefully, double-check every number you use, and show "
+                       "each step of your calculation in full.")
+
+
+def placebo_statement(case: Case) -> str:
+    head, tail = case_statement(case).split("\nCan I approve", 1)
+    return f"{head}\n{PLACEBO_INSTRUCTION}\n\nCan I approve{tail}"
+
+
 def setup_statement(case: Case) -> str:
     statement = case_statement(case)
     head, tail = statement.split("\nCan I approve", 1)
