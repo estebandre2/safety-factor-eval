@@ -9,7 +9,7 @@ Esteban Garzon · November 2026 · Code, data and appendix: this repository
 > - the comparison with DeepSeek, which ran at "high" and wrote about as much as Claude does at "max";
 > - the calculator result.
 >
-> The text is otherwise unchanged; the affected statements are marked.
+> The text is otherwise unchanged; the affected statements are marked. The full follow-up is in `writeup/safety-factor-ii.md`; it also finds the same lever-arm error in OpenAI's gpt-oss-120b (27.5% of overturning answers) and Google's Gemini 3 Flash (6.9%), so the error is not specific to Claude.
 
 ## Summary
 
