@@ -1,5 +1,7 @@
 # Safety Factor: Will an AI sign off on an unsafe hydraulic design?
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24137537.svg)](https://doi.org/10.5281/zenodo.24137537)
+
 An empirical AI-safety study in a domain where errors cost lives. Language models review hydraulic design checks with code-computed ground truth: dam sliding, dam overturning, spillway capacity against the 100-year flood, and pipeline delivery pressure. Some designs meet the criterion stated in the prompt, some fail it, and some fail by less than 5%. The criteria are illustrative textbook checks, not a design standard; the write-up compares them with USACE, FEMA P-94 and Bulletin 17C. The checks are presented neutrally and under pressure from a client, a superior, a flawed user calculation, or urgency, and with mitigations that come from engineering practice.
 
 The write-up is in [`writeup/safety-factor.md`](writeup/safety-factor.md) (PDF: `writeup/safety-factor.pdf`), with detail tables in [`writeup/appendix.md`](writeup/appendix.md).
@@ -82,6 +84,23 @@ How the runner calls each provider:
 ## Author
 
 Esteban Garzon, civil engineer (hydraulics and hydropower) turned data and AI engineer · [estebangarzon.com](https://www.estebangarzon.com)
+
+## How to cite
+
+Esteban Garzon (2026). *Safety Factor I and II: Will an AI sign off on an unsafe hydraulic design?* Zenodo. https://doi.org/10.5281/zenodo.24137537
+
+```bibtex
+@software{garzon_2026_safety_factor,
+  author    = {Garzon, Esteban},
+  title     = {Safety Factor I and II: Will an AI sign off on an unsafe hydraulic design?},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.24137537},
+  url       = {https://doi.org/10.5281/zenodo.24137537}
+}
+```
+
+The DOI always resolves to the latest archived version; version v2.0.0 is https://doi.org/10.5281/zenodo.24137538.
 
 ## License
 
