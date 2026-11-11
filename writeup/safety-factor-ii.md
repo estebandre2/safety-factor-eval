@@ -77,7 +77,7 @@ Error rates at effort "high" (in parentheses: unsafe approvals / unsafe answers 
 
 At "max" (1 repeat), every Claude model is at or below 3% in every family (overturning: Haiku 2.5%, Sonnet 1.3%, Opus 0%).
 
-- **H3 (orientation predicts the error): not supported.** In overturning, hard-load mechanisms account for nearly all errors (hard minus easy: Haiku +49 points, Opus +34, Sonnet +18, each CI excluding zero). But the gate and the wall show no errors in either orientation, so the pre-registered condition (the effect in at least one new family) fails. The wall's front batter has exactly the dam's triangle orientation and still produced no errors. The mistake belongs to the dam overturning check, not to triangular loads in general. One reading is that this check, with uplift, has a familiar textbook template that the models pattern-match and then mis-fill; the gate and wall problems are simpler and closer to their textbook form. This study cannot separate that explanation from others.
+- **H3 (orientation predicts the error): not supported.** In overturning, hard-load mechanisms account for nearly all errors (hard minus easy: Haiku +49 points, Opus +34, Sonnet +18, each CI excluding zero). But the gate and the wall show no errors in either orientation, so the pre-registered condition (the effect in at least one new family) fails. The wall's front batter has exactly the dam's triangle orientation and still produced no errors. The mistake belongs to the dam overturning check, not to triangular loads in general. The exploratory runs in §7 point to wording: the wall text says where the triangle's apex is and the dam text leaves it to inference; stating the apex in the dam text removes Opus's error (E5).
 - **H3b (the same mechanisms): supported.** Uplift arm dominates for Haiku (79 errors, plus 27 combined with the triangle, of 119) and Sonnet (26 of 29). The triangle centroid explains 55 of Opus's 56 errors. The direction decides the harm: Haiku and Sonnet approved 24 unsafe-case answers at "high"; Opus approved none but failed to approve 9 of 64 safe-case answers.
 - **H7 (max beats high by ≥ 15 points): supported for Haiku (+22 points overall) and Opus (+16); not supported for Sonnet (+7).** The new families have no errors at either effort, which dilutes the overall difference. In overturning alone the difference is +47, +35 and +17 points, each CI excluding zero.
 - **Control.** Sliding stays at or below 2%, as expected.
@@ -185,18 +185,20 @@ The §7 contrasts are uncorrected for multiplicity; round 3 replicates the main 
 
 ## 8. What this means
 
-**For evaluation.** A single effort setting can make a model look systematically unreliable (Study I at "medium") or nearly flawless ("max") on the same task. Capability claims about technical work should state the effort or reasoning budget, and evaluations should sweep it. Study I's original conclusion that a calculator does not help was true only at "medium".
+**For evaluation.** One effort setting can make a model look systematically unreliable on a task ("low": Haiku 80%, Opus 64% wrong) or nearly flawless ("max": 0–3%). A single added sentence can do the same (§7). Claims about technical reliability should state the effort and the prompt, and evaluations should sweep both. Study I's original conclusion that a calculator does not help was true only at "medium".
 
-**For deployment.** The error is confident and well formatted: the wrong answers look like the right ones, with the same structure and similar length at a given effort. A plain review by a weaker model misses about a quarter of them. Two cheap measures help: asking the reviewer to rebuild the set-up independently (P2), and using a stronger or different reviewer. Both are far cheaper than running every answer at maximum effort.
+**For deployment.** The error is confident and well formatted, and it is not one vendor's quirk: gpt-oss-120b and Gemini make it too. A plain review by a weaker model misses about a quarter of the wrong answers, and a reviewer that shares the blind spot (gpt-oss) misses more than half. What helps, cheapest first: asking the author to state where every load acts before computing (for Claude; not for gpt-oss), asking the reviewer to rebuild the set-up independently (P2), and choosing a reviewer from a model that does not make the mistake. All are far cheaper than running every answer at maximum effort. A prompt fix needs testing per model: the apex sentence fixed Opus and harmed Haiku and Sonnet.
 
-**For oversight.** H6 is a small, concrete instance of weak-to-strong oversight: a weaker model with a better procedure checked a stronger model at least as well as the stronger model checked itself. The interval is wide, and this is one task family.
+**For oversight.** H6 is a small instance of weak-to-strong oversight: a weaker model with a better procedure checked a stronger model at least as well as the stronger model checked itself. gpt-oss shows the converse risk: a checker is only as good as its own grasp of the step it is checking. Both rest on one task family.
 
 ## 9. Limitations
 
-- **One task family carries the effect.** Only dam overturning produced errors; the new families did not. The findings on review are findings about catching this one mistake.
-- **Effort is a vendor setting.** "High" and "max" are not defined in tokens and may change between model versions. DeepSeek, Gemini and gpt-oss expose different controls; cross-provider comparisons confound provider with reasoning volume.
+- **One task family carries the effect.** Only dam overturning produced errors; the new families did not. The findings on review and on prompts are findings about this one mistake.
+- **The dam text leaves the triangle's orientation to inference.** That is part of what is being tested, but it means part of the "error" is a reading problem that a clearer drawing or sentence removes (E5).
+- **Effort is a vendor setting.** "Low" to "max" are not defined in tokens and may change between versions. DeepSeek, Gemini and gpt-oss expose different controls; cross-provider comparisons confound provider with reasoning volume.
+- **Exploratory results.** §7 was designed after the main results; its amendments were committed before each run but published after, and its contrasts are uncorrected. Round 3 replicates the main ones on held-out cases with a placebo.
 - **Synthetic, idealized checks.** The acceptance criteria are illustrative (Study I §2.6 compares them with USACE and FEMA practice); real design reviews involve drawings, codes and judgment.
-- **The judge is a Claude model.** Its value readings agree with an independent rule-based reader on 99.9% of factor-of-safety values in Phase 1, but verdict grading still depends on it.
+- **The judge is a Claude model.** Its value readings agree with an independent rule-based reader on 99.9% of Phase 1 values and on 304 of 306 extra-provider values, but verdict grading still depends on it.
 - **The pool was reshaped after Phase 1** (amendment before any review), and H6 rests on 25 wrong Opus answers.
 
 ## 10. Reproducibility and cost
